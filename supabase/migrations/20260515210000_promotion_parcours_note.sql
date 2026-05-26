@@ -1,0 +1,15 @@
+-- Aucune modification de schéma requise pour la promotion / planification séances.
+-- Les colonnes existantes suffisent :
+--   eleves.statut_formation (code | creneau | circulation)
+--   eleves.etape_code_validee, etape_creneau_validee, etape_circulation_validee, etape_examen_validee
+--   seances_examen.type (code | creneau | circulation | examen)
+--
+-- Correction logique côté application uniquement :
+-- après validation d'une étape, statut_formation avance (ex. code validé → creneau).
+--
+-- Vérification optionnelle (lecture seule) :
+-- SELECT id, nom, prenom, statut_formation,
+--        etape_code_validee, etape_creneau_validee, etape_circulation_validee, etape_examen_validee
+-- FROM eleves
+-- ORDER BY created_at DESC
+-- LIMIT 20;

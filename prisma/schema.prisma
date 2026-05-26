@@ -1,0 +1,409 @@
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ——— SaaS & comptes ———
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  CASHIER
+}
+
+/// Propriétaire de la plateforme (hors tenant auto-école)
+model SiteAdmin {
+  id             String   @id @default(cuid())
+  supabaseUserId String   @unique @map("supabase_user_id")
+  email          String   @unique
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("site_admins")
+}
+
+model AutoEcole {
+  id                 String             @id @default(cuid())
+  nom                String
+  slug               String             @unique
+  ville              String?
+  telephone          String?
+  emailContact       String?            @map("email_contact")
+  /// Impression officielle (liste examen + bordereau) — saisie unique
+  wilaya             String?
+  nomAr              String?            @map("nom_ar")
+  adresseMagasin     String?            @map("adresse_magasin")
+  numeroRegistre     String?            @map("numero_registre")
+  centreExamenDefaut String?            @map("centre_examen_defaut")
+  lieuRedaction      String?            @map("lieu_redaction")
+  referenceEnvoi     String?            @map("reference_envoi")
+  /// Règles listes d'examen (paramétrables par auto-école)
+  listeAgeMinCirculation       Int     @default(18) @map("liste_age_min_circulation")
+  listeNatureCodeActive        Boolean @default(true) @map("liste_nature_code_active")
+  listeNatureCreneauActive     Boolean @default(true) @map("liste_nature_creneau_active")
+  listeNatureCirculationActive Boolean @default(true) @map("liste_nature_circulation_active")
+  subscriptionStatus SubscriptionStatus @default(EXPIRED) @map("subscription_status")
+  trialEndsAt        DateTime           @map("trial_ends_at")
+  paidUntil          DateTime?          @map("paid_until")
+  adminNotes         String?            @map("admin_notes")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  users         User[]
+  eleves        Eleve[]
+  moniteurs     Moniteur[]
+  vehicules     Vehicule[]
+  paiements     Paiement[]
+  seancesExamen SeanceExamen[]
+  listesExamen       ListeExamen[]
+  categoriesPermis   CategoriePermisEcole[]
+
+  @@map("auto_ecoles")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  supabaseUserId String   @unique @map("supabase_user_id")
+  autoEcoleId    String   @map("auto_ecole_id")
+  email          String
+  prenom         String
+  nom            String
+  role           UserRole @default(OWNER)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  autoEcole            AutoEcole  @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  paiementsEnregistres Paiement[] @relation("PaiementEnregistrePar")
+
+  @@index([autoEcoleId])
+  @@map("users")
+}
+
+// ——— Métier auto-école ———
+
+enum Sexe {
+  masculin
+  feminin
+}
+
+enum GroupeSanguin {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+}
+
+enum StatutFormation {
+  code
+  creneau
+  circulation
+  valide
+}
+
+enum SeanceStatut {
+  planifie
+  passe
+  annule
+  absent
+}
+
+enum SeanceType {
+  code
+  creneau
+  circulation
+  examen
+}
+
+enum SituationFamiliale {
+  celibataire
+  marie
+  divorce
+  veuf
+}
+
+enum SituationProfessionnelle {
+  etudiant
+  employe
+  sans_emploi
+  fonctionnaire
+  commercant
+  autre
+}
+
+enum ListeExamenStatut {
+  brouillon
+  validee
+}
+
+enum NatureExamenListe {
+  code
+  creneau
+  circulation
+}
+
+/// Catégories de permis définies par chaque auto-école (libellés FR + AR, section liste indépendante)
+model CategoriePermisEcole {
+  id             String   @id @default(cuid())
+  autoEcoleId    String   @map("auto_ecole_id")
+  /// Code court unique par école (ex. A, B, A1, C)
+  code           String
+  libelleFr      String   @map("libelle_fr")
+  libelleAr      String?  @map("libelle_ar")
+  /// Nombre de lignes sur la liste d'examen officielle pour cette catégorie
+  placesListe    Int      @default(10) @map("places_liste")
+  /// Afficher une section sur la liste d'examen (impression)
+  surListeExamen Boolean  @default(true) @map("sur_liste_examen")
+  /// Tarif forfait permis pour cette catégorie (DZD)
+  prixPermis     Int      @default(25000) @map("prix_permis")
+  ordre          Int      @default(0)
+  actif          Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  autoEcole            AutoEcole                       @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  eleves               Eleve[]
+  listeExamenCandidats ListeExamenCandidat[]
+  listeExamenMessages  ListeExamenMessageCategorie[]
+  moniteurs            Moniteur[]
+
+  @@unique([autoEcoleId, code])
+  @@index([autoEcoleId])
+  @@map("categories_permis")
+}
+
+model Eleve {
+  id                       String                   @id @default(cuid())
+  autoEcoleId              String                   @map("auto_ecole_id")
+  identifiant              String
+  telephone                String
+  nom                      String
+  prenom                   String
+  nin                      String
+  dateNaissance            DateTime                 @map("date_naissance")
+  lieuNaissance            String                   @map("lieu_naissance")
+  sexe                     Sexe
+  groupeSanguin            GroupeSanguin            @map("groupe_sanguin")
+  categoriePermisId        String                   @map("categorie_permis_id")
+  statutFormation          StatutFormation          @map("statut_formation")
+  mairieEnregistrement     String?                  @map("mairie_enregistrement")
+  nationalite              String
+  prenomPere               String?                  @map("prenom_pere")
+  nomMere                  String?                  @map("nom_mere")
+  prenomMere               String?                  @map("prenom_mere")
+  /// Nom de jeune fille (optionnel, candidatures féminines)
+  nomJeuneFille            String?                  @map("nom_jeune_fille")
+  situationFamiliale       SituationFamiliale       @map("situation_familiale")
+  situationProfessionnelle SituationProfessionnelle @map("situation_professionnelle")
+  prixPermis               Int                      @default(25000) @map("prix_permis")
+  etapeCodeValidee         Boolean                  @default(false) @map("etape_code_validee")
+  etapeCreneauValidee      Boolean                  @default(false) @map("etape_creneau_validee")
+  etapeCirculationValidee  Boolean                  @default(false) @map("etape_circulation_validee")
+  etapeExamenValidee       Boolean                  @default(false) @map("etape_examen_validee")
+  codeSuivi                String?                  @unique @map("code_suivi")
+  numeroDossier            String?                  @map("numero_dossier")
+  nomAr                    String?                  @map("nom_ar")
+  prenomAr                 String?                  @map("prenom_ar")
+  /// Chemin Supabase Storage : {autoEcoleId}/{eleveId}/photo.{ext}
+  photoPath                String?                  @map("photo_path")
+  /// Candidat possédant déjà un permis (nouvelle catégorie visée)
+  permisDejaObtenu         Boolean                  @default(false) @map("permis_deja_obtenu")
+  numeroPermisObtenu       String?                  @map("numero_permis_obtenu")
+  datePermisObtenu         DateTime?                @map("date_permis_obtenu") @db.Date
+  categoriesPermisObtenues String[]                 @default([]) @map("categories_permis_obtenues")
+  createdAt                DateTime                 @default(now()) @map("created_at")
+  updatedAt                DateTime                 @updatedAt @map("updated_at")
+
+  autoEcole              AutoEcole                @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  categoriePermis        CategoriePermisEcole     @relation(fields: [categoriePermisId], references: [id], onDelete: Restrict)
+  paiements              Paiement[]
+  seancesExamen          SeanceExamen[]
+  listeExamenCandidats   ListeExamenCandidat[]
+
+  @@unique([autoEcoleId, identifiant])
+  @@unique([autoEcoleId, numeroDossier])
+  @@index([autoEcoleId])
+  @@index([codeSuivi])
+  @@map("eleves")
+}
+
+model ListeExamen {
+  id                 String            @id @default(cuid())
+  autoEcoleId        String            @map("auto_ecole_id")
+  centreExamen       String            @map("centre_examen")
+  wilaya             String
+  dateDepot          DateTime          @map("date_depot") @db.Date
+  dateExamen         DateTime          @map("date_examen") @db.Date
+  inspecteurNom      String?           @map("inspecteur_nom")
+  moniteur1Nom       String?           @map("moniteur1_nom")
+  moniteur1Categorie String?           @map("moniteur1_categorie")
+  moniteur2Nom       String?           @map("moniteur2_nom")
+  moniteur2Categorie String?           @map("moniteur2_categorie")
+  ecoleNomAr         String?           @map("ecole_nom_ar")
+  ecoleAdresse       String?           @map("ecole_adresse")
+  ecoleRegistre      String?           @map("ecole_registre")
+  ecoleTelephone     String?           @map("ecole_telephone")
+  referenceEnvoi     String?           @map("reference_envoi")
+  lieuRedaction      String?           @map("lieu_redaction")
+  statut             ListeExamenStatut @default(brouillon)
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+
+  autoEcole AutoEcole                       @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  candidats ListeExamenCandidat[]
+  messagesCategorie ListeExamenMessageCategorie[]
+
+  @@index([autoEcoleId])
+  @@index([autoEcoleId, dateExamen])
+  @@map("listes_examen")
+}
+
+/// Message optionnel par catégorie de permis sur une liste (A/A1 = une entrée par catégorie représentative)
+model ListeExamenMessageCategorie {
+  id                String   @id @default(cuid())
+  listeExamenId     String   @map("liste_examen_id")
+  categoriePermisId String   @map("categorie_permis_id")
+  message           String?
+  heureConvocation  String?  @map("heure_convocation")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  listeExamen     ListeExamen          @relation(fields: [listeExamenId], references: [id], onDelete: Cascade)
+  categoriePermis CategoriePermisEcole @relation(fields: [categoriePermisId], references: [id], onDelete: Restrict)
+
+  @@unique([listeExamenId, categoriePermisId])
+  @@index([listeExamenId])
+  @@map("liste_examen_messages_categorie")
+}
+
+model ListeExamenCandidat {
+  id                String            @id @default(cuid())
+  listeExamenId     String            @map("liste_examen_id")
+  eleveId           String            @map("eleve_id")
+  categoriePermisId String            @map("categorie_permis_id")
+  ordre             Int
+  natureExamen      NatureExamenListe @map("nature_examen")
+  dateDernierExamen DateTime?         @map("date_dernier_examen") @db.Date
+  /// Valeurs: present, absent_j, absent_nj, annule, rejete, ajourne, admis
+  resultat          String?
+
+  listeExamen     ListeExamen          @relation(fields: [listeExamenId], references: [id], onDelete: Cascade)
+  eleve           Eleve                @relation(fields: [eleveId], references: [id], onDelete: Cascade)
+  categoriePermis CategoriePermisEcole @relation(fields: [categoriePermisId], references: [id], onDelete: Restrict)
+
+  @@unique([listeExamenId, eleveId])
+  @@unique([listeExamenId, categoriePermisId, ordre])
+  @@index([listeExamenId])
+  @@index([categoriePermisId])
+  @@map("liste_examen_candidats")
+}
+
+model Moniteur {
+  id               String            @id @default(cuid())
+  autoEcoleId      String            @map("auto_ecole_id")
+  nom              String
+  prenom           String
+  nomAr            String?           @map("nom_ar")
+  prenomAr         String?           @map("prenom_ar")
+  /// Catégorie de permis enseignée (lien vers categories_permis)
+  categoriePermisId String?              @map("categorie_permis_id")
+  telephone         String?
+  actif             Boolean              @default(true)
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  autoEcole       AutoEcole             @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  categoriePermis CategoriePermisEcole? @relation(fields: [categoriePermisId], references: [id], onDelete: SetNull)
+  paiements     Paiement[]
+  seancesExamen SeanceExamen[]
+
+  @@index([autoEcoleId])
+  @@map("moniteurs")
+}
+
+enum VehicleType {
+  voiture
+  moto
+  bus
+  camion
+}
+
+model Vehicule {
+  id                         String      @id @default(cuid())
+  autoEcoleId                String      @map("auto_ecole_id")
+  type                       VehicleType
+  marque                     String
+  modele                     String
+  matricule                  String?
+  assuranceExpiration        DateTime?   @map("assurance_expiration")
+  controleTechniqueExpiration DateTime?  @map("controle_technique_expiration")
+  createdAt                  DateTime    @default(now()) @map("created_at")
+  updatedAt                  DateTime    @updatedAt @map("updated_at")
+
+  autoEcole     AutoEcole      @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  seancesExamen SeanceExamen[]
+
+  @@index([autoEcoleId])
+  @@map("vehicules")
+}
+
+model Paiement {
+  id              String   @id @default(cuid())
+  autoEcoleId     String   @map("auto_ecole_id")
+  eleveId         String   @map("eleve_id")
+  moniteurId      String?  @map("moniteur_id")
+  montant         Int
+  moniteurNom     String   @map("moniteur_nom")
+  enregistreParId String?  @map("enregistre_par_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  autoEcole     AutoEcole @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  eleve         Eleve     @relation(fields: [eleveId], references: [id], onDelete: Cascade)
+  moniteur      Moniteur? @relation(fields: [moniteurId], references: [id], onDelete: SetNull)
+  enregistrePar User?     @relation("PaiementEnregistrePar", fields: [enregistreParId], references: [id], onDelete: SetNull)
+
+  @@index([autoEcoleId])
+  @@index([eleveId])
+  @@map("paiements")
+}
+
+/// Séance planifiée (code, créneau, circulation ou examen) — 20 min minimum entre deux séances
+model SeanceExamen {
+  id          String       @id @default(cuid())
+  autoEcoleId String       @map("auto_ecole_id")
+  eleveId     String       @map("eleve_id")
+  moniteurId  String?      @map("moniteur_id")
+  vehiculeId  String?      @map("vehicule_id")
+  type        SeanceType   @default(code)
+  dateHeure   DateTime     @map("date_heure")
+  statut           SeanceStatut @default(planifie)
+  notes            String?
+  messageCandidat  String?      @map("message_candidat")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  autoEcole AutoEcole @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  eleve     Eleve     @relation(fields: [eleveId], references: [id], onDelete: Cascade)
+  moniteur  Moniteur? @relation(fields: [moniteurId], references: [id], onDelete: SetNull)
+  vehicule  Vehicule? @relation(fields: [vehiculeId], references: [id], onDelete: SetNull)
+
+  @@index([autoEcoleId])
+  @@index([autoEcoleId, dateHeure])
+  @@index([vehiculeId, dateHeure])
+  @@map("seances_examen")
+}
