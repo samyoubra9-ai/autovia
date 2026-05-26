@@ -4,6 +4,12 @@ import { NextResponse, type NextRequest } from "next/server"
 import { corsHeaders, getAllowedOrigin } from "@/lib/api/cors"
 import { getBackdashUrl } from "@/lib/auth-utils"
 
+type CookieToSet = {
+  name: string
+  value: string
+  options?: Parameters<NextResponse["cookies"]["set"]>[2]
+}
+
 /** OAuth Google : si Supabase renvoie sur Next (site_url 3000), transférer le code vers le backdash. */
 function redirectOAuthCodeToBackdash(request: NextRequest): NextResponse | null {
   const url = request.nextUrl
@@ -42,7 +48,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>

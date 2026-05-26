@@ -1,4 +1,5 @@
-import type { CategoriePermisEcole, PrismaClient } from "@prisma/client"
+import type { CategoriePermisEcole } from "@prisma/client"
+import type { PrismaDb } from "@/lib/prisma"
 import { ApiError } from "@/lib/api/errors"
 
 export type CategoriePermisDto = {
@@ -230,7 +231,7 @@ export function parseOnboardingCategoriesInput(raw: unknown): OnboardingCategori
 }
 
 export async function createCategoriesPermisForAutoEcole(
-  db: typeof PrismaClient,
+  db: PrismaDb,
   autoEcoleId: string,
   categories: OnboardingCategorieInput[],
 ) {
@@ -265,7 +266,7 @@ function defaultCategorieRow(autoEcoleId: string, c: (typeof DEFAULT_CATEGORIES)
 }
 
 export async function ensureDefaultCategoriesPermis(
-  db: typeof PrismaClient,
+  db: PrismaDb,
   autoEcoleId: string,
 ): Promise<CategoriePermisEcole[]> {
   const existing = await db.categoriePermisEcole.findMany({
@@ -294,7 +295,7 @@ export async function ensureDefaultCategoriesPermis(
 }
 
 export async function assertCategoriePermisForTenant(
-  db: typeof PrismaClient,
+  db: PrismaDb,
   autoEcoleId: string,
   categoriePermisId: string,
 ): Promise<CategoriePermisEcole> {

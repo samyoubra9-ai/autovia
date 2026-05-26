@@ -101,15 +101,13 @@ export async function registerAutoEcoleTenant(
       data: {
         nom: input.nomAutoEcole,
         slug,
-        ville,
-        telephone,
         emailContact: email,
         trialEndsAt,
         subscriptionStatus: "TRIAL",
         ...printSettingsToPrismaUpdate({
           ...printInput,
-          ville: printInput.ville ?? ville,
-          telephone: printInput.telephone ?? telephone,
+          ville,
+          telephone,
         }),
         ...listeSettingsToPrismaUpdate(listeInput),
         users: {

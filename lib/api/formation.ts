@@ -14,18 +14,20 @@ export function isParcoursTermine(
   return Boolean(eleve.etapeCirculationValidee)
 }
 
-export function getEtapesValidees(eleve: Pick<
-  Eleve,
-  | "etapeCodeValidee"
-  | "etapeCreneauValidee"
-  | "etapeCirculationValidee"
-  | "etapeExamenValidee"
->) {
+export function getEtapesValidees(
+  eleve: Pick<
+    Eleve,
+    | "etapeCodeValidee"
+    | "etapeCreneauValidee"
+    | "etapeCirculationValidee"
+  > &
+    Partial<Pick<Eleve, "etapeExamenValidee">>,
+) {
   return {
     code: eleve.etapeCodeValidee,
     creneau: eleve.etapeCreneauValidee,
     circulation: eleve.etapeCirculationValidee,
-    examen: eleve.etapeExamenValidee,
+    examen: eleve.etapeExamenValidee ?? false,
   }
 }
 

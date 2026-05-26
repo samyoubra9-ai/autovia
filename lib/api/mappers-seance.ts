@@ -31,13 +31,14 @@ export type SeanceExamenDto = {
   } | null
 }
 
-type SeanceRow = SeanceWithRelations & {
+/** Accepte aussi les retours `seanceIncludeBasic` (sans moniteur/véhicule joints). */
+type SeanceRow = Omit<SeanceWithRelations, "moniteur" | "vehicule"> & {
   statut?: SeanceStatut
   type?: SeanceType
   moniteurId?: string | null
   vehiculeId?: string | null
-  moniteur?: SeanceExamenDto["moniteur"]
-  vehicule?: SeanceExamenDto["vehicule"]
+  moniteur?: SeanceExamenDto["moniteur"] | null
+  vehicule?: SeanceExamenDto["vehicule"] | null
 }
 
 export function toSeanceExamenDto(row: SeanceRow): SeanceExamenDto | null {

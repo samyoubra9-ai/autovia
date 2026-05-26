@@ -1,5 +1,6 @@
 import { categoriePermisArLabel } from "@/lib/api/categories-permis"
 import type { CategoriePermisEcole } from "@prisma/client"
+import type { PrismaDb } from "@/lib/prisma"
 import { ApiError } from "@/lib/api/errors"
 
 export function parseMoniteurCategoriePermisId(raw: unknown): string | null {
@@ -8,13 +9,7 @@ export function parseMoniteurCategoriePermisId(raw: unknown): string | null {
 }
 
 export async function assertMoniteurCategorieForTenant(
-  prisma: {
-    categoriePermisEcole: {
-      findFirst: (args: {
-        where: { id: string; autoEcoleId: string; actif?: boolean }
-      }) => Promise<CategoriePermisEcole | null>
-    }
-  },
+  prisma: PrismaDb,
   autoEcoleId: string,
   categoriePermisId: string | null,
 ): Promise<string | null> {
@@ -46,20 +41,7 @@ export function displayMoniteurNomComplet(input: {
 }
 
 export async function resolveMoniteurListeSlot(
-  prisma: {
-    moniteur: {
-      findFirst: (args: {
-        where: { id: string; autoEcoleId: string; actif?: boolean }
-        include?: { categoriePermis: true }
-      }) => Promise<{
-        nom: string
-        prenom: string
-        nomAr: string | null
-        prenomAr: string | null
-        categoriePermis: CategoriePermisEcole | null
-      } | null>
-    }
-  },
+  prisma: PrismaDb,
   autoEcoleId: string,
   body: Record<string, unknown>,
   slot: 1 | 2,

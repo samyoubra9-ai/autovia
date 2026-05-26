@@ -1,5 +1,8 @@
 import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, type Prisma } from "@prisma/client"
+
+/** Client racine ou client de transaction (`$transaction`). */
+export type PrismaDb = PrismaClient | Prisma.TransactionClient
 import { Pool } from "pg"
 
 const connectionString = process.env.DATABASE_URL

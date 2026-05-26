@@ -224,7 +224,7 @@ export type EleveInput = {
   permisDejaObtenu?: boolean
   numeroPermisObtenu?: string | null
   datePermisObtenu?: string | null
-  categoriesPermisObtenues?: string[]
+  categoriesPermisObtenues?: CategoriePermisObtenu[]
 }
 
 function trimOrNull(v: unknown): string | null {
