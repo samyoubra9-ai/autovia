@@ -84,5 +84,7 @@ Thumbs.db
 *.temp
 .tmp/
 
-# Apps Vite (backdash, candidat, platform-admin) : code source versionné.
-# Builds / secrets : node_modules/, **/dist/, **/.env (voir ci-dessus + .gitignore dans chaque app).
+# Apps Vite — déployées sur Vercel en projets séparés (pas dans ce repo Next.js)
+/backdash/
+/candidat/
+/platform-admin/
