@@ -705,9 +705,21 @@ html:has(.ds-landing-page) body {
   margin-left: 6px;
 }
 
-.ds-landing-page .ds-pricing-card {
-  max-width: 440px;
+.ds-landing-page .ds-pricing-grid {
+  display: grid;
+  gap: 24px;
+  max-width: 920px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .ds-landing-page .ds-pricing-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.ds-landing-page .ds-pricing-card {
   background: #fff;
   border: 2px solid var(--ds-border);
   border-radius: var(--ds-radius-lg);
@@ -715,6 +727,45 @@ html:has(.ds-landing-page) body {
   text-align: center;
   position: relative;
   box-shadow: var(--ds-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-landing-page .ds-pricing-card--trial {
+  border-color: var(--ds-success);
+  background: linear-gradient(180deg, var(--ds-success-soft) 0%, #fff 40%);
+}
+
+.ds-landing-page .ds-trial-tag {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ds-success);
+  color: #fff;
+  padding: 6px 20px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ds-landing-page .ds-price-amount--trial {
+  color: var(--ds-success);
+}
+
+.ds-landing-page .ds-price-calc--muted {
+  color: var(--ds-text-muted);
+  font-weight: 500;
+}
+
+.ds-landing-page .ds-billing-toggle--inline {
+  margin-bottom: 20px;
+}
+
+.ds-landing-page .ds-pricing-card .ds-feature-list {
+  flex: 1;
+  margin-bottom: 24px;
 }
 
 .ds-landing-page .ds-pricing-card.ds-popular {

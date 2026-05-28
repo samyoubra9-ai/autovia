@@ -1,4 +1,5 @@
 import { getAccessDetail, hasAutoEcoleAccess } from "@/lib/access"
+import { getTrialMaxEleves, isTrialSubscription } from "@/lib/plan-limits"
 import { requireAuthUser } from "@/lib/api/auth"
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
@@ -69,6 +70,12 @@ export async function GET(request: Request) {
           trialEndsAt: ae.trialEndsAt.toISOString(),
           paidUntil: ae.paidUntil?.toISOString() ?? null,
           accessDetail: getAccessDetail(ae),
+        },
+        plan: {
+          isTrial: isTrialSubscription(ae.subscriptionStatus),
+          maxEleves: isTrialSubscription(ae.subscriptionStatus)
+            ? getTrialMaxEleves()
+            : null,
         },
       },
       origin,

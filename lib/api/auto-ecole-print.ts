@@ -108,7 +108,7 @@ export function resolveBordereauMeta(
     ecoleAdresse: liste?.ecoleAdresse ?? settings.adresseMagasin,
     ecoleRegistre: liste?.ecoleRegistre ?? settings.numeroRegistre,
     ecoleTelephone: liste?.ecoleTelephone ?? settings.telephone,
-    referenceEnvoi: null,
+    referenceEnvoi: liste?.referenceEnvoi?.trim() || null,
     lieuRedaction:
       settings.ville?.trim() ||
       settings.wilaya?.trim() ||

@@ -8,6 +8,7 @@ import {
   resolvePrixPermisEleve,
 } from "@/lib/api/categories-permis"
 import { parseEleveInput, toEleveDto, toPrismaEleveData } from "@/lib/api/mappers"
+import { assertCanAddEleveOnPlan } from "@/lib/plan-limits"
 import { prisma } from "@/lib/prisma"
 
 const eleveInclude = { categoriePermis: true } as const
@@ -41,6 +42,15 @@ export async function POST(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
   try {
     const tenant = await requireTenant(request)
+    const autoEcole = await prisma.autoEcole.findUniqueOrThrow({
+      where: { id: tenant.autoEcoleId },
+      select: { subscriptionStatus: true },
+    })
+    const eleveCount = await prisma.eleve.count({
+      where: { autoEcoleId: tenant.autoEcoleId },
+    })
+    assertCanAddEleveOnPlan(autoEcole.subscriptionStatus, eleveCount)
+
     const body = await request.json()
     const input = parseEleveInput(body)
 

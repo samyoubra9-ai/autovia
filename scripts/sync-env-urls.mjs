@@ -1,6 +1,17 @@
 /**
- * Synchronise les URLs publiques dans tous les .env à partir de PUBLIC_HOST / PUBLIC_SCHEME (racine).
- * Usage : modifier PUBLIC_HOST dans autoecole/.env puis `npm run env:sync`
+ * Synchronise les URLs publiques dans tous les .env à partir de la racine.
+ *
+ * Dev LAN (une IP + ports) :
+ *   PUBLIC_APP_HOST=192.168.43.157
+ *   PUBLIC_SCHEME=http
+ *   (ne pas définir PUBLIC_BACKDASH_HOST)
+ *
+ * Prod (sous-domaines, sans ports) :
+ *   PUBLIC_SCHEME=https
+ *   PUBLIC_APP_HOST=autovia.space
+ *   PUBLIC_BACKDASH_HOST=app.autovia.space
+ *   PUBLIC_CANDIDAT_HOST=candidat.autovia.space   (optionnel)
+ *   PUBLIC_PLATFORM_ADMIN_HOST=admin.autovia.space (optionnel)
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -28,20 +39,24 @@ function parseEnv(content) {
   return map
 }
 
+const SYNC_MARKER = '# --- URLs (généré par npm run env:sync) ---'
+
 function loadRootEnv() {
   const path = join(root, '.env')
   if (!existsSync(path)) {
     console.error('Fichier .env introuvable à la racine.')
     process.exit(1)
   }
-  return parseEnv(readFileSync(path, 'utf8'))
+  const content = readFileSync(path, 'utf8')
+  const userPart = content.split(SYNC_MARKER)[0] ?? content
+  return parseEnv(userPart)
 }
 
 function upsertLines(content, entries) {
   const keys = new Set(entries.map(([k]) => k))
-  const lines = content.split(/\r?\n/)
+  const userPart = content.split(SYNC_MARKER)[0] ?? content
+  const lines = userPart.split(/\r?\n/)
   const out = []
-  const seen = new Set()
 
   for (const line of lines) {
     const t = line.trim()
@@ -52,13 +67,12 @@ function upsertLines(content, entries) {
     out.push(line)
   }
 
-  if (out.length && out[out.length - 1] !== '') out.push('')
-  out.push('# --- URLs (généré par npm run env:sync) ---')
+  while (out.length && out[out.length - 1]?.trim() === '') out.pop()
+  out.push('', SYNC_MARKER)
   for (const [key, value] of entries) {
     out.push(`${key}=${value}`)
-    seen.add(key)
   }
-  return out.join('\n').replace(/\n{3,}/g, '\n\n') + '\n'
+  return out.join('\n') + '\n'
 }
 
 function mergeEnvFile(path, urlEntries) {
@@ -67,28 +81,77 @@ function mergeEnvFile(path, urlEntries) {
   console.log('OK', path.replace(root + '\\', '').replace(root + '/', ''))
 }
 
+function isLanHost(host) {
+  if (!host) return false
+  return (
+    host === 'localhost' ||
+    /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+    /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}$/.test(host)
+  )
+}
+
+function origin(scheme, host) {
+  const s = (scheme || 'https').replace(/\/$/, '')
+  const h = host.replace(/\/$/, '')
+  return `${s}://${h}`
+}
+
 const rootEnv = loadRootEnv()
-const host = rootEnv.get('PUBLIC_HOST')?.trim()
+
+// Rétrocompat : PUBLIC_HOST → PUBLIC_APP_HOST
+const appHost =
+  rootEnv.get('PUBLIC_APP_HOST')?.trim() ||
+  rootEnv.get('PUBLIC_HOST')?.trim()
+const backdashHost = rootEnv.get('PUBLIC_BACKDASH_HOST')?.trim()
+const candidatHost = rootEnv.get('PUBLIC_CANDIDAT_HOST')?.trim()
+const platformAdminHost = rootEnv.get('PUBLIC_PLATFORM_ADMIN_HOST')?.trim()
 const scheme = (rootEnv.get('PUBLIC_SCHEME') || 'http').replace(/\/$/, '')
 
-if (!host) {
-  console.error('Ajoutez PUBLIC_HOST=192.168.x.x (ou votre domaine) dans autoecole/.env')
+if (!appHost) {
+  console.error(
+    'Ajoutez PUBLIC_APP_HOST=autovia.space (prod) ou PUBLIC_APP_HOST=192.168.x.x (LAN) dans autoecole/.env',
+  )
   process.exit(1)
 }
 
-const base = `${scheme}://${host}`
-const urls = {
-  app: `${base}:3000`,
-  backdash: `${base}:5173`,
-  candidat: `${base}:5174`,
-  platformAdmin: `${base}:5175`,
+/** @type {{ app: string; backdash: string; candidat: string; platformAdmin: string }} */
+let urls
+
+if (backdashHost || !isLanHost(appHost)) {
+  // Prod : sous-domaines HTTPS (sans ports)
+  const prodScheme = scheme === 'http' && isLanHost(appHost) ? 'http' : scheme
+  const rootDomain = appHost.replace(/^www\./, '')
+  urls = {
+    app: origin(prodScheme, appHost),
+    backdash: origin(prodScheme, backdashHost || `app.${rootDomain}`),
+    candidat: origin(prodScheme, candidatHost || `candidat.${rootDomain}`),
+    platformAdmin: origin(
+      prodScheme,
+      platformAdminHost || `admin.${rootDomain}`,
+    ),
+  }
+  console.log(`Sync URLs (prod / sous-domaines)\n`)
+} else {
+  const base = `${scheme}://${appHost}`
+  urls = {
+    app: `${base}:3000`,
+    backdash: `${base}:5173`,
+    candidat: `${base}:5174`,
+    platformAdmin: `${base}:5175`,
+  }
+  console.log(`Sync URLs (LAN + ports) → ${base}\n`)
 }
 
-const allowLan =
-  rootEnv.get('ALLOW_DEV_LAN_ORIGINS') === 'true' ||
-  (scheme === 'http' && /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(host))
+const isProdLayout = Boolean(backdashHost) || !isLanHost(appHost)
 
-console.log(`Sync URLs → ${base} (ports 3000, 5173, 5174, 5175)\n`)
+/** En prod : LAN désactivé sauf si explicitement true dans le bloc PUBLIC_* (pas l’ancien sync). */
+const allowLan = isProdLayout
+  ? rootEnv.get('ALLOW_DEV_LAN_ORIGINS') === 'true'
+  : rootEnv.get('ALLOW_DEV_LAN_ORIGINS') === 'true' ||
+    (scheme === 'http' && isLanHost(appHost))
+
+const corsExtra = rootEnv.get('CORS_EXTRA_ORIGINS')?.trim() || ''
 
 mergeEnvFile(join(root, '.env'), [
   ['NEXT_PUBLIC_APP_URL', urls.app],
@@ -96,7 +159,7 @@ mergeEnvFile(join(root, '.env'), [
   ['NEXT_PUBLIC_CANDIDAT_URL', urls.candidat],
   ['NEXT_PUBLIC_PLATFORM_ADMIN_URL', urls.platformAdmin],
   ['ALLOW_DEV_LAN_ORIGINS', allowLan ? 'true' : 'false'],
-  ['CORS_EXTRA_ORIGINS', rootEnv.get('CORS_EXTRA_ORIGINS') || ''],
+  ['CORS_EXTRA_ORIGINS', corsExtra],
 ])
 
 const viteBlock = [
@@ -112,6 +175,9 @@ for (const sub of ['backdash', 'candidat', 'platform-admin']) {
   mergeEnvFile(join(root, sub, '.env'), viteBlock)
 }
 
-console.log('\nPensez à redémarrer npm run dev (racine + backdash).')
+console.log('\nLanding Connexion / Démarrer →', urls.backdash + '/sign-in')
+console.log('API (backdash) →', urls.app)
 console.log('Supabase Auth → Site URL =', urls.backdash)
 console.log('Redirect URLs =', urls.backdash + '/auth/callback')
+if (corsExtra) console.log('CORS extras =', corsExtra)
+console.log('\nRedéployez Vercel (Next + backdash) après avoir copié ces variables.')

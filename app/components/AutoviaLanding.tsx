@@ -284,53 +284,83 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           <p>Accès complet à toutes les fonctionnalités pour votre auto-école.</p>
         </div>
 
-        <div className="ds-billing-toggle">
-          <span>Mensuel</span>
-          <button
-            type="button"
-            className={`ds-toggle-switch ${isAnnual ? "ds-annual" : ""}`}
-            onClick={togglePlan}
-            aria-label={isAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
-          />
-          <span>
-            Annuel <span className="ds-save-badge">2 MOIS OFFERTS</span>
-          </span>
-        </div>
+        <div className="ds-pricing-grid">
+          <div className="ds-pricing-card ds-pricing-card--trial">
+            <div className="ds-trial-tag">Essai gratuit</div>
+            <div className="ds-price-header">
+              <h3>Découverte</h3>
+              <div className="ds-price-amount ds-price-amount--trial">
+                <span>0</span>
+                <span className="ds-price-currency">DZD</span>
+              </div>
+              <div className="ds-price-calc ds-price-calc--muted">
+                15 jours · jusqu&apos;à 10 élèves · sans carte bancaire
+              </div>
+            </div>
 
-        <div className="ds-pricing-card ds-popular">
-          <div className="ds-popular-tag">Plan professionnel</div>
-          <div className="ds-price-header">
-            <h3>Accès complet</h3>
-            <div className="ds-price-amount">
-              <span style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-                {priceValue}
-              </span>
-              <span className="ds-price-currency">DZD</span>
-              <span className="ds-price-period" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-                {pricePeriod}
-              </span>
-            </div>
-            <div className="ds-price-calc" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-              {priceCalcText}
-            </div>
+            <ul className="ds-feature-list">
+              <li><CheckIcon /> Jusqu&apos;à 10 élèves</li>
+              <li><CheckIcon /> Tableau de bord complet</li>
+              <li><CheckIcon /> Paiements & plannings</li>
+              <li><CheckIcon /> Listes d&apos;examen</li>
+            </ul>
+
+            <LandingAnchor
+              href={links.backdashSignUp}
+              external
+              className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
+            >
+              Essai gratuit
+            </LandingAnchor>
           </div>
 
-          <ul className="ds-feature-list">
-            <li><CheckIcon /> Candidats illimités</li>
-            <li><CheckIcon /> Plannings & moniteurs</li>
-            <li><CheckIcon /> Paiements & reçus</li>
-            <li><CheckIcon /> Listes d&apos;examen & impression</li>
-            <li><CheckIcon /> Portail candidat (QR)</li>
-            <li><CheckIcon /> Support prioritaire</li>
-          </ul>
+          <div className="ds-pricing-card ds-popular">
+            <div className="ds-popular-tag">Autovia Pro</div>
+            <div className="ds-billing-toggle ds-billing-toggle--inline">
+              <span>Mensuel</span>
+              <button
+                type="button"
+                className={`ds-toggle-switch ${isAnnual ? "ds-annual" : ""}`}
+                onClick={togglePlan}
+                aria-label={isAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
+              />
+              <span>
+                Annuel <span className="ds-save-badge">2 MOIS OFFERTS</span>
+              </span>
+            </div>
+            <div className="ds-price-header">
+              <h3>Accès complet</h3>
+              <div className="ds-price-amount">
+                <span style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
+                  {priceValue}
+                </span>
+                <span className="ds-price-currency">DZD</span>
+                <span className="ds-price-period" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
+                  {pricePeriod}
+                </span>
+              </div>
+              <div className="ds-price-calc" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
+                {priceCalcText}
+              </div>
+            </div>
 
-          <LandingAnchor
-            href={links.backdashSignUp}
-            external
-            className="ds-btn ds-btn-primary ds-btn-lg ds-btn-block"
-          >
-            Créer mon compte
-          </LandingAnchor>
+            <ul className="ds-feature-list">
+              <li><CheckIcon /> Candidats illimités</li>
+              <li><CheckIcon /> Plannings & moniteurs</li>
+              <li><CheckIcon /> Paiements & reçus</li>
+              <li><CheckIcon /> Listes d&apos;examen & impression</li>
+              <li><CheckIcon /> Portail candidat (QR)</li>
+              <li><CheckIcon /> Support prioritaire</li>
+            </ul>
+
+            <LandingAnchor
+              href={links.backdashSignUp}
+              external
+              className="ds-btn ds-btn-primary ds-btn-lg ds-btn-block"
+            >
+              Créer mon compte
+            </LandingAnchor>
+          </div>
         </div>
       </section>
 

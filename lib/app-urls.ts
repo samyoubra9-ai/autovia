@@ -3,6 +3,8 @@
  * Les apps Vite (backdash, candidat, platform-admin) utilisent les mêmes valeurs avec le préfixe VITE_.
  */
 
+import { originAliases, preferWwwHttpsOrigin, trimOrigin } from "@/lib/url-origin-aliases"
+
 export type AppUrls = {
   /** Site Next.js : API, landing, suivi QR (/suivi/…) */
   app: string
@@ -21,13 +23,15 @@ const DEV_DEFAULTS: AppUrls = {
 function trimUrl(value: string | undefined, fallback: string): string {
   const v = value?.trim()
   if (!v) return fallback
-  return v.replace(/\/$/, "")
+  return trimOrigin(v)
 }
 
 /** URLs lues depuis NEXT_PUBLIC_* (racine autoecole/.env). */
 export function getAppUrls(): AppUrls {
   return {
-    app: trimUrl(process.env.NEXT_PUBLIC_APP_URL, DEV_DEFAULTS.app),
+    app: preferWwwHttpsOrigin(
+      trimUrl(process.env.NEXT_PUBLIC_APP_URL, DEV_DEFAULTS.app),
+    ),
     backdash: trimUrl(process.env.NEXT_PUBLIC_BACKDASH_URL, DEV_DEFAULTS.backdash),
     candidat: trimUrl(process.env.NEXT_PUBLIC_CANDIDAT_URL, DEV_DEFAULTS.candidat),
     platformAdmin: trimUrl(
@@ -75,7 +79,8 @@ export function getPlatformAdminUrl(): string {
 export function getAllowedOrigins(): string[] {
   const urls = getAppUrls()
   const extra = parseExtraOrigins(process.env.CORS_EXTRA_ORIGINS)
-  return [...new Set([urls.app, urls.backdash, urls.candidat, urls.platformAdmin, ...extra])]
+  const base = [urls.app, urls.backdash, urls.candidat, urls.platformAdmin, ...extra]
+  return [...new Set(base.flatMap((o) => originAliases(o)))]
 }
 
 function parseExtraOrigins(raw: string | undefined): string[] {

@@ -12,6 +12,7 @@ import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
+import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 import type { NatureExamenListe } from "@prisma/client"
 
@@ -147,7 +148,7 @@ function mergeHeaderWithAutoEcole(
     ecoleAdresse: header.ecoleAdresse ?? ae?.adresseMagasin ?? null,
     ecoleRegistre: header.ecoleRegistre ?? ae?.numeroRegistre ?? null,
     ecoleTelephone: header.ecoleTelephone ?? ae?.telephone ?? null,
-    referenceEnvoi: header.referenceEnvoi ?? ae?.referenceEnvoi ?? null,
+    referenceEnvoi: header.referenceEnvoi ?? null,
     lieuRedaction: header.lieuRedaction ?? ae?.lieuRedaction ?? null,
   }
 }
@@ -248,11 +249,16 @@ export async function POST(request: Request) {
     const messageRows = parseMessagesCategorieInput(body.messagesCategorie, categories)
 
     const liste = await prisma.$transaction(
-      async (tx) =>
-        tx.listeExamen.create({
+      async (tx) => {
+        const referenceEnvoi =
+          header.referenceEnvoi?.trim() ||
+          (await allocateReferenceEnvoi(tx, tenant.autoEcoleId, header.dateDepot))
+
+        return tx.listeExamen.create({
           data: {
             autoEcoleId: tenant.autoEcoleId,
             ...header,
+            referenceEnvoi,
             candidats: { create: built },
             ...(messageRows.length > 0 && {
               messagesCategorie: {
@@ -268,7 +274,8 @@ export async function POST(request: Request) {
             candidats: { include: candidatInclude },
             messagesCategorie: { include: { categoriePermis: true } },
           },
-        }),
+        })
+      },
       PRISMA_TRANSACTION_OPTS,
     )
 

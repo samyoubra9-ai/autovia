@@ -37,6 +37,17 @@ copy(faviconSvg, join(root, 'backdash', 'public', 'images', 'favicon_light.svg')
 copy(png192, join(root, 'backdash', 'public', 'images', 'favicon.png'))
 copy(png192, join(root, 'backdash', 'public', 'images', 'favicon_light.png'))
 copy(faviconSvg, join(root, 'backdash', 'public', 'images', 'pwa', 'icon.svg'))
+// Chrome Android : PNG 192 + 512 réels (pas le favicon 192 déclaré en 512)
+copy(png192, join(root, 'backdash', 'public', 'images', 'pwa', 'icon-192.png'))
+copy(png512, join(root, 'backdash', 'public', 'images', 'pwa', 'icon-512.png'))
+copy(apple, join(root, 'backdash', 'public', 'images', 'pwa', 'apple-touch-icon.png'))
+
+const headimage = join(root, 'public', 'landing', 'headimage.png')
+if (existsSync(headimage)) {
+  copy(headimage, join(root, 'backdash', 'public', 'images', 'headimage.png'))
+} else {
+  console.warn('Optionnel : public/landing/headimage.png absent (auth backdash)')
+}
 
 // Candidat
 copy(faviconSvg, join(root, 'candidat', 'public', 'icon.svg'))

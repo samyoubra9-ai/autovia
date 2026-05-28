@@ -97,7 +97,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Combien de candidats puis-je gérer ?",
-    a: "Le plan professionnel inclut un nombre illimité de candidats et de moniteurs actifs.",
+    a: "L'essai gratuit permet jusqu'à 10 élèves pendant 15 jours. Le plan Pro inclut un nombre illimité de candidats et de moniteurs.",
   },
   {
     q: "Les données sont-elles sécurisées ?",
