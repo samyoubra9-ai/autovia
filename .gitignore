@@ -84,9 +84,5 @@ Thumbs.db
 *.temp
 .tmp/
 
-
-
-# les dossiers react js
-/backdash
-/candidat
-/platform-admin
+# Apps Vite (backdash, candidat, platform-admin) : code source versionné.
+# Builds / secrets : node_modules/, **/dist/, **/.env (voir ci-dessus + .gitignore dans chaque app).
