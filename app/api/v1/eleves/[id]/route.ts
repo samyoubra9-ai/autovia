@@ -20,7 +20,14 @@ import {
   permisObtenuDataFromInput,
   toEleveDto,
 } from "@/lib/api/mappers"
+import { notifyCandidatParcoursStep } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
+
+const ETAPE_PUSH_LABELS: Record<EtapeParcours, string> = {
+  code: "Code de la route",
+  creneau: "Créneau",
+  circulation: "Circulation",
+}
 
 const eleveInclude = { categoriePermis: true } as const
 
@@ -81,6 +88,12 @@ export async function PATCH(request: Request, { params }: Params) {
       })
       const dto = toEleveDto(eleve)
       if (!dto) throw new ApiError(500, "Données élève invalides.")
+
+      notifyCandidatParcoursStep({
+        eleveId: id,
+        stepLabel: ETAPE_PUSH_LABELS[etape],
+      })
+
       return jsonWithCors({ eleve: dto }, origin)
     }
 

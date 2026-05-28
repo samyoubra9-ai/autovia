@@ -41,41 +41,65 @@ Quatre déploiements (même Supabase, mêmes clés) :
 Copier depuis `.env` : `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SUPABASE_*`, `SUPABASE_SERVICE_ROLE_KEY`, et les URLs **HTTPS** :
 
 ```env
-PUBLIC_HOST=app.votredomaine.dz
 PUBLIC_SCHEME=https
+PUBLIC_APP_HOST=autovia.space
+PUBLIC_BACKDASH_HOST=app.autovia.space
+PUBLIC_CANDIDAT_HOST=candidat.autovia.space
+PUBLIC_PLATFORM_ADMIN_HOST=admin.autovia.space
+CORS_EXTRA_ORIGINS=https://www.autovia.space
 ```
 
-Puis localement `npm run env:sync` et recopier les `NEXT_PUBLIC_*` générés dans le dashboard Vercel.
+Puis `npm run env:sync` et recopier les variables générées dans Vercel (voir `.env.example`, bloc PRODUCTION).
 
-Ou saisir à la main :
+Résultat attendu :
 
 ```env
-NEXT_PUBLIC_APP_URL=https://app.votredomaine.dz
-NEXT_PUBLIC_BACKDASH_URL=https://admin.votredomaine.dz
-NEXT_PUBLIC_CANDIDAT_URL=https://candidat.votredomaine.dz
-NEXT_PUBLIC_PLATFORM_ADMIN_URL=https://superadmin.votredomaine.dz
+NEXT_PUBLIC_APP_URL=https://autovia.space
+NEXT_PUBLIC_BACKDASH_URL=https://app.autovia.space
+NEXT_PUBLIC_CANDIDAT_URL=https://candidat.autovia.space
+NEXT_PUBLIC_PLATFORM_ADMIN_URL=https://admin.autovia.space
 ALLOW_DEV_LAN_ORIGINS=false
-CORS_EXTRA_ORIGINS=
+CORS_EXTRA_ORIGINS=https://www.autovia.space
 ```
+
+Landing **Connexion** / **Démarrer** / **essai gratuit** → `https://app.autovia.space/sign-in` ou `/sign-up`.
+
+**Important (autovia.space)** : si le domaine racine redirige vers `www` (307 Vercel), l’API doit être appelée en **`https://www.autovia.space`** — pas `https://autovia.space` seul, sinon le backdash affiche « Impossible de contacter le serveur » (CORS + redirect).
 
 ### Variables backdash / candidat / platform-admin (projets Vite séparés)
 
-Mêmes clés Supabase + :
+Mêmes clés Supabase + (généré par `env:sync`) :
 
 ```env
-VITE_APP_URL=https://app.votredomaine.dz
-VITE_API_URL=https://app.votredomaine.dz
-VITE_BACKDASH_URL=https://admin.votredomaine.dz
-VITE_CANDIDAT_URL=https://candidat.votredomaine.dz
-VITE_PLATFORM_ADMIN_URL=https://superadmin.votredomaine.dz
-VITE_PLATFORM_URL=https://app.votredomaine.dz
+VITE_APP_URL=https://www.autovia.space
+VITE_API_URL=https://www.autovia.space
+VITE_BACKDASH_URL=https://app.autovia.space
+VITE_CANDIDAT_URL=https://candidat.autovia.space
+VITE_PLATFORM_ADMIN_URL=https://admin.autovia.space
+VITE_PLATFORM_URL=https://autovia.space
 ```
 
-### Supabase prod
+### Supabase prod (OAuth Google)
 
-- Site URL = URL du **backdash**
-- Redirect URLs = `https://admin…/auth/callback` et `https://superadmin…/auth/callback`
-- Ajouter toutes les URLs dans **Redirect URLs**
+Dans **Authentication → URL Configuration** :
+
+| Champ | Valeur |
+|-------|--------|
+| **Site URL** | `https://app.autovia.space` |
+| **Redirect URLs** | `https://app.autovia.space/**` |
+| | `https://admin.autovia.space/**` |
+| | `https://www.autovia.space/**` (landing Next) |
+
+Si **Site URL** reste sur `http://localhost:5173`, Google renverra toujours vers localhost même depuis `app.autovia.space`.
+
+Sur Vercel (projet **backdash**), définir au minimum :
+
+```env
+VITE_BACKDASH_URL=https://app.autovia.space
+VITE_API_URL=https://www.autovia.space
+```
+
+Puis redéployer le backdash.
 
 ### Après deploy
 

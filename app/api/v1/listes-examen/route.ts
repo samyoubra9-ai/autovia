@@ -13,6 +13,7 @@ import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
+import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 import type { NatureExamenListe } from "@prisma/client"
 
@@ -278,6 +279,29 @@ export async function POST(request: Request) {
       },
       PRISMA_TRANSACTION_OPTS,
     )
+
+    const messageByCat = new Map(
+      (liste.messagesCategorie ?? []).map((m) => [
+        m.categoriePermisId,
+        {
+          message: m.message,
+          heureConvocation: m.heureConvocation,
+        },
+      ]),
+    )
+
+    for (const c of liste.candidats) {
+      const msg = messageByCat.get(c.categoriePermisId)
+      notifyCandidatExamenListe({
+        eleveId: c.eleveId,
+        dateExamen: liste.dateExamen,
+        centreExamen: liste.centreExamen,
+        wilaya: liste.wilaya,
+        natureExamen: c.natureExamen,
+        heureConvocation: msg?.heureConvocation,
+        messageCategorie: msg?.message,
+      })
+    }
 
     let dto
     try {

@@ -3,6 +3,7 @@ import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { toPaiementDto } from "@/lib/api/mappers"
 import { safeMapSync } from "@/lib/api/safe"
+import { notifyCandidatPaiement } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 
 export async function OPTIONS(request: Request) {
@@ -73,6 +74,13 @@ export async function POST(request: Request) {
 
     const dto = toPaiementDto(paiement)
     if (!dto) throw new ApiError(500, "Erreur lors de l'enregistrement du paiement.")
+
+    notifyCandidatPaiement({
+      eleveId,
+      montant,
+      resteAPayer: Math.max(0, eleve.prixPermis - totalPaye - montant),
+    })
+
     return jsonWithCors({ paiement: dto }, origin, { status: 201 })
   } catch (error) {
     return handleApiError(error, origin)

@@ -9,6 +9,10 @@ import {
   assertVehiculeLibre,
   updateSeanceForTenant,
 } from "@/lib/api/seances"
+import {
+  notifyCandidatSeanceDeleted,
+  notifyCandidatSeanceUpdated,
+} from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 import type { SeanceStatut } from "@prisma/client"
 
@@ -106,6 +110,20 @@ export async function PATCH(request: Request, { params }: Params) {
 
     const dto = toSeanceExamenDto(seance)
     if (!dto) throw new ApiError(500, "Erreur lors de la mise à jour de la séance.")
+
+    notifyCandidatSeanceUpdated({
+      eleveId,
+      type,
+      dateHeure,
+      statut,
+      previousStatut: existing.statut,
+      previousDateHeure: existing.dateHeure,
+      messageCandidat:
+        body.messageCandidat !== undefined
+          ? trimOptional(body.messageCandidat)
+          : existing.messageCandidat,
+    })
+
     return jsonWithCors({ seance: dto }, origin)
   } catch (error) {
     return handleApiError(error, origin)
@@ -123,6 +141,13 @@ export async function DELETE(request: Request, { params }: Params) {
     if (!existing) throw new ApiError(404, "Séance introuvable.")
 
     await prisma.seanceExamen.delete({ where: { id } })
+
+    notifyCandidatSeanceDeleted({
+      eleveId: existing.eleveId,
+      type: existing.type,
+      dateHeure: existing.dateHeure,
+    })
+
     return jsonWithCors({ ok: true }, origin)
   } catch (error) {
     return handleApiError(error, origin)

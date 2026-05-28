@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
-    "build": "next build",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "supabase:generate-types": "supabase gen types typescript --linked > types/supabase.ts",
     "env:sync": "node scripts/sync-env-urls.mjs",
     "brand:sync": "node scripts/sync-brand-icons.mjs",
+    "push:generate-vapid": "node scripts/generate-vapid-keys.mjs",
     "build:all": "npm run build && npm run build --prefix backdash && npm run build --prefix candidat && npm run build --prefix platform-admin"
   },
   "dependencies": {
@@ -28,7 +30,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "supabase": "^2.98.2",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -234,12 +234,30 @@ model Eleve {
   paiements              Paiement[]
   seancesExamen          SeanceExamen[]
   listeExamenCandidats   ListeExamenCandidat[]
+  pushSubscriptions      CandidatPushSubscription[]
 
   @@unique([autoEcoleId, identifiant])
   @@unique([autoEcoleId, numeroDossier])
   @@index([autoEcoleId])
   @@index([codeSuivi])
   @@map("eleves")
+}
+
+/// Abonnement Web Push (navigateur) — app candidat PWA
+model CandidatPushSubscription {
+  id        String   @id @default(cuid())
+  eleveId   String   @map("eleve_id")
+  endpoint  String   @unique
+  p256dh    String   @map("p256dh")
+  auth      String
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  eleve Eleve @relation(fields: [eleveId], references: [id], onDelete: Cascade)
+
+  @@index([eleveId])
+  @@map("candidat_push_subscriptions")
 }
 
 model ListeExamen {

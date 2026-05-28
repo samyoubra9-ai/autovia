@@ -11,6 +11,7 @@ import {
   createSeanceForTenant,
   listSeancesForTenant,
 } from "@/lib/api/seances"
+import { notifyCandidatSeanceCreated } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 import type { SeanceStatut } from "@prisma/client"
 
@@ -108,6 +109,15 @@ export async function POST(request: Request) {
 
     const dto = toSeanceExamenDto(seance)
     if (!dto) throw new ApiError(500, "Erreur lors de la création de la séance.")
+
+    notifyCandidatSeanceCreated({
+      eleveId,
+      type,
+      dateHeure,
+      statut,
+      messageCandidat: trimMsg(body.messageCandidat),
+    })
+
     return jsonWithCors({ seance: dto }, origin, { status: 201 })
   } catch (error) {
     return handleApiError(error, origin)
