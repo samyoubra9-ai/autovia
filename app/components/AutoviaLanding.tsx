@@ -10,6 +10,7 @@ import {
   HERO_BULLETS,
   WORKFLOW_STEPS,
 } from "./landing/landing-data"
+import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
 
 const CheckIcon = () => (
@@ -74,56 +75,7 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
   return (
     <div className="ds-landing-page">
-      <header className="ds-header">
-        <div className="ds-container">
-          <nav className="ds-nav">
-            <a href="#" className="ds-logo" aria-label="Autovia accueil">
-              <Image
-                src="/brand/favicon/favicon-96x96.png"
-                alt=""
-                width={36}
-                height={36}
-                className="ds-logo-img"
-                priority
-              />
-              Auto<span>via</span>
-            </a>
-            <div className="ds-nav-links">
-              <a href="/apprendre">Apprendre</a>
-              <LandingAnchor href={links.candidatUrl} external>
-                Espace candidat
-              </LandingAnchor>
-              <a href="#produits">Produits</a>
-              <a href="#features">Fonctionnalités</a>
-              <a href="#pricing">Tarifs</a>
-              <a href="#faq">FAQ</a>
-            </div>
-            <div className="ds-nav-actions">
-              <LandingAnchor
-                href={links.candidatUrl}
-                external
-                className="ds-btn ds-btn-ghost ds-nav-candidat"
-              >
-                J&apos;ai mon code
-              </LandingAnchor>
-              <LandingAnchor
-                href={links.backdashSignIn}
-                external
-                className="ds-btn ds-btn-ghost"
-              >
-                Connexion
-              </LandingAnchor>
-              <LandingAnchor
-                href={links.backdashSignUp}
-                external
-                className="ds-btn ds-btn-primary ds-nav-cta"
-              >
-                Démarrer
-              </LandingAnchor>
-            </div>
-          </nav>
-        </div>
-      </header>
+      <LandingNav links={links} />
 
       <section className="ds-hero">
         <div className="ds-container ds-hero-grid">
@@ -419,7 +371,7 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <footer className="ds-footer">
         <div className="ds-container ds-footer-inner">
-          <a href="#" className="ds-logo">
+          <a href="/" className="ds-logo">
             <Image
               src="/brand/favicon/favicon-96x96.png"
               alt=""
