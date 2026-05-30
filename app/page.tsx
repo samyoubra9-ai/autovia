@@ -3,19 +3,18 @@ import type { Metadata } from "next"
 import { AutoviaLanding } from "./components/AutoviaLanding"
 import type { LandingLinks } from "./components/landing/landing-links"
 import {
-  getAppUrl,
   getBackdashSignInUrl,
   getBackdashSignUpUrl,
+  getCandidatUrl,
 } from "@/lib/app-urls"
 
 import "./landing.css"
 
 function getLandingLinks(): LandingLinks {
-  const app = getAppUrl()
   return {
     backdashSignIn: getBackdashSignInUrl(),
     backdashSignUp: getBackdashSignUpUrl(),
-    appSuivi: `${app}/suivi`,
+    candidatUrl: getCandidatUrl(),
   }
 }
 

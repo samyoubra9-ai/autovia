@@ -4,6 +4,8 @@ import { requireTenant } from "@/lib/api/auth"
 import {
   assertMoniteurCategorieForTenant,
   parseMoniteurCategoriePermisId,
+  parseOptionalMoniteurDateFinContrat,
+  parseOptionalNumeroCarteMoniteur,
 } from "@/lib/api/moniteur"
 import { toMoniteurDto } from "@/lib/api/mappers-vehicule"
 import { prisma } from "@/lib/prisma"
@@ -61,6 +63,14 @@ export async function PATCH(request: Request, { params }: Params) {
               : null
             : existing.telephone,
         actif: body.actif !== undefined ? Boolean(body.actif) : existing.actif,
+        numeroCarteMoniteur:
+          body.numeroCarteMoniteur !== undefined
+            ? parseOptionalNumeroCarteMoniteur(body.numeroCarteMoniteur)
+            : existing.numeroCarteMoniteur,
+        dateFinContrat:
+          body.dateFinContrat !== undefined
+            ? parseOptionalMoniteurDateFinContrat(body.dateFinContrat)
+            : existing.dateFinContrat,
       },
       include: { categoriePermis: true },
     })

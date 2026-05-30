@@ -20,6 +20,8 @@ export type MoniteurDto = {
   categoriePermisId: string | null
   categoriePermisCode: string | null
   telephone: string | null
+  numeroCarteMoniteur: string | null
+  dateFinContrat: string | null
   actif: boolean
   createdAt: string
 }
@@ -65,6 +67,8 @@ export function toMoniteurDto(m: MoniteurWithCat): MoniteurDto | null {
       categoriePermisId: m.categoriePermisId ?? null,
       categoriePermisCode: m.categoriePermis?.code ?? null,
       telephone: m.telephone ?? null,
+      numeroCarteMoniteur: m.numeroCarteMoniteur?.trim() || null,
+      dateFinContrat: m.dateFinContrat?.toISOString() ?? null,
       actif: m.actif ?? true,
       createdAt: m.createdAt?.toISOString?.() ?? new Date().toISOString(),
     }

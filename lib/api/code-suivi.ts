@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto"
-import { getAppUrl } from "@/lib/app-urls"
+import { getCandidatUrl } from "@/lib/app-urls"
 import { prisma } from "@/lib/prisma"
 
 /** Sans 0/O, 1/I/L pour faciliter la saisie */
@@ -20,8 +20,10 @@ export function formatCodeSuiviDisplay(code: string): string {
   return `${n.slice(0, 4)}-${n.slice(4)}`
 }
 
+/** Lien QR / carte élève → PWA candidat (ex. candidat.autovia.space/s/CODE). */
 export function getSuiviPublicUrl(code: string): string {
-  return `${getAppUrl()}/suivi/${normalizeCodeSuivi(code)}`
+  const base = getCandidatUrl().replace(/\/$/, "")
+  return `${base}/s/${normalizeCodeSuivi(code)}`
 }
 
 export async function generateUniqueCodeSuivi(): Promise<string> {

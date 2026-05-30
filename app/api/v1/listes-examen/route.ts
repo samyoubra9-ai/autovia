@@ -13,6 +13,7 @@ import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
+import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
 import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 import type { NatureExamenListe } from "@prisma/client"
@@ -300,6 +301,13 @@ export async function POST(request: Request) {
         natureExamen: c.natureExamen,
         heureConvocation: msg?.heureConvocation,
         messageCategorie: msg?.message,
+      })
+      notifyBackdashExamenListe({
+        autoEcoleId: tenant.autoEcoleId,
+        eleveId: c.eleveId,
+        dateExamen: liste.dateExamen,
+        centreExamen: liste.centreExamen,
+        natureExamen: c.natureExamen,
       })
     }
 

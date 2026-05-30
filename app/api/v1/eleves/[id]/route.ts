@@ -14,12 +14,15 @@ import {
   assertCategoriePermisForTenant,
   resolvePrixPermisEleve,
 } from "@/lib/api/categories-permis"
+import { assertEleveMoniteurVehiculeForTenant } from "@/lib/api/eleve-relations"
 import {
+  eleveRelationsUpdateData,
   GROUPE_FROM_CLIENT,
   parseEleveInput,
   permisObtenuDataFromInput,
   toEleveDto,
 } from "@/lib/api/mappers"
+import { notifyBackdashParcoursStep } from "@/lib/push/backdash-events"
 import { notifyCandidatParcoursStep } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 
@@ -29,7 +32,11 @@ const ETAPE_PUSH_LABELS: Record<EtapeParcours, string> = {
   circulation: "Circulation",
 }
 
-const eleveInclude = { categoriePermis: true } as const
+const eleveInclude = {
+  categoriePermis: true,
+  moniteur: true,
+  vehicule: true,
+} as const
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -93,6 +100,11 @@ export async function PATCH(request: Request, { params }: Params) {
         eleveId: id,
         stepLabel: ETAPE_PUSH_LABELS[etape],
       })
+      notifyBackdashParcoursStep({
+        autoEcoleId: tenant.autoEcoleId,
+        eleveId: id,
+        stepLabel: ETAPE_PUSH_LABELS[etape],
+      })
 
       return jsonWithCors({ eleve: dto }, origin)
     }
@@ -137,6 +149,13 @@ export async function PATCH(request: Request, { params }: Params) {
     const groupeSanguin =
       GROUPE_FROM_CLIENT[input.groupeSanguin] ?? existing.groupeSanguin
 
+    const relations = await assertEleveMoniteurVehiculeForTenant(
+      prisma,
+      tenant.autoEcoleId,
+      body.moniteurId !== undefined ? input.moniteurId : existing.moniteurId,
+      body.vehiculeId !== undefined ? input.vehiculeId : existing.vehiculeId,
+    )
+
     const eleve = await prisma.eleve.update({
       where: { id },
       data: {
@@ -168,6 +187,7 @@ export async function PATCH(request: Request, { params }: Params) {
         nomAr: input.nomAr ?? null,
         prenomAr: input.prenomAr ?? null,
         ...permisObtenuDataFromInput(input),
+        ...eleveRelationsUpdateData(relations),
       },
       include: eleveInclude,
     })

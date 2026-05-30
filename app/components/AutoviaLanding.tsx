@@ -89,12 +89,23 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               Auto<span>via</span>
             </a>
             <div className="ds-nav-links">
+              <a href="/apprendre">Apprendre</a>
+              <LandingAnchor href={links.candidatUrl} external>
+                Espace candidat
+              </LandingAnchor>
               <a href="#produits">Produits</a>
               <a href="#features">Fonctionnalités</a>
               <a href="#pricing">Tarifs</a>
               <a href="#faq">FAQ</a>
             </div>
             <div className="ds-nav-actions">
+              <LandingAnchor
+                href={links.candidatUrl}
+                external
+                className="ds-btn ds-btn-ghost ds-nav-candidat"
+              >
+                J&apos;ai mon code
+              </LandingAnchor>
               <LandingAnchor
                 href={links.backdashSignIn}
                 external

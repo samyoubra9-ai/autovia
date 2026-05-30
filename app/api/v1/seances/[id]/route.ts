@@ -13,6 +13,10 @@ import {
   notifyCandidatSeanceDeleted,
   notifyCandidatSeanceUpdated,
 } from "@/lib/push/candidat-events"
+import {
+  notifyBackdashSeanceDeleted,
+  notifyBackdashSeanceUpdated,
+} from "@/lib/push/backdash-events"
 import { prisma } from "@/lib/prisma"
 import type { SeanceStatut } from "@prisma/client"
 
@@ -123,6 +127,15 @@ export async function PATCH(request: Request, { params }: Params) {
           ? trimOptional(body.messageCandidat)
           : existing.messageCandidat,
     })
+    notifyBackdashSeanceUpdated({
+      autoEcoleId: tenant.autoEcoleId,
+      eleveId,
+      type,
+      dateHeure,
+      statut,
+      previousStatut: existing.statut,
+      previousDateHeure: existing.dateHeure,
+    })
 
     return jsonWithCors({ seance: dto }, origin)
   } catch (error) {
@@ -143,6 +156,12 @@ export async function DELETE(request: Request, { params }: Params) {
     await prisma.seanceExamen.delete({ where: { id } })
 
     notifyCandidatSeanceDeleted({
+      eleveId: existing.eleveId,
+      type: existing.type,
+      dateHeure: existing.dateHeure,
+    })
+    notifyBackdashSeanceDeleted({
+      autoEcoleId: tenant.autoEcoleId,
       eleveId: existing.eleveId,
       type: existing.type,
       dateHeure: existing.dateHeure,

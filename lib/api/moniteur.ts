@@ -8,6 +8,21 @@ export function parseMoniteurCategoriePermisId(raw: unknown): string | null {
   return s || null
 }
 
+export function parseOptionalMoniteurDateFinContrat(raw: unknown): Date | null {
+  if (raw === undefined || raw === null || raw === "") return null
+  const d = new Date(String(raw))
+  if (Number.isNaN(d.getTime())) {
+    throw new ApiError(400, "Date de fin de contrat invalide.")
+  }
+  return d
+}
+
+export function parseOptionalNumeroCarteMoniteur(raw: unknown): string | null {
+  if (raw === undefined || raw === null) return null
+  const s = String(raw).trim()
+  return s || null
+}
+
 export async function assertMoniteurCategorieForTenant(
   prisma: PrismaDb,
   autoEcoleId: string,

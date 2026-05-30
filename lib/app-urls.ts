@@ -6,7 +6,7 @@
 import { originAliases, preferWwwHttpsOrigin, trimOrigin } from "@/lib/url-origin-aliases"
 
 export type AppUrls = {
-  /** Site Next.js : API, landing, suivi QR (/suivi/…) */
+  /** Site Next.js : API + landing marketing */
   app: string
   backdash: string
   candidat: string

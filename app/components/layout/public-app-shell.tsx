@@ -14,10 +14,16 @@ export function PublicAppShell({
   className?: string
   backHref?: string
   backLabel?: string
-  maxWidth?: "sm" | "md" | "lg"
+  maxWidth?: "sm" | "md" | "lg" | "xl"
 }) {
   const maxW =
-    maxWidth === "sm" ? "max-w-sm" : maxWidth === "lg" ? "max-w-lg" : "max-w-md"
+    maxWidth === "sm"
+      ? "max-w-sm"
+      : maxWidth === "xl"
+        ? "max-w-3xl"
+        : maxWidth === "lg"
+          ? "max-w-lg"
+          : "max-w-md"
 
   return (
     <div className={cn("app-ui min-h-svh bg-muted/40", className)}>

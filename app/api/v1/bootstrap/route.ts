@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       prisma.eleve.findMany({
         where: { autoEcoleId },
         orderBy: { createdAt: "desc" },
-        include: { categoriePermis: true },
+        include: { categoriePermis: true, moniteur: true, vehicule: true },
       }),
       safeLoad(
         "paiements",

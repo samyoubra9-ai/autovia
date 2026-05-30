@@ -4,8 +4,8 @@ export type LandingLinks = {
   backdashSignIn: string
   /** NEXT_PUBLIC_BACKDASH_URL + /sign-up */
   backdashSignUp: string
-  /** NEXT_PUBLIC_APP_URL + /suivi */
-  appSuivi: string
+  /** NEXT_PUBLIC_CANDIDAT_URL — saisie du code candidat */
+  candidatUrl: string
 }
 
 export function buildProductCards(links: LandingLinks) {
@@ -27,8 +27,8 @@ export function buildProductCards(links: LandingLinks) {
       description:
         "Vos élèves consultent leur progression, leurs séances et leur code de suivi depuis le téléphone, même hors ligne.",
       imageKey: "candidat" as const,
-      href: links.appSuivi,
-      external: false,
+      href: links.candidatUrl,
+      external: true,
     },
     {
       id: "platform",

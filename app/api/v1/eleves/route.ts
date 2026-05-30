@@ -7,11 +7,16 @@ import {
   assertCategoriePermisForTenant,
   resolvePrixPermisEleve,
 } from "@/lib/api/categories-permis"
+import { assertEleveMoniteurVehiculeForTenant } from "@/lib/api/eleve-relations"
 import { parseEleveInput, toEleveDto, toPrismaEleveData } from "@/lib/api/mappers"
 import { assertCanAddEleveOnPlan } from "@/lib/plan-limits"
 import { prisma } from "@/lib/prisma"
 
-const eleveInclude = { categoriePermis: true } as const
+const eleveInclude = {
+  categoriePermis: true,
+  moniteur: true,
+  vehicule: true,
+} as const
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -86,6 +91,14 @@ export async function POST(request: Request) {
     )
     const prixPermis = resolvePrixPermisEleve(categorie)
 
+    const relations = await assertEleveMoniteurVehiculeForTenant(
+      prisma,
+      tenant.autoEcoleId,
+      input.moniteurId,
+      input.vehiculeId,
+      { required: true },
+    )
+
     const identifiant = await generateEleveIdentifiant(tenant.autoEcoleId)
     const codeSuivi = await generateUniqueCodeSuivi()
     const eleve = await prisma.eleve.create({
@@ -95,6 +108,7 @@ export async function POST(request: Request) {
         identifiant,
         codeSuivi,
         prixPermis,
+        relations,
       ),
       include: eleveInclude,
     })

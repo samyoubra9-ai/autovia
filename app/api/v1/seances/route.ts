@@ -11,6 +11,7 @@ import {
   createSeanceForTenant,
   listSeancesForTenant,
 } from "@/lib/api/seances"
+import { notifyBackdashSeanceCreated } from "@/lib/push/backdash-events"
 import { notifyCandidatSeanceCreated } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 import type { SeanceStatut } from "@prisma/client"
@@ -116,6 +117,13 @@ export async function POST(request: Request) {
       dateHeure,
       statut,
       messageCandidat: trimMsg(body.messageCandidat),
+    })
+    notifyBackdashSeanceCreated({
+      autoEcoleId: tenant.autoEcoleId,
+      eleveId,
+      type,
+      dateHeure,
+      statut,
     })
 
     return jsonWithCors({ seance: dto }, origin, { status: 201 })

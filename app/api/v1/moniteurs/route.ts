@@ -4,6 +4,8 @@ import { requireTenant } from "@/lib/api/auth"
 import {
   assertMoniteurCategorieForTenant,
   parseMoniteurCategoriePermisId,
+  parseOptionalMoniteurDateFinContrat,
+  parseOptionalNumeroCarteMoniteur,
 } from "@/lib/api/moniteur"
 import { toMoniteurDto } from "@/lib/api/mappers-vehicule"
 import { safeMapSync } from "@/lib/api/safe"
@@ -61,6 +63,8 @@ export async function POST(request: Request) {
         prenomAr,
         categoriePermisId,
         telephone,
+        numeroCarteMoniteur: parseOptionalNumeroCarteMoniteur(body.numeroCarteMoniteur),
+        dateFinContrat: parseOptionalMoniteurDateFinContrat(body.dateFinContrat),
         actif: body.actif !== false,
       },
       include: { categoriePermis: true },

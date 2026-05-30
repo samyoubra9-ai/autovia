@@ -61,7 +61,8 @@ model AutoEcole {
   createdAt          DateTime           @default(now()) @map("created_at")
   updatedAt          DateTime           @updatedAt @map("updated_at")
 
-  users         User[]
+  users                    User[]
+  backdashPushSubscriptions BackdashPushSubscription[]
   eleves        Eleve[]
   moniteurs     Moniteur[]
   vehicules     Vehicule[]
@@ -86,9 +87,30 @@ model User {
 
   autoEcole            AutoEcole  @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
   paiementsEnregistres Paiement[] @relation("PaiementEnregistrePar")
+  pushSubscriptions    BackdashPushSubscription[]
 
   @@index([autoEcoleId])
   @@map("users")
+}
+
+/// Abonnement Web Push — app backdash PWA (personnel auto-école)
+model BackdashPushSubscription {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  autoEcoleId String   @map("auto_ecole_id")
+  endpoint    String   @unique
+  p256dh      String   @map("p256dh")
+  auth        String
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  autoEcole AutoEcole @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([autoEcoleId])
+  @@map("backdash_push_subscriptions")
 }
 
 // ——— Métier auto-école ———
@@ -226,11 +248,15 @@ model Eleve {
   numeroPermisObtenu       String?                  @map("numero_permis_obtenu")
   datePermisObtenu         DateTime?                @map("date_permis_obtenu") @db.Date
   categoriesPermisObtenues String[]                 @default([]) @map("categories_permis_obtenues")
+  moniteurId               String?                  @map("moniteur_id")
+  vehiculeId               String?                  @map("vehicule_id")
   createdAt                DateTime                 @default(now()) @map("created_at")
   updatedAt                DateTime                 @updatedAt @map("updated_at")
 
   autoEcole              AutoEcole                @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
   categoriePermis        CategoriePermisEcole     @relation(fields: [categoriePermisId], references: [id], onDelete: Restrict)
+  moniteur               Moniteur?                @relation(fields: [moniteurId], references: [id], onDelete: SetNull)
+  vehicule               Vehicule?                @relation(fields: [vehiculeId], references: [id], onDelete: SetNull)
   paiements              Paiement[]
   seancesExamen          SeanceExamen[]
   listeExamenCandidats   ListeExamenCandidat[]
@@ -240,6 +266,8 @@ model Eleve {
   @@unique([autoEcoleId, numeroDossier])
   @@index([autoEcoleId])
   @@index([codeSuivi])
+  @@index([moniteurId])
+  @@index([vehiculeId])
   @@map("eleves")
 }
 
@@ -340,15 +368,20 @@ model Moniteur {
   prenomAr         String?           @map("prenom_ar")
   /// Catégorie de permis enseignée (lien vers categories_permis)
   categoriePermisId String?              @map("categorie_permis_id")
-  telephone         String?
-  actif             Boolean              @default(true)
-  createdAt         DateTime             @default(now()) @map("created_at")
-  updatedAt         DateTime             @updatedAt @map("updated_at")
+  telephone            String?
+  /// Numéro de la carte professionnelle moniteur
+  numeroCarteMoniteur  String?              @map("numero_carte_moniteur")
+  /// Date de fin du contrat (alerte à J-15)
+  dateFinContrat       DateTime?            @map("date_fin_contrat") @db.Date
+  actif                Boolean              @default(true)
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
 
   autoEcole       AutoEcole             @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
   categoriePermis CategoriePermisEcole? @relation(fields: [categoriePermisId], references: [id], onDelete: SetNull)
   paiements     Paiement[]
   seancesExamen SeanceExamen[]
+  eleves        Eleve[]
 
   @@index([autoEcoleId])
   @@map("moniteurs")
@@ -375,6 +408,7 @@ model Vehicule {
 
   autoEcole     AutoEcole      @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
   seancesExamen SeanceExamen[]
+  eleves        Eleve[]
 
   @@index([autoEcoleId])
   @@map("vehicules")

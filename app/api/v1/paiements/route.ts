@@ -3,6 +3,7 @@ import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { toPaiementDto } from "@/lib/api/mappers"
 import { safeMapSync } from "@/lib/api/safe"
+import { notifyBackdashPaiement } from "@/lib/push/backdash-events"
 import { notifyCandidatPaiement } from "@/lib/push/candidat-events"
 import { prisma } from "@/lib/prisma"
 
@@ -79,6 +80,11 @@ export async function POST(request: Request) {
       eleveId,
       montant,
       resteAPayer: Math.max(0, eleve.prixPermis - totalPaye - montant),
+    })
+    notifyBackdashPaiement({
+      autoEcoleId: tenant.autoEcoleId,
+      eleveId,
+      montant,
     })
 
     return jsonWithCors({ paiement: dto }, origin, { status: 201 })

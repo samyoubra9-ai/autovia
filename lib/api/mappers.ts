@@ -7,6 +7,8 @@ import {
   type EleveCategoriePermisEmbed,
 } from "@/lib/api/categories-permis"
 import { elevePhotoPublicUrl } from "@/lib/api/eleve-photo"
+import type { EleveRelationsIds } from "@/lib/api/eleve-relations"
+import { displayMoniteurNomComplet } from "@/lib/api/moniteur"
 import { getProgressPercent } from "@/lib/api/formation"
 import { etapesValideesForStatut } from "@/lib/api/formation-sync"
 import {
@@ -28,6 +30,8 @@ import type {
 
 export type EleveWithCategorie = Eleve & {
   categoriePermis?: CategoriePermisEcole | null
+  moniteur?: { nom: string; prenom: string; nomAr: string | null; prenomAr: string | null } | null
+  vehicule?: { matricule: string | null } | null
 }
 
 export type EleveDto = {
@@ -70,6 +74,10 @@ export type EleveDto = {
   numeroPermisObtenu: string | null
   datePermisObtenu: string | null
   categoriesPermisObtenues: CategoriePermisObtenu[]
+  moniteurId: string | null
+  vehiculeId: string | null
+  moniteurLabel: string | null
+  vehiculeMatricule: string | null
   createdAt: string
 }
 
@@ -176,6 +184,16 @@ export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
       "categoriesPermisObtenues" in eleve
         ? parseCategoriesPermisObtenues(eleve.categoriesPermisObtenues)
         : [],
+    moniteurId: "moniteurId" in eleve ? eleve.moniteurId ?? null : null,
+    vehiculeId: "vehiculeId" in eleve ? eleve.vehiculeId ?? null : null,
+    moniteurLabel:
+      "moniteur" in eleve && eleve.moniteur
+        ? displayMoniteurNomComplet(eleve.moniteur)
+        : null,
+    vehiculeMatricule:
+      "vehicule" in eleve && eleve.vehicule
+        ? eleve.vehicule.matricule?.trim() || null
+        : null,
     createdAt: eleve.createdAt?.toISOString?.() ?? new Date().toISOString(),
     }
   } catch (error) {
@@ -225,6 +243,8 @@ export type EleveInput = {
   numeroPermisObtenu?: string | null
   datePermisObtenu?: string | null
   categoriesPermisObtenues?: CategoriePermisObtenu[]
+  moniteurId?: string | null
+  vehiculeId?: string | null
 }
 
 function trimOrNull(v: unknown): string | null {
@@ -271,6 +291,8 @@ export function parseEleveInput(body: unknown): EleveInput {
     numeroPermisObtenu: trimOrNull(b.numeroPermisObtenu),
     datePermisObtenu: trimOrNull(b.datePermisObtenu),
     categoriesPermisObtenues: parseCategoriesPermisObtenues(b.categoriesPermisObtenues),
+    moniteurId: trimOrNull(b.moniteurId),
+    vehiculeId: trimOrNull(b.vehiculeId),
   }
 }
 
@@ -289,6 +311,7 @@ export function toPrismaEleveData(
   identifiant: string,
   codeSuivi: string,
   prixPermis: number,
+  relations?: EleveRelationsIds,
 ): Prisma.EleveCreateInput {
   const groupe = GROUPE_FROM_CLIENT[input.groupeSanguin]
   return {
@@ -319,5 +342,24 @@ export function toPrismaEleveData(
     codeSuivi,
     autoEcole: { connect: { id: autoEcoleId } },
     ...permisObtenuDataFromInput(input),
+    ...(relations?.moniteurId
+      ? { moniteur: { connect: { id: relations.moniteurId } } }
+      : {}),
+    ...(relations?.vehiculeId
+      ? { vehicule: { connect: { id: relations.vehiculeId } } }
+      : {}),
+  }
+}
+
+export function eleveRelationsUpdateData(
+  relations: EleveRelationsIds,
+): Pick<Prisma.EleveUpdateInput, "moniteur" | "vehicule"> {
+  return {
+    moniteur: relations.moniteurId
+      ? { connect: { id: relations.moniteurId } }
+      : { disconnect: true },
+    vehicule: relations.vehiculeId
+      ? { connect: { id: relations.vehiculeId } }
+      : { disconnect: true },
   }
 }
