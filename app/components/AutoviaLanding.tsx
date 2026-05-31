@@ -10,6 +10,7 @@ import {
   HERO_BULLETS,
   WORKFLOW_STEPS,
 } from "./landing/landing-data"
+import { ContactForm } from "./landing/ContactForm"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
 
@@ -350,6 +351,20 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      <section id="contact" className="ds-contact ds-container">
+        <div className="ds-section-header">
+          <p className="ds-eyebrow">Contact</p>
+          <h2>Écrivez-nous</h2>
+          <p>
+            Une question sur Autovia, une démo ou un devis ? Envoyez-nous un
+            message : nous vous répondrons à l&apos;adresse indiquée.
+          </p>
+        </div>
+        <div className="ds-contact-card">
+          <ContactForm />
         </div>
       </section>
 

@@ -43,6 +43,7 @@ const NAV_ITEMS = [
   { href: "#features", label: "Fonctionnalités", external: false },
   { href: "#pricing", label: "Tarifs", external: false },
   { href: "#faq", label: "FAQ", external: false },
+  { href: "#contact", label: "Contact", external: false },
 ] as const
 
 export function LandingNav({ links }: { links: LandingLinks }) {

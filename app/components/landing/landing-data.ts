@@ -13,19 +13,19 @@ export const LANDING_IMAGES = {
     height: 750,
   },
   planning: {
-    src: "/landing/planning.png",
+    src: "/landing/planning2.png",
     alt: "Planning des séances de conduite",
     width: 1200,
     height: 750,
   },
   eleves: {
-    src: "/landing/tresorerie.png",
+    src: "/landing/tresorerie2.png",
     alt: "Candidats et trésorerie — fiches élèves et paiements",
     width: 1200,
     height: 750,
   },
   listeExamen: {
-    src: "/landing/impression.png",
+    src: "/landing/impression2.png",
     alt: "Listes d'examen et impression officielle",
     width: 1200,
     height: 750,
