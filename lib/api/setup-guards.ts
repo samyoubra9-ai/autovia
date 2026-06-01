@@ -6,7 +6,7 @@ export async function assertSetupCanAddEleve(
   autoEcoleId: string,
 ): Promise<void> {
   const [catCount, monCount, vehCount] = await Promise.all([
-    prisma.categoriePermis.count({
+    prisma.categoriePermisEcole.count({
       where: { autoEcoleId, actif: true },
     }),
     prisma.moniteur.count({
@@ -49,15 +49,14 @@ export async function assertSetupCanCreateListeExamen(
     prisma.moniteur.count({ where: { autoEcoleId, actif: true } }),
     prisma.autoEcole.findUnique({
       where: { id: autoEcoleId },
-      select: { printSettings: true },
+      select: { nomAr: true, wilaya: true },
     }),
   ])
 
   if (!ae) throw new ApiError(404, "Auto-école introuvable.")
 
-  const ps = (ae.printSettings ?? {}) as Record<string, unknown>
-  const nomAr = String(ps.nomAr ?? "").trim()
-  const wilaya = String(ps.wilaya ?? "").trim()
+  const nomAr = String(ae.nomAr ?? "").trim()
+  const wilaya = String(ae.wilaya ?? "").trim()
 
   if (!nomAr || !wilaya) {
     throw new ApiError(

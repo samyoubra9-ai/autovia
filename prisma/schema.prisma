@@ -31,7 +31,24 @@ model SiteAdmin {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
+  auditLogs SiteAdminAuditLog[]
+
   @@map("site_admins")
+}
+
+model SiteAdminAuditLog {
+  id          String    @id @default(cuid())
+  siteAdminId String?   @map("site_admin_id")
+  autoEcoleId String    @map("auto_ecole_id")
+  action      String
+  detail      String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  siteAdmin SiteAdmin? @relation(fields: [siteAdminId], references: [id], onDelete: SetNull)
+  autoEcole AutoEcole  @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+
+  @@index([autoEcoleId, createdAt(sort: Desc)])
+  @@map("site_admin_audit_logs")
 }
 
 model AutoEcole {
@@ -70,6 +87,7 @@ model AutoEcole {
   seancesExamen SeanceExamen[]
   listesExamen       ListeExamen[]
   categoriesPermis   CategoriePermisEcole[]
+  adminAuditLogs     SiteAdminAuditLog[]
 
   @@map("auto_ecoles")
 }

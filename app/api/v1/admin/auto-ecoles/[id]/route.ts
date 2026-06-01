@@ -5,6 +5,11 @@ import {
   applySiteAdminAccessUpdate,
   type SiteAdminAccessPatchBody,
 } from "@/lib/api/site-admin-access-update"
+import { logSiteAdminAction } from "@/lib/api/site-admin-audit"
+import {
+  buildSiteAdminMetaUpdateData,
+  isSiteAdminMetaOnlyPatch,
+} from "@/lib/api/site-admin-meta-update"
 import { toSiteAdminAutoEcoleDto } from "@/lib/api/site-admin-dto"
 import { prisma } from "@/lib/prisma"
 
@@ -31,7 +36,7 @@ export async function OPTIONS(request: Request) {
 export async function PATCH(request: Request, { params }: Params) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
   try {
-    await requireSiteAdminApi(request)
+    const { siteAdmin } = await requireSiteAdminApi(request)
     const { id } = await params
     const body = (await request.json()) as SiteAdminAccessPatchBody
 
@@ -40,19 +45,29 @@ export async function PATCH(request: Request, { params }: Params) {
       throw new ApiError(404, "Auto-école introuvable.")
     }
 
-    const onlyMeta =
-      body.adminNotes !== undefined &&
-      body.action === undefined &&
-      body.subscriptionStatus === undefined
+    if (isSiteAdminMetaOnlyPatch(body)) {
+      let metaData: Record<string, unknown>
+      try {
+        metaData = buildSiteAdminMetaUpdateData(body, autoEcole)
+      } catch (e) {
+        throw new ApiError(400, e instanceof Error ? e.message : "Données invalides.")
+      }
 
-    if (onlyMeta) {
       const updated = await prisma.autoEcole.update({
         where: { id },
-        data: { adminNotes: String(body.adminNotes).trim() || null },
+        data: metaData,
         include: accessInclude,
       })
+
+      await logSiteAdminAction(prisma, {
+        siteAdminId: siteAdmin.id,
+        autoEcoleId: id,
+        action: "meta_update",
+        detail: Object.keys(metaData).join(", "),
+      })
+
       return jsonWithCors(
-        { autoEcole: toSiteAdminAutoEcoleDto(updated), message: "Notes enregistrées." },
+        { autoEcole: toSiteAdminAutoEcoleDto(updated), message: "Informations enregistrées." },
         origin,
       )
     }
@@ -75,6 +90,13 @@ export async function PATCH(request: Request, { params }: Params) {
           : {}),
       },
       include: accessInclude,
+    })
+
+    await logSiteAdminAction(prisma, {
+      siteAdminId: siteAdmin.id,
+      autoEcoleId: id,
+      action: body.action ?? "access_update",
+      detail: patch.message,
     })
 
     return jsonWithCors(

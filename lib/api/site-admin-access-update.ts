@@ -19,6 +19,10 @@ export type SiteAdminAccessPatchBody = {
   extendTrialDays?: number
   paidUntil?: string | null
   adminNotes?: string
+  nom?: string
+  ville?: string | null
+  telephone?: string | null
+  emailContact?: string | null
 }
 
 export function getTrialDaysLeft(trialEndsAt: Date, now: Date = new Date()): number {
