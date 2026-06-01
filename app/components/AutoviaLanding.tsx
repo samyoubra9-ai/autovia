@@ -11,6 +11,7 @@ import {
   WORKFLOW_STEPS,
 } from "./landing/landing-data"
 import { ContactForm } from "./landing/ContactForm"
+import { ContactEmail } from "./landing/ContactEmail"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
 
@@ -360,7 +361,9 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           <h2>Écrivez-nous</h2>
           <p>
             Une question sur Autovia, une démo ou un devis ? Envoyez-nous un
-            message : nous vous répondrons à l&apos;adresse indiquée.
+            message ou écrivez directement à{" "}
+            <ContactEmail className="ds-contact-email-link" /> — nous vous
+            répondrons rapidement.
           </p>
         </div>
         <div className="ds-contact-card">
@@ -396,7 +399,11 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
             />
             Auto<span>via</span>
           </a>
-          <p>&copy; {new Date().getFullYear()} Autovia — Auto-écoles en Algérie.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Autovia — Auto-écoles en Algérie.
+            {" · "}
+            <ContactEmail className="ds-footer-email" />
+          </p>
         </div>
       </footer>
     </div>

@@ -23,6 +23,8 @@ export async function GET(request: Request) {
           ...tenant.autoEcole,
           trialEndsAt: tenant.autoEcole.trialEndsAt.toISOString(),
           paidUntil: tenant.autoEcole.paidUntil?.toISOString() ?? null,
+          telephone: tenant.autoEcole.telephone ?? null,
+          ville: tenant.autoEcole.ville ?? null,
         },
       },
       origin,

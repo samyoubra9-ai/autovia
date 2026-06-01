@@ -10,6 +10,7 @@ import {
 import { assertEleveMoniteurVehiculeForTenant } from "@/lib/api/eleve-relations"
 import { parseEleveInput, toEleveDto, toPrismaEleveData } from "@/lib/api/mappers"
 import { assertCanAddEleveOnPlan } from "@/lib/plan-limits"
+import { assertSetupCanAddEleve } from "@/lib/api/setup-guards"
 import { prisma } from "@/lib/prisma"
 
 const eleveInclude = {
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
       where: { autoEcoleId: tenant.autoEcoleId },
     })
     assertCanAddEleveOnPlan(autoEcole.subscriptionStatus, eleveCount)
+    await assertSetupCanAddEleve(prisma, tenant.autoEcoleId)
 
     const body = await request.json()
     const input = parseEleveInput(body)

@@ -17,6 +17,7 @@ export async function sendContactEmail(payload: ContactPayload): Promise<void> {
     tarifs: "Question tarifs",
     support: "Support technique",
     autre: "Autre",
+    upgrade_pro: "Passage Autovia Pro (backdash)",
   }
   const subjectKey = payload.subject?.trim()
   const subjectLine = subjectKey ? subjectLabels[subjectKey] ?? subjectKey : ""
@@ -28,9 +29,18 @@ export async function sendContactEmail(payload: ContactPayload): Promise<void> {
     ? `<tr><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;">Auto-école</td><td style="padding:8px 12px;border:1px solid #e2e8f0;">${escapeHtml(payload.autoEcole)}</td></tr>`
     : ""
 
+  const phoneRow = payload.phone?.trim()
+    ? `<tr><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;">Téléphone</td><td style="padding:8px 12px;border:1px solid #e2e8f0;">${escapeHtml(payload.phone.trim())}</td></tr>`
+    : ""
+
+  const heading =
+    payload.subject === "upgrade_pro"
+      ? "Demande passage Autovia Pro (tableau de bord)"
+      : "Nouveau message depuis autovia.space"
+
   const html = `
     <div style="font-family:Arial,sans-serif;color:#0f172a;max-width:560px;">
-      <h2 style="margin:0 0 16px;font-size:18px;">Nouveau message depuis autovia.space</h2>
+      <h2 style="margin:0 0 16px;font-size:18px;">${heading}</h2>
       <table style="border-collapse:collapse;width:100%;font-size:14px;">
         <tr>
           <td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;width:120px;">Nom</td>
@@ -41,6 +51,7 @@ export async function sendContactEmail(payload: ContactPayload): Promise<void> {
           <td style="padding:8px 12px;border:1px solid #e2e8f0;"><a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a></td>
         </tr>
         ${autoEcoleRow}
+        ${phoneRow}
         <tr>
           <td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;vertical-align:top;">Message</td>
           <td style="padding:8px 12px;border:1px solid #e2e8f0;white-space:pre-wrap;">${escapeHtml(payload.message)}</td>

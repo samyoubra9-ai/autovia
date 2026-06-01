@@ -3,6 +3,7 @@ export type ContactPayload = {
   email: string
   message: string
   autoEcole?: string
+  phone?: string
   subject?: string
   website?: string
 }

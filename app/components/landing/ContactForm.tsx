@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, type FormEvent } from "react"
+import { getPublicContactEmail } from "@/lib/contact/public-email"
 
 type FormStatus = "idle" | "loading" | "success" | "error"
 
@@ -45,7 +46,8 @@ export function ContactForm() {
       if (!res.ok) {
         setStatus("error")
         setErrorMessage(
-          data.error || "Une erreur est survenue. Veuillez réessayer.",
+          data.error ||
+            `Une erreur est survenue. Écrivez-nous à ${getPublicContactEmail()}.`,
         )
         return
       }
@@ -55,7 +57,7 @@ export function ContactForm() {
     } catch {
       setStatus("error")
       setErrorMessage(
-        "Connexion impossible. Vérifiez votre réseau et réessayez.",
+        `Connexion impossible. Écrivez-nous à ${getPublicContactEmail()}.`,
       )
     }
   }

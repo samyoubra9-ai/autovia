@@ -12,6 +12,7 @@ import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
+import { assertSetupCanCreateListeExamen } from "@/lib/api/setup-guards"
 import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
 import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
 import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
@@ -159,6 +160,7 @@ export async function POST(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
   try {
     const tenant = await requireTenant(request)
+    await assertSetupCanCreateListeExamen(prisma, tenant.autoEcoleId)
     const body = (await request.json()) as Record<string, unknown>
     const ae = await prisma.autoEcole.findUnique({
       where: { id: tenant.autoEcoleId },

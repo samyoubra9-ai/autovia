@@ -1323,6 +1323,18 @@ html:has(.ds-landing-page) body {
   line-height: 1.5;
 }
 
+.ds-landing-page .ds-contact-email-link,
+.ds-landing-page .ds-footer-email {
+  color: var(--ds-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ds-landing-page .ds-contact-email-link:hover,
+.ds-landing-page .ds-footer-email:hover {
+  text-decoration: underline;
+}
+
 /* Footer */
 .ds-landing-page .ds-footer {
   padding: 40px 0;

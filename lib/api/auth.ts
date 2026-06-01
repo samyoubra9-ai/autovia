@@ -16,6 +16,8 @@ export type TenantContext = {
     id: string
     nom: string
     slug: string
+    ville: string | null
+    telephone: string | null
     subscriptionStatus: string
     trialEndsAt: Date
     paidUntil: Date | null
@@ -102,6 +104,8 @@ export async function requireTenant(request: Request): Promise<TenantContext> {
       id: tenant.autoEcole.id,
       nom: tenant.autoEcole.nom,
       slug: tenant.autoEcole.slug,
+      ville: tenant.autoEcole.ville,
+      telephone: tenant.autoEcole.telephone,
       subscriptionStatus: tenant.autoEcole.subscriptionStatus,
       trialEndsAt: tenant.autoEcole.trialEndsAt,
       paidUntil: tenant.autoEcole.paidUntil,
