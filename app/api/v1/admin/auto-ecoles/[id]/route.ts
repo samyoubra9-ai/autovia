@@ -110,3 +110,50 @@ export async function PATCH(request: Request, { params }: Params) {
     return handleApiError(error, origin)
   }
 }
+
+export async function DELETE(request: Request, { params }: Params) {
+  const origin = getAllowedOrigin(request.headers.get("origin"))
+  try {
+    await requireSiteAdminApi(request)
+    const { id } = await params
+
+    const row = await prisma.autoEcole.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            eleves: true,
+            moniteurs: true,
+            vehicules: true,
+            paiements: true,
+            seancesExamen: true,
+            listesExamen: true,
+            users: true,
+          },
+        },
+      },
+    })
+    if (!row) throw new ApiError(404, "Auto-école introuvable.")
+
+    await prisma.autoEcole.delete({ where: { id } })
+
+    return jsonWithCors(
+      {
+        ok: true,
+        message: `Compte « ${row.nom} » supprimé définitivement.`,
+        deleted: {
+          eleves: row._count.eleves,
+          moniteurs: row._count.moniteurs,
+          vehicules: row._count.vehicules,
+          paiements: row._count.paiements,
+          seancesExamen: row._count.seancesExamen,
+          listesExamen: row._count.listesExamen,
+          users: row._count.users,
+        },
+      },
+      origin,
+    )
+  } catch (error) {
+    return handleApiError(error, origin)
+  }
+}

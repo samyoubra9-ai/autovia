@@ -118,7 +118,10 @@ export async function PATCH(request: Request, { params }: Params) {
       tenant.autoEcoleId,
       input.categoriePermisId,
     )
-    const prixPermis = resolvePrixPermisEleve(categorie, existing, input.categoriePermisId)
+    const prixPermis =
+      input.prixPermis !== undefined
+        ? input.prixPermis
+        : resolvePrixPermisEleve(categorie, existing, input.categoriePermisId)
     await assertNoDuplicates(tenant.autoEcoleId, input.nin, input.telephone, id)
 
     const impliedEtapes = etapesValideesForStatut(input.statutFormation)
@@ -186,6 +189,7 @@ export async function PATCH(request: Request, { params }: Params) {
         numeroDossier: input.numeroDossier ?? null,
         nomAr: input.nomAr ?? null,
         prenomAr: input.prenomAr ?? null,
+        ...(input.createdAt ? { createdAt: new Date(input.createdAt) } : {}),
         ...permisObtenuDataFromInput(input),
         ...eleveRelationsUpdateData(relations),
       },

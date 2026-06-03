@@ -24,7 +24,6 @@ import type {
   Prisma,
   Sexe,
   SituationFamiliale,
-  SituationProfessionnelle,
   StatutFormation,
 } from "@prisma/client"
 
@@ -55,7 +54,7 @@ export type EleveDto = {
   prenomMere: string | null
   nomJeuneFille: string | null
   situationFamiliale: SituationFamiliale
-  situationProfessionnelle: SituationProfessionnelle
+  situationProfessionnelle: string
   prixPermis: number
   etapeCodeValidee: boolean
   etapeCreneauValidee: boolean
@@ -63,6 +62,7 @@ export type EleveDto = {
   etapeExamenValidee: boolean
   progressionPercent: number
   age: number
+  ageDetail: string
   codeSuivi: string | null
   codeSuiviDisplay: string | null
   suiviUrl: string | null
@@ -74,6 +74,7 @@ export type EleveDto = {
   numeroPermisObtenu: string | null
   datePermisObtenu: string | null
   categoriesPermisObtenues: CategoriePermisObtenu[]
+  permisDelivrePar: string | null
   moniteurId: string | null
   vehiculeId: string | null
   moniteurLabel: string | null
@@ -112,11 +113,34 @@ export const GROUPE_FROM_CLIENT: Record<string, GroupeSanguin> = {
 }
 
 export function calculateAge(dateNaissance: Date): number {
-  const today = new Date()
-  let age = today.getFullYear() - dateNaissance.getFullYear()
-  const m = today.getMonth() - dateNaissance.getMonth()
-  if (m < 0 || (m === 0 && today.getDate() < dateNaissance.getDate())) age--
-  return age
+  return calculateAgeDetail(dateNaissance).years
+}
+
+export type AgeDetail = {
+  years: number
+  months: number
+  label: string
+}
+
+/** Âge en années et mois (ex. « 16 ans et 5 mois »). */
+export function calculateAgeDetail(dateNaissance: Date, at: Date = new Date()): AgeDetail {
+  let years = at.getFullYear() - dateNaissance.getFullYear()
+  let months = at.getMonth() - dateNaissance.getMonth()
+  if (at.getDate() < dateNaissance.getDate()) months--
+  if (months < 0) {
+    years--
+    months += 12
+  }
+  if (years < 0) {
+    return { years: 0, months: 0, label: '—' }
+  }
+  const label =
+    months === 0
+      ? `${years} ans`
+      : years === 0
+        ? `${months} mois`
+        : `${years} ans et ${months} mois`
+  return { years, months, label }
 }
 
 export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
@@ -159,6 +183,7 @@ export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
     progressionPercent:
       "etapeCodeValidee" in eleve ? getProgressPercent(eleve) : 0,
     age: calculateAge(dateNaissance),
+    ageDetail: calculateAgeDetail(dateNaissance).label,
     codeSuivi: eleve.codeSuivi ?? null,
     codeSuiviDisplay: eleve.codeSuivi
       ? formatCodeSuiviDisplay(eleve.codeSuivi)
@@ -184,6 +209,8 @@ export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
       "categoriesPermisObtenues" in eleve
         ? parseCategoriesPermisObtenues(eleve.categoriesPermisObtenues)
         : [],
+    permisDelivrePar:
+      "permisDelivrePar" in eleve ? eleve.permisDelivrePar ?? null : null,
     moniteurId: "moniteurId" in eleve ? eleve.moniteurId ?? null : null,
     vehiculeId: "vehiculeId" in eleve ? eleve.vehiculeId ?? null : null,
     moniteurLabel:
@@ -235,7 +262,8 @@ export type EleveInput = {
   prenomMere?: string | null
   nomJeuneFille?: string | null
   situationFamiliale: SituationFamiliale
-  situationProfessionnelle: SituationProfessionnelle
+  situationProfessionnelle: string
+  prixPermis?: number
   numeroDossier?: string | null
   nomAr?: string | null
   prenomAr?: string | null
@@ -243,6 +271,8 @@ export type EleveInput = {
   numeroPermisObtenu?: string | null
   datePermisObtenu?: string | null
   categoriesPermisObtenues?: CategoriePermisObtenu[]
+  permisDelivrePar?: string | null
+  createdAt?: string | null
   moniteurId?: string | null
   vehiculeId?: string | null
 }
@@ -264,6 +294,20 @@ export function parseEleveInput(body: unknown): EleveInput {
     throw new Error("Le N.I.N doit comporter exactement 18 chiffres.")
   }
 
+  const situationProfessionnelle = String(b.situationProfessionnelle ?? "").trim()
+  if (!situationProfessionnelle) {
+    throw new Error("La situation professionnelle est requise.")
+  }
+
+  const prixRaw = b.prixPermis
+  const prixPermis =
+    prixRaw !== undefined && prixRaw !== null && String(prixRaw).trim() !== ""
+      ? Math.max(0, Math.round(Number(prixRaw)))
+      : undefined
+  if (prixPermis !== undefined && !Number.isFinite(prixPermis)) {
+    throw new Error("Montant forfait permis invalide.")
+  }
+
   return {
     telephone: String(b.telephone ?? "").trim(),
     nom: String(b.nom ?? "").trim(),
@@ -283,7 +327,8 @@ export function parseEleveInput(body: unknown): EleveInput {
     nomJeuneFille:
       b.sexe === "feminin" ? trimOrNull(b.nomJeuneFille) : null,
     situationFamiliale: b.situationFamiliale as SituationFamiliale,
-    situationProfessionnelle: b.situationProfessionnelle as SituationProfessionnelle,
+    situationProfessionnelle,
+    prixPermis,
     numeroDossier: trimOrNull(b.numeroDossier),
     nomAr: trimOrNull(b.nomAr),
     prenomAr: trimOrNull(b.prenomAr),
@@ -291,6 +336,8 @@ export function parseEleveInput(body: unknown): EleveInput {
     numeroPermisObtenu: trimOrNull(b.numeroPermisObtenu),
     datePermisObtenu: trimOrNull(b.datePermisObtenu),
     categoriesPermisObtenues: parseCategoriesPermisObtenues(b.categoriesPermisObtenues),
+    permisDelivrePar: trimOrNull(b.permisDelivrePar),
+    createdAt: trimOrNull(b.createdAt),
     moniteurId: trimOrNull(b.moniteurId),
     vehiculeId: trimOrNull(b.vehiculeId),
   }
@@ -302,6 +349,7 @@ export function permisObtenuDataFromInput(input: EleveInput) {
     numeroPermisObtenu: input.numeroPermisObtenu,
     datePermisObtenu: input.datePermisObtenu,
     categoriesPermisObtenues: input.categoriesPermisObtenues ?? [],
+    permisDelivrePar: input.permisDelivrePar,
   })
 }
 
@@ -340,6 +388,7 @@ export function toPrismaEleveData(
     nomAr: input.nomAr ?? null,
     prenomAr: input.prenomAr ?? null,
     codeSuivi,
+    ...(input.createdAt ? { createdAt: new Date(input.createdAt) } : {}),
     autoEcole: { connect: { id: autoEcoleId } },
     ...permisObtenuDataFromInput(input),
     ...(relations?.moniteurId

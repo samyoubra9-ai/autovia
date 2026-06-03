@@ -5,6 +5,7 @@ import { ensureDefaultCategoriesPermis, toCategoriePermisDto } from "@/lib/api/c
 import { toAutoEcolePrintSettings } from "@/lib/api/auto-ecole-print"
 import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { toEleveDto, toPaiementDto } from "@/lib/api/mappers"
+import { moniteurCategoriesInclude } from "@/lib/api/moniteur"
 import { toMoniteurDto, toVehiculeDto } from "@/lib/api/mappers-vehicule"
 import { safeLoad, safeMapSync } from "@/lib/api/safe"
 import { prisma } from "@/lib/prisma"
@@ -59,8 +60,8 @@ export async function GET(request: Request) {
         () =>
           prisma.moniteur.findMany({
             where: { autoEcoleId },
-            orderBy: { createdAt: "desc" },
-            include: { categoriePermis: true },
+            orderBy: [{ estPrincipal: "desc" }, { createdAt: "desc" }],
+            include: moniteurCategoriesInclude,
           }),
         [],
       ),

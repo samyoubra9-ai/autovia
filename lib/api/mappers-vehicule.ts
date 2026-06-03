@@ -1,3 +1,8 @@
+import {
+  moniteurCategoriesCodes,
+  orderedMoniteurCategories,
+  type MoniteurWithCategories,
+} from "@/lib/api/moniteur"
 import type { CategoriePermisEcole, Moniteur } from "@prisma/client"
 
 export type VehiculeDto = {
@@ -17,8 +22,11 @@ export type MoniteurDto = {
   prenom: string
   nomAr: string | null
   prenomAr: string | null
+  estPrincipal: boolean
   categoriePermisId: string | null
   categoriePermisCode: string | null
+  categoriesPermisIds: string[]
+  categoriesPermisCodes: string[]
   telephone: string | null
   numeroCarteMoniteur: string | null
   dateFinContrat: string | null
@@ -26,7 +34,10 @@ export type MoniteurDto = {
   createdAt: string
 }
 
-type MoniteurWithCat = Moniteur & { categoriePermis?: CategoriePermisEcole | null }
+type MoniteurWithCat = Moniteur & {
+  categoriePermis?: CategoriePermisEcole | null
+  categoriesEnseignees?: { categoriePermis: CategoriePermisEcole }[]
+}
 
 export function toVehiculeDto(v: {
   id: string
@@ -58,14 +69,21 @@ export function toVehiculeDto(v: {
 export function toMoniteurDto(m: MoniteurWithCat): MoniteurDto | null {
   try {
     if (!m?.id) return null
+    const withCats = m as MoniteurWithCategories
+    const codes = moniteurCategoriesCodes(withCats)
+    const cats = orderedMoniteurCategories(withCats)
+    const primaryId = cats[0]?.id ?? m.categoriePermisId ?? null
     return {
       id: m.id,
       nom: m.nom,
       prenom: m.prenom,
       nomAr: m.nomAr?.trim() || null,
       prenomAr: m.prenomAr?.trim() || null,
-      categoriePermisId: m.categoriePermisId ?? null,
-      categoriePermisCode: m.categoriePermis?.code ?? null,
+      estPrincipal: m.estPrincipal ?? false,
+      categoriePermisId: primaryId,
+      categoriePermisCode: codes.length > 0 ? codes.join(", ") : (m.categoriePermis?.code ?? null),
+      categoriesPermisIds: cats.map((c) => c.id),
+      categoriesPermisCodes: codes,
       telephone: m.telephone ?? null,
       numeroCarteMoniteur: m.numeroCarteMoniteur?.trim() || null,
       dateFinContrat: m.dateFinContrat?.toISOString() ?? null,

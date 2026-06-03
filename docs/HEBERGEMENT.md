@@ -101,13 +101,24 @@ VITE_API_URL=https://www.autovia.space
 
 Puis redéployer le backdash.
 
-### Après deploy
+### Après deploy (important)
 
-```bash
-npx prisma migrate deploy
-```
+Le **build Vercel ne applique pas** les migrations SQL. Sans cette étape, la prod reste sur l’ancien schéma (ex. moniteur principal = une seule catégorie).
 
-(avec `DATABASE_URL` / `DIRECT_URL` en variable d’environnement CI ou en local)
+1. **Supabase production** → **SQL Editor** → coller et exécuter le fichier  
+   `docs/sql/moniteur-principal-prod.sql`  
+   (ou `supabase/migrations/20260603000000_moniteur_principal_categories.sql`).
+
+2. **Redéployer l’API** (projet Vercel **racine** `autoecole`, pas seulement le backdash) :  
+   `prisma generate && next build` — c’est là que vivent `/api/v1/bootstrap` et `/api/v1/moniteurs`.
+
+3. **Redéployer le backdash** (`app.autovia.space`) après l’API.
+
+4. Vérification (connecté au backdash prod) :  
+   `GET https://www.autovia.space/api/v1/setup/schema`  
+   → doit renvoyer `{ "ok": true, ... }`.
+
+En local, les migrations sont souvent déjà passées (`supabase db push` ou SQL manuel) — d’où la différence localhost / prod.
 
 ---
 

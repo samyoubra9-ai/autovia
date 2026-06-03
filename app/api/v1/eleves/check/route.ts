@@ -20,38 +20,44 @@ export async function GET(request: Request) {
     const conflicts: { field: string; message: string; eleve?: { id: string; prenom: string; nom: string; identifiant: string } }[] = []
 
     if (nin) {
-      const existing = await prisma.eleve.findFirst({
-        where: {
-          autoEcoleId: tenant.autoEcoleId,
-          nin,
-          ...(excludeId ? { id: { not: excludeId } } : {}),
-        },
-        select: { id: true, prenom: true, nom: true, identifiant: true },
-      })
-      if (existing) {
-        conflicts.push({
-          field: "nin",
-          message: `Ce N.I.N est déjà utilisé par ${existing.prenom} ${existing.nom} (${existing.identifiant}).`,
-          eleve: existing,
+      const ninDigits = nin.replace(/\D/g, "")
+      if (ninDigits.length === 18) {
+        const existing = await prisma.eleve.findFirst({
+          where: {
+            autoEcoleId: tenant.autoEcoleId,
+            nin: ninDigits,
+            ...(excludeId ? { id: { not: excludeId } } : {}),
+          },
+          select: { id: true, prenom: true, nom: true, identifiant: true },
         })
+        if (existing) {
+          conflicts.push({
+            field: "nin",
+            message: `Ce N.I.N est déjà utilisé par ${existing.prenom} ${existing.nom} (${existing.identifiant}).`,
+            eleve: existing,
+          })
+        }
       }
     }
 
     if (telephone) {
-      const existing = await prisma.eleve.findFirst({
-        where: {
-          autoEcoleId: tenant.autoEcoleId,
-          telephone,
-          ...(excludeId ? { id: { not: excludeId } } : {}),
-        },
-        select: { id: true, prenom: true, nom: true, identifiant: true },
-      })
-      if (existing) {
-        conflicts.push({
-          field: "telephone",
-          message: `Ce numéro est déjà enregistré pour ${existing.prenom} ${existing.nom} (${existing.identifiant}).`,
-          eleve: existing,
+      const telDigits = telephone.replace(/\D/g, "")
+      if (telDigits.length >= 9) {
+        const existing = await prisma.eleve.findFirst({
+          where: {
+            autoEcoleId: tenant.autoEcoleId,
+            telephone,
+            ...(excludeId ? { id: { not: excludeId } } : {}),
+          },
+          select: { id: true, prenom: true, nom: true, identifiant: true },
         })
+        if (existing) {
+          conflicts.push({
+            field: "telephone",
+            message: `Ce numéro est déjà enregistré pour ${existing.prenom} ${existing.nom} (${existing.identifiant}).`,
+            eleve: existing,
+          })
+        }
       }
     }
 

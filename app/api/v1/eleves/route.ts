@@ -91,7 +91,10 @@ export async function POST(request: Request) {
       tenant.autoEcoleId,
       input.categoriePermisId,
     )
-    const prixPermis = resolvePrixPermisEleve(categorie)
+    const prixPermis =
+      input.prixPermis !== undefined
+        ? input.prixPermis
+        : resolvePrixPermisEleve(categorie)
 
     const relations = await assertEleveMoniteurVehiculeForTenant(
       prisma,

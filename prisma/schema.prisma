@@ -221,6 +221,7 @@ model CategoriePermisEcole {
   listeExamenCandidats ListeExamenCandidat[]
   listeExamenMessages  ListeExamenMessageCategorie[]
   moniteurs            Moniteur[]
+  moniteursCategories  MoniteurCategoriePermis[]
 
   @@unique([autoEcoleId, code])
   @@index([autoEcoleId])
@@ -249,7 +250,8 @@ model Eleve {
   /// Nom de jeune fille (optionnel, candidatures féminines)
   nomJeuneFille            String?                  @map("nom_jeune_fille")
   situationFamiliale       SituationFamiliale       @map("situation_familiale")
-  situationProfessionnelle SituationProfessionnelle @map("situation_professionnelle")
+  /// Valeur prédéfinie (etudiant, employe…) ou texte libre si « autre »
+  situationProfessionnelle String                   @map("situation_professionnelle")
   prixPermis               Int                      @default(25000) @map("prix_permis")
   etapeCodeValidee         Boolean                  @default(false) @map("etape_code_validee")
   etapeCreneauValidee      Boolean                  @default(false) @map("etape_creneau_validee")
@@ -266,6 +268,8 @@ model Eleve {
   numeroPermisObtenu       String?                  @map("numero_permis_obtenu")
   datePermisObtenu         DateTime?                @map("date_permis_obtenu") @db.Date
   categoriesPermisObtenues String[]                 @default([]) @map("categories_permis_obtenues")
+  /// Mairie ou autorité ayant délivré le permis déjà obtenu (saisie libre)
+  permisDelivrePar         String?                  @map("permis_delivre_par")
   moniteurId               String?                  @map("moniteur_id")
   vehiculeId               String?                  @map("vehicule_id")
   createdAt                DateTime                 @default(now()) @map("created_at")
@@ -384,8 +388,10 @@ model Moniteur {
   prenom           String
   nomAr            String?           @map("nom_ar")
   prenomAr         String?           @map("prenom_ar")
-  /// Catégorie de permis enseignée (lien vers categories_permis)
+  /// Catégorie principale (1re catégorie enseignée — compatibilité listes / filtres)
   categoriePermisId String?              @map("categorie_permis_id")
+  /// Un seul moniteur principal par auto-école ; peut enseigner plusieurs catégories
+  estPrincipal         Boolean              @default(false) @map("est_principal")
   telephone            String?
   /// Numéro de la carte professionnelle moniteur
   numeroCarteMoniteur  String?              @map("numero_carte_moniteur")
@@ -395,14 +401,29 @@ model Moniteur {
   createdAt            DateTime             @default(now()) @map("created_at")
   updatedAt            DateTime             @updatedAt @map("updated_at")
 
-  autoEcole       AutoEcole             @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
-  categoriePermis CategoriePermisEcole? @relation(fields: [categoriePermisId], references: [id], onDelete: SetNull)
-  paiements     Paiement[]
-  seancesExamen SeanceExamen[]
-  eleves        Eleve[]
+  autoEcole            AutoEcole                 @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  categoriePermis      CategoriePermisEcole?     @relation(fields: [categoriePermisId], references: [id], onDelete: SetNull)
+  categoriesEnseignees MoniteurCategoriePermis[]
+  paiements            Paiement[]
+  seancesExamen        SeanceExamen[]
+  eleves               Eleve[]
 
   @@index([autoEcoleId])
   @@map("moniteurs")
+}
+
+/// Catégories enseignées par un moniteur (plusieurs pour le moniteur principal)
+model MoniteurCategoriePermis {
+  moniteurId        String   @map("moniteur_id")
+  categoriePermisId String   @map("categorie_permis_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  moniteur        Moniteur             @relation(fields: [moniteurId], references: [id], onDelete: Cascade)
+  categoriePermis CategoriePermisEcole @relation(fields: [categoriePermisId], references: [id], onDelete: Cascade)
+
+  @@id([moniteurId, categoriePermisId])
+  @@index([categoriePermisId])
+  @@map("moniteur_categories_permis")
 }
 
 enum VehicleType {

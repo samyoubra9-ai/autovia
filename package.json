@@ -12,7 +12,8 @@
     "env:sync": "node scripts/sync-env-urls.mjs",
     "brand:sync": "node scripts/sync-brand-icons.mjs",
     "push:generate-vapid": "node scripts/generate-vapid-keys.mjs",
-    "build:all": "npm run build && npm run build --prefix backdash && npm run build --prefix candidat && npm run build --prefix platform-admin"
+    "build:all": "npm run build && npm run build --prefix backdash && npm run build --prefix candidat && npm run build --prefix platform-admin",
+    "db:sql:moniteur-principal": "node -e \"console.log('Exécuter docs/sql/moniteur-principal-prod.sql dans Supabase SQL Editor (prod).')\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
