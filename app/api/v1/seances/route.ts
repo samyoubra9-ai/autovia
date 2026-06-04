@@ -3,6 +3,11 @@ import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { parseOptionalRelationId } from "@/lib/api/optional-id"
 import { parseSeanceType } from "@/lib/api/seance-type"
+import {
+  ensureEngagementsForTenant,
+  loadEngagementsForSeanceIds,
+  syncSeanceEngagement,
+} from "@/lib/api/candidat-engagement"
 import { toSeanceExamenDto } from "@/lib/api/mappers-seance"
 import { safeMapSync } from "@/lib/api/safe"
 import {
@@ -37,9 +42,17 @@ export async function GET(request: Request) {
           }
         : undefined
 
+    await ensureEngagementsForTenant(tenant.autoEcoleId)
     const seances = await listSeancesForTenant(tenant.autoEcoleId, dateFilter)
+    const engagementMap = await loadEngagementsForSeanceIds(seances.map((s) => s.id))
     return jsonWithCors(
-      { seances: safeMapSync(seances, (s) => toSeanceExamenDto(s), "seance") },
+      {
+        seances: safeMapSync(
+          seances,
+          (s) => toSeanceExamenDto(s, engagementMap.get(s.id) ?? null),
+          "seance",
+        ),
+      },
       origin,
     )
   } catch (error) {
@@ -108,7 +121,20 @@ export async function POST(request: Request) {
       messageCandidat: trimMsg(body.messageCandidat),
     })
 
-    const dto = toSeanceExamenDto(seance)
+    await syncSeanceEngagement({
+      autoEcoleId: tenant.autoEcoleId,
+      eleveId,
+      seanceId: seance.id,
+      statut,
+      dateHeure,
+    })
+
+    const dto = toSeanceExamenDto(
+      seance,
+      (
+        await loadEngagementsForSeanceIds([seance.id])
+      ).get(seance.id) ?? null,
+    )
     if (!dto) throw new ApiError(500, "Erreur lors de la création de la séance.")
 
     notifyCandidatSeanceCreated({

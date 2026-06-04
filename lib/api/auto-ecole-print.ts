@@ -15,6 +15,7 @@ export type AutoEcolePrintSettings = {
 }
 
 export type AutoEcolePrintInput = {
+  nom?: string | null
   wilaya?: string | null
   nomAr?: string | null
   adresseMagasin?: string | null
@@ -49,7 +50,15 @@ export function toAutoEcolePrintSettings(ae: AutoEcole): AutoEcolePrintSettings 
 export function parseAutoEcolePrintInput(body: unknown): AutoEcolePrintInput {
   if (!body || typeof body !== "object") throw new Error("Corps invalide.")
   const b = body as Record<string, unknown>
+  let nom: string | null | undefined
+  if (b.nom !== undefined) {
+    nom = trimOrNull(b.nom)
+    if (!nom || nom.length < 2) {
+      throw new Error("Nom d'auto-école trop court (2 caractères minimum).")
+    }
+  }
   return {
+    nom,
     wilaya: trimOrNull(b.wilaya),
     nomAr: trimOrNull(b.nomAr),
     adresseMagasin: trimOrNull(b.adresseMagasin),
@@ -63,7 +72,7 @@ export function parseAutoEcolePrintInput(body: unknown): AutoEcolePrintInput {
 }
 
 export function printSettingsToPrismaUpdate(input: AutoEcolePrintInput) {
-  return {
+  const data: Record<string, string | null> = {
     wilaya: input.wilaya ?? null,
     nomAr: input.nomAr ?? null,
     adresseMagasin: input.adresseMagasin ?? null,
@@ -74,6 +83,10 @@ export function printSettingsToPrismaUpdate(input: AutoEcolePrintInput) {
     telephone: input.telephone ?? null,
     ville: input.ville ?? null,
   }
+  if (input.nom !== undefined) {
+    data.nom = input.nom
+  }
+  return data
 }
 
 /** Fusion paramètres école + champs propres à une liste (dates, centre session, etc.) */

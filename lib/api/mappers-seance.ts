@@ -1,3 +1,4 @@
+import type { CandidatEngagementDto } from "@/lib/api/candidat-engagement"
 import { getProgressPercent } from "@/lib/api/formation"
 import { resolveDisplayStatut, type SeanceWithRelations } from "@/lib/api/seances"
 import type { SeanceStatut, SeanceType } from "@prisma/client"
@@ -29,6 +30,7 @@ export type SeanceExamenDto = {
     modele: string
     matricule: string | null
   } | null
+  candidatEngagement: CandidatEngagementDto | null
 }
 
 /** Accepte aussi les retours `seanceIncludeBasic` (sans moniteur/véhicule joints). */
@@ -41,7 +43,10 @@ type SeanceRow = Omit<SeanceWithRelations, "moniteur" | "vehicule"> & {
   vehicule?: SeanceExamenDto["vehicule"] | null
 }
 
-export function toSeanceExamenDto(row: SeanceRow): SeanceExamenDto | null {
+export function toSeanceExamenDto(
+  row: SeanceRow,
+  candidatEngagement?: CandidatEngagementDto | null,
+): SeanceExamenDto | null {
   try {
     if (!row?.id || !row.eleveId) return null
     const dateHeure =
@@ -77,6 +82,7 @@ export function toSeanceExamenDto(row: SeanceRow): SeanceExamenDto | null {
       },
       moniteur: row.moniteur ?? null,
       vehicule: row.vehicule ?? null,
+      candidatEngagement: candidatEngagement ?? null,
     }
   } catch (error) {
     console.warn("[toSeanceExamenDto] skip", error)

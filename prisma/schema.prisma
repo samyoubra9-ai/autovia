@@ -85,6 +85,7 @@ model AutoEcole {
   vehicules     Vehicule[]
   paiements     Paiement[]
   seancesExamen SeanceExamen[]
+  candidatEngagements CandidatEngagement[]
   listesExamen       ListeExamen[]
   categoriesPermis   CategoriePermisEcole[]
   adminAuditLogs     SiteAdminAuditLog[]
@@ -191,6 +192,21 @@ enum ListeExamenStatut {
   validee
 }
 
+enum CandidatEngagementType {
+  seance
+  examen
+
+  @@map("candidat_engagement_type")
+}
+
+enum CandidatEngagementStatut {
+  en_attente
+  accepte
+  refuse
+
+  @@map("candidat_engagement_statut")
+}
+
 enum NatureExamenListe {
   code
   creneau
@@ -282,6 +298,7 @@ model Eleve {
   paiements              Paiement[]
   seancesExamen          SeanceExamen[]
   listeExamenCandidats   ListeExamenCandidat[]
+  candidatEngagements    CandidatEngagement[]
   pushSubscriptions      CandidatPushSubscription[]
 
   @@unique([autoEcoleId, identifiant])
@@ -497,4 +514,26 @@ model SeanceExamen {
   @@index([autoEcoleId, dateHeure])
   @@index([vehiculeId, dateHeure])
   @@map("seances_examen")
+}
+
+/// Réponse candidat (accepter / refuser) pour une séance ou une convocation examen
+model CandidatEngagement {
+  id           String                   @id @default(cuid())
+  autoEcoleId  String                   @map("auto_ecole_id")
+  eleveId      String                   @map("eleve_id")
+  type         CandidatEngagementType
+  referenceId  String                   @map("reference_id")
+  statut       CandidatEngagementStatut @default(en_attente)
+  motif        String?
+  reponduAt    DateTime?                @map("repondu_at")
+  createdAt    DateTime                 @default(now()) @map("created_at")
+  updatedAt    DateTime                 @updatedAt @map("updated_at")
+
+  autoEcole AutoEcole @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  eleve     Eleve     @relation(fields: [eleveId], references: [id], onDelete: Cascade)
+
+  @@unique([type, referenceId])
+  @@index([eleveId])
+  @@index([autoEcoleId])
+  @@map("candidat_engagements")
 }

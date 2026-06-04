@@ -3,6 +3,11 @@ import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { parseOptionalRelationId } from "@/lib/api/optional-id"
 import { parseSeanceType } from "@/lib/api/seance-type"
+import {
+  deleteSeanceEngagement,
+  loadEngagementsForSeanceIds,
+  syncSeanceEngagement,
+} from "@/lib/api/candidat-engagement"
 import { toSeanceExamenDto } from "@/lib/api/mappers-seance"
 import {
   assertSeanceHorizonLibre,
@@ -97,6 +102,14 @@ export async function PATCH(request: Request, { params }: Params) {
       return s.length ? s : null
     }
 
+    const dateChanged =
+      body.dateHeure !== undefined &&
+      new Date(String(body.dateHeure)).getTime() !== existing.dateHeure.getTime()
+    const statutChanged = body.statut !== undefined && body.statut !== existing.statut
+    const messageChanged =
+      body.messageCandidat !== undefined &&
+      trimOptional(body.messageCandidat) !== existing.messageCandidat
+
     const seance = await updateSeanceForTenant(id, {
       eleveId,
       type,
@@ -112,7 +125,21 @@ export async function PATCH(request: Request, { params }: Params) {
           : existing.messageCandidat,
     })
 
-    const dto = toSeanceExamenDto(seance)
+    await syncSeanceEngagement({
+      autoEcoleId: tenant.autoEcoleId,
+      eleveId,
+      seanceId: id,
+      statut,
+      dateHeure,
+      resetResponse: dateChanged || statutChanged || messageChanged,
+    })
+
+    const dto = toSeanceExamenDto(
+      seance,
+      (
+        await loadEngagementsForSeanceIds([id])
+      ).get(id) ?? null,
+    )
     if (!dto) throw new ApiError(500, "Erreur lors de la mise à jour de la séance.")
 
     notifyCandidatSeanceUpdated({
@@ -154,6 +181,7 @@ export async function DELETE(request: Request, { params }: Params) {
     if (!existing) throw new ApiError(404, "Séance introuvable.")
 
     await prisma.seanceExamen.delete({ where: { id } })
+    await deleteSeanceEngagement(id)
 
     notifyCandidatSeanceDeleted({
       eleveId: existing.eleveId,

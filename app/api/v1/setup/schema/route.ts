@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   try {
     await requireTenant(request)
 
-    const [pivot, principalCol] = await Promise.all([
+    const [pivot, principalCol, engagementsTable] = await Promise.all([
       prisma.$queryRaw<Array<{ exists: boolean }>>`
         SELECT EXISTS (
           SELECT 1 FROM information_schema.tables
@@ -29,20 +29,30 @@ export async function GET(request: Request) {
             AND column_name = 'est_principal'
         ) AS "exists"
       `,
+      prisma.$queryRaw<Array<{ exists: boolean }>>`
+        SELECT EXISTS (
+          SELECT 1 FROM information_schema.tables
+          WHERE table_schema = 'public' AND table_name = 'candidat_engagements'
+        ) AS "exists"
+      `,
     ])
 
     const moniteurCategoriesPivot = Boolean(pivot[0]?.exists)
     const moniteurEstPrincipal = Boolean(principalCol[0]?.exists)
-    const ok = moniteurCategoriesPivot && moniteurEstPrincipal
+    const candidatEngagements = Boolean(engagementsTable[0]?.exists)
+    const ok = moniteurCategoriesPivot && moniteurEstPrincipal && candidatEngagements
 
     return jsonWithCors(
       {
         ok,
         moniteurCategoriesPivot,
         moniteurEstPrincipal,
+        candidatEngagements,
         hint: ok
           ? null
-          : "Exécutez docs/sql/moniteur-principal-prod.sql sur Supabase production, puis redéployez l’API (projet Vercel racine).",
+          : !candidatEngagements
+            ? "Exécutez docs/sql/candidat-engagements-prod.sql sur Supabase, puis redéployez l’API."
+            : "Exécutez docs/sql/moniteur-principal-prod.sql sur Supabase production, puis redéployez l’API (projet Vercel racine).",
       },
       origin,
     )

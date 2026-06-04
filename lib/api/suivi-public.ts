@@ -1,3 +1,9 @@
+import {
+  ensureEngagementsForEleve,
+  isEngagementsTableReady,
+  loadEngagementsByEleveId,
+  type CandidatEngagementDto,
+} from "@/lib/api/candidat-engagement"
 import { ApiError } from "@/lib/api/errors"
 import { getEtapesValidees } from "@/lib/api/formation"
 import { formatCodeSuiviDisplay, normalizeCodeSuivi } from "@/lib/api/code-suivi"
@@ -67,6 +73,7 @@ export type SuiviPublicDto = {
     statutAffichage: SeanceStatut
     messageCandidat: string | null
     notes: string | null
+    engagement: CandidatEngagementDto | null
   }>
   examensOfficiels: Array<{
     id: string
@@ -79,7 +86,10 @@ export type SuiviPublicDto = {
     resultatLabel: string | null
     messageCategorie: string | null
     heureConvocation: string | null
+    engagement: CandidatEngagementDto | null
   }>
+  /** false si la migration SQL candidat_engagements n’est pas appliquée */
+  confirmationsReady: boolean
   notifications: Array<{
     id: string
     type: "seance" | "examen" | "paiement" | "parcours"
@@ -87,6 +97,9 @@ export type SuiviPublicDto = {
     message: string
     at: string | null
     urgent: boolean
+    engagementId?: string
+    confirmationStatut?: CandidatEngagementDto["statut"]
+    requiresConfirmation?: boolean
   }>
 }
 
@@ -148,6 +161,7 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
         statutAffichage: resolveDisplayStatut(statut, dateHeure),
         messageCandidat,
         notes,
+        engagement: null as CandidatEngagementDto | null,
       }
     } catch {
       return null
@@ -190,7 +204,45 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
     seances,
     examensOfficiels,
     notifications: [],
+    confirmationsReady: false,
   }
+
+  const confirmationsReady = await isEngagementsTableReady()
+  dto.confirmationsReady = confirmationsReady
+  if (!confirmationsReady) {
+    console.warn(
+      "[suivi-public] Table candidat_engagements absente — boutons candidat limités",
+    )
+  }
+
+  if (confirmationsReady) {
+    await ensureEngagementsForEleve({
+      autoEcoleId: eleve.autoEcoleId,
+      eleveId: eleve.id,
+      seances: (eleve.seancesExamen ?? []).map((s) => ({
+        id: s.id,
+        statut: (s.statut ?? "planifie") as SeanceStatut,
+        dateHeure:
+          s.dateHeure instanceof Date ? s.dateHeure : new Date(s.dateHeure),
+      })),
+      examens: (eleve.listeExamenCandidats ?? []).map((c) => ({
+        id: c.id,
+        resultat: c.resultat,
+      })),
+    })
+  }
+
+  const engagements = await loadEngagementsByEleveId(eleve.id)
+  const byRef = new Map(
+    engagements.map((e) => [`${e.type}:${e.referenceId}`, e] as const),
+  )
+  for (const s of dto.seances) {
+    s.engagement = byRef.get(`seance:${s.id}`) ?? null
+  }
+  for (const ex of dto.examensOfficiels) {
+    ex.engagement = byRef.get(`examen:${ex.id}`) ?? null
+  }
+
   dto.notifications = buildNotifications(dto)
   return dto
 }
@@ -261,6 +313,7 @@ function buildExamensOfficiels(rows: ListeCandidatRow[], eleveGroupKey: string) 
         resultatLabel: resultat ? formatResultatPrint(resultat) : null,
         messageCategorie: msg.message,
         heureConvocation: msg.heureConvocation,
+        engagement: null as CandidatEngagementDto | null,
       }
     })
     .filter((x): x is NonNullable<typeof x> => x !== null)
@@ -276,37 +329,82 @@ function buildNotifications(dto: SuiviPublicDto): SuiviPublicDto["notifications"
     if (s.statut === "annule") continue
     const t = new Date(s.dateHeure).getTime()
     if (t < now - 30 * 60 * 1000) continue
-    const urgent = t <= in48h && s.statutAffichage === "planifie"
+    const eng = s.engagement
+    const pending = eng?.statut === "en_attente"
+    const urgent =
+      pending || (t <= in48h && s.statutAffichage === "planifie")
     const custom = s.messageCandidat ?? s.notes
+    let title = urgent ? "Séance prochainement" : "Séance planifiée"
+    let message = custom
+      ? custom
+      : `${s.typeLabel} — ${formatNotifDate(s.dateHeure)}`
+    if (eng?.statut === "accepte") {
+      title = "Séance confirmée"
+      message = `Vous avez accepté : ${s.typeLabel} — ${formatNotifDate(s.dateHeure)}`
+    } else if (eng?.statut === "refuse") {
+      title = "Séance refusée"
+      message = eng.motif
+        ? `Motif : ${eng.motif}`
+        : `Refus enregistré pour ${s.typeLabel}`
+    } else if (pending) {
+      title = "Confirmer votre présence"
+      message = custom
+        ? `${custom} — Merci de confirmer ou refuser.`
+        : `${s.typeLabel} le ${formatNotifDate(s.dateHeure)} — confirmez votre présence.`
+    }
     items.push({
       id: `seance-${s.id}`,
       type: "seance",
-      title: urgent ? "Séance prochainement" : "Séance planifiée",
-      message: custom
-        ? custom
-        : `${s.typeLabel} — ${formatNotifDate(s.dateHeure)}`,
+      title,
+      message,
       at: s.dateHeure,
       urgent,
+      engagementId: eng?.id,
+      confirmationStatut: eng?.statut,
+      requiresConfirmation: pending,
     })
   }
 
   for (const ex of dto.examensOfficiels) {
     const at = parseListeDate(ex.dateExamen)
     const hasResult = Boolean(ex.resultat)
+    const eng = ex.engagement
+    const pending = eng?.statut === "en_attente"
     const convocParts: string[] = []
     if (ex.heureConvocation) convocParts.push(`à ${ex.heureConvocation}`)
     if (ex.messageCategorie) convocParts.push(ex.messageCategorie)
     const convoc = convocParts.length ? convocParts.join(" — ") : null
+    let title = hasResult ? "Résultat d'examen" : "Examen officiel"
+    let message = hasResult
+      ? `${ex.natureLabel} — ${ex.resultatLabel ?? ex.resultat}`
+      : convoc ??
+        `${ex.natureLabel} le ${ex.dateExamen} · ${ex.centreExamen}`
+    if (eng?.statut === "accepte") {
+      title = "Examen confirmé"
+      message = `Vous avez accepté la convocation : ${ex.natureLabel}`
+    } else if (eng?.statut === "refuse") {
+      title = "Examen refusé"
+      message = eng.motif
+        ? `Motif : ${eng.motif}`
+        : `Refus enregistré pour ${ex.natureLabel}`
+    } else if (pending && !hasResult) {
+      title = "Confirmer votre convocation"
+      message = convoc
+        ? `${convoc} — Merci de confirmer ou refuser.`
+        : `${ex.natureLabel} le ${ex.dateExamen} — confirmez votre présence.`
+    }
     items.push({
       id: `examen-${ex.id}`,
       type: "examen",
-      title: hasResult ? "Résultat d'examen" : "Examen officiel",
-      message: hasResult
-        ? `${ex.natureLabel} — ${ex.resultatLabel ?? ex.resultat}`
-        : convoc ??
-          `${ex.natureLabel} le ${ex.dateExamen} · ${ex.centreExamen}`,
+      title,
+      message,
       at: at?.toISOString() ?? null,
-      urgent: !hasResult && at !== null && at.getTime() <= in48h && at.getTime() >= now,
+      urgent:
+        pending ||
+        (!hasResult && at !== null && at.getTime() <= in48h && at.getTime() >= now),
+      engagementId: eng?.id,
+      confirmationStatut: eng?.statut,
+      requiresConfirmation: pending && !hasResult,
     })
   }
 

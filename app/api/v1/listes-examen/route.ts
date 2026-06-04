@@ -15,6 +15,7 @@ import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { assertSetupCanCreateListeExamen } from "@/lib/api/setup-guards"
 import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
 import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
+import { syncExamenEngagement } from "@/lib/api/candidat-engagement"
 import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 import type { NatureExamenListe } from "@prisma/client"
@@ -295,6 +296,12 @@ export async function POST(request: Request) {
 
     for (const c of liste.candidats) {
       const msg = messageByCat.get(c.categoriePermisId)
+      await syncExamenEngagement({
+        autoEcoleId: tenant.autoEcoleId,
+        eleveId: c.eleveId,
+        listeExamenCandidatId: c.id,
+        resultat: c.resultat,
+      })
       notifyCandidatExamenListe({
         eleveId: c.eleveId,
         dateExamen: liste.dateExamen,

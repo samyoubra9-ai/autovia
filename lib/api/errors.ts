@@ -48,6 +48,12 @@ function prismaUserMessage(error: unknown): string | null {
       : PROD_SCHEMA_ERROR
   }
 
+  if (msg.includes("candidat_engagements") || msg.includes("CandidatEngagement")) {
+    return isDev
+      ? "Table confirmations candidat manquante. Exécutez supabase/migrations/20260604000000_candidat_engagements.sql ou docs/sql/candidat-engagements-prod.sql dans Supabase, puis npx prisma generate."
+      : PROD_SCHEMA_ERROR
+  }
+
   if (msg.includes("code_suivi")) {
     return isDev
       ? "Colonne code de suivi manquante. Exécutez supabase/migrations/20260515200000_eleve_code_suivi.sql dans Supabase."
