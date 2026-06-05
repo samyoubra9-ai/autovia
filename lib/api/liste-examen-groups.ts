@@ -12,27 +12,34 @@ export function categoriesInListeGroup<T extends { code: string }>(
   return categories.filter((c) => listeExamenGroupKey(c.code) === groupKey)
 }
 
-/** Ordre d'affichage des blocs : B, puis A (+A1), puis le reste par ordre catégorie. */
-export function sortListeExamenGroupKeys(
-  keys: string[],
-  categories: { code: string; ordre: number }[],
-): string[] {
-  const minOrdre = (gk: string) => {
-    const cats = categoriesInListeGroup(categories, gk)
-    if (cats.length === 0) return 999
-    return Math.min(...cats.map((c) => c.ordre))
-  }
-  const rank = (gk: string) => {
-    if (gk === "B") return 0
-    if (gk === "A") return 1
-    return 2 + minOrdre(gk)
-  }
-  return [...new Set(keys)].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b))
+/** Rang officiel pour trier codes / sections (indépendant des paramètres école). */
+const OFFICIAL_GROUP_RANK: Record<string, number> = {
+  B: 0,
+  A: 1,
+  C: 10,
+  C1: 11,
+  D: 12,
+  BE: 20,
+  CE: 21,
+  C1E: 22,
+  DE: 23,
+}
+
+export function listeExamenGroupSortRank(groupKey: string): number {
+  const gk = groupKey.trim().toUpperCase()
+  return OFFICIAL_GROUP_RANK[gk] ?? 100 + gk.charCodeAt(0)
+}
+
+/** Ordre d'affichage des blocs : B, puis A (+A1), puis le reste (ordre officiel fixe). */
+export function sortListeExamenGroupKeys(keys: string[]): string[] {
+  return [...new Set(keys)].sort(
+    (a, b) => listeExamenGroupSortRank(a) - listeExamenGroupSortRank(b) || a.localeCompare(b),
+  )
 }
 
 /** Catégories présentes sur la liste (uniquement celles des candidats sélectionnés). */
 export function categoriesUsedByListeCandidats<
-  T extends { id: string; code: string; ordre: number },
+  T extends { id: string; code: string },
 >(
   categories: T[],
   candidats: Array<{ categoriePermisId?: string; categorieCode?: string }>,
@@ -52,13 +59,18 @@ export function categoriesUsedByListeCandidats<
 
   return categories
     .filter((cat) => ids.has(cat.id) || codes.has(cat.code.toUpperCase()))
-    .sort((a, b) => a.ordre - b.ordre || a.code.localeCompare(b.code))
+    .sort(
+      (a, b) =>
+        listeExamenGroupSortRank(listeExamenGroupKey(a.code)) -
+          listeExamenGroupSortRank(listeExamenGroupKey(b.code)) ||
+        a.code.localeCompare(b.code),
+    )
 }
 
 /** Blocs d'impression : une section par groupe de permis représenté parmi les candidats. */
 export function listeExamenGroupKeysFromCandidats(
   candidats: Array<{ categoriePermisId?: string; categorieCode?: string }>,
-  categories: Array<{ id: string; code: string; ordre: number }>,
+  categories: Array<{ id: string; code: string }>,
 ): string[] {
   const cats = categoriesUsedByListeCandidats(categories, candidats)
   const keys = new Set<string>()
@@ -69,5 +81,5 @@ export function listeExamenGroupKeysFromCandidats(
       ""
     if (code) keys.add(listeExamenGroupKey(code))
   }
-  return sortListeExamenGroupKeys([...keys], cats)
+  return sortListeExamenGroupKeys([...keys])
 }

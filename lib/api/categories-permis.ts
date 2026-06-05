@@ -1,6 +1,8 @@
 import type { CategoriePermisEcole } from "@prisma/client"
 import type { PrismaDb } from "@/lib/prisma"
 import { ApiError } from "@/lib/api/errors"
+import { listeExamenGroupKey, listeExamenGroupSortRank } from "@/lib/api/liste-examen-groups"
+import { placesListeMaxForPermisCode } from "@/lib/liste-examen-places-reglement"
 
 export type CategoriePermisDto = {
   id: string
@@ -53,7 +55,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "D",
     libelleFr: "Catégorie D",
     libelleAr: "صنف د",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 4,
   },
@@ -61,7 +63,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "C1",
     libelleFr: "Catégorie C1",
     libelleAr: "صنف ج1",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 5,
   },
@@ -69,7 +71,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "C",
     libelleFr: "Catégorie C",
     libelleAr: "صنف ج",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 6,
   },
@@ -77,7 +79,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "BE",
     libelleFr: "Catégorie BE",
     libelleAr: "صنف ب ه",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 7,
   },
@@ -85,7 +87,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "C1E",
     libelleFr: "Catégorie C1E",
     libelleAr: "صنف ج1 ه",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 8,
   },
@@ -93,7 +95,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "CE",
     libelleFr: "Catégorie CE",
     libelleAr: "صنف ج ه",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 9,
   },
@@ -101,7 +103,7 @@ export const DEFAULT_CATEGORIES: Array<{
     code: "DE",
     libelleFr: "Catégorie DE",
     libelleAr: "صنف د ه",
-    placesListe: 10,
+    placesListe: 5,
     prixPermis: DEFAULT_PRIX_PERMIS,
     ordre: 10,
   },
@@ -121,25 +123,40 @@ export function toCategoriePermisDto(row: CategoriePermisEcole): CategoriePermis
   }
 }
 
-function parsePlacesListe(raw: unknown, code: string): number {
-  const n = Number(raw)
-  if (!Number.isFinite(n)) {
-    if (code === "B") return 15
-    return 10
+export function defaultOrdreForPermisCode(code: string): number {
+  const upper = code.trim().toUpperCase()
+  const found = DEFAULT_CATEGORIES.find((c) => c.code === upper)
+  return found?.ordre ?? 99
+}
+
+export function sortCategoriesByOfficialOrder<T extends { code: string }>(cats: T[]): T[] {
+  return [...cats].sort(
+    (a, b) =>
+      listeExamenGroupSortRank(listeExamenGroupKey(a.code)) -
+        listeExamenGroupSortRank(listeExamenGroupKey(b.code)) ||
+      a.code.localeCompare(b.code),
+  )
+}
+
+export function catalogEntryForPermisCode(code: string) {
+  const upper = code.trim().toUpperCase()
+  const entry = DEFAULT_CATEGORIES.find((c) => c.code === upper)
+  if (!entry) {
+    throw new ApiError(
+      400,
+      `Catégorie « ${code} » inconnue. Choisissez une catégorie du catalogue officiel.`,
+    )
   }
-  const places = Math.round(n)
-  if (places < 1 || places > 50) {
-    throw new ApiError(400, "Nombre de places sur la liste : entre 1 et 50.")
-  }
-  return places
+  return entry
 }
 
 function parsePrixPermis(raw: unknown): number {
+  if (raw === null || raw === undefined || raw === "") return DEFAULT_PRIX_PERMIS
   const n = Number(raw)
-  if (!Number.isFinite(n)) return DEFAULT_PRIX_PERMIS
+  if (!Number.isFinite(n) || n < 1) return DEFAULT_PRIX_PERMIS
   const prix = Math.round(n)
-  if (prix < 1 || prix > 10_000_000) {
-    throw new ApiError(400, "Prix du forfait permis : entre 1 et 10 000 000 DZD.")
+  if (prix > 10_000_000) {
+    throw new ApiError(400, "Prix du forfait permis : maximum 10 000 000 DZD.")
   }
   return prix
 }
@@ -163,17 +180,17 @@ export function parseCategoriePermisInput(body: unknown): {
   if (!code || code.length > 12) {
     throw new ApiError(400, "Code catégorie requis (12 caractères max).")
   }
-  const libelleFr = String(b.libelleFr ?? "").trim()
-  if (!libelleFr) throw new ApiError(400, "Libellé français requis.")
-  const libelleAr = String(b.libelleAr ?? "").trim() || null
+  const catalog = catalogEntryForPermisCode(code)
+  const libelleFr = String(b.libelleFr ?? "").trim() || catalog.libelleFr
+  const libelleAr = String(b.libelleAr ?? "").trim() || catalog.libelleAr
   return {
     code,
     libelleFr,
     libelleAr,
-    placesListe: parsePlacesListe(b.placesListe, code),
+    placesListe: placesListeMaxForPermisCode(code),
     surListeExamen: b.surListeExamen !== false,
     prixPermis: parsePrixPermis(b.prixPermis),
-    ordre: Number(b.ordre) || 0,
+    ordre: defaultOrdreForPermisCode(code),
     actif: b.actif !== false,
   }
 }
@@ -208,17 +225,21 @@ export function parseOnboardingCategoriesInput(raw: unknown): OnboardingCategori
       .replace(/\s+/g, "")
     if (!code) continue
 
+    const catalog = DEFAULT_CATEGORIES.find((c) => c.code === code)
     const libelleFr =
-      String(o.libelleFr ?? "").trim() || `Catégorie ${code}`
-    const libelleAr = String(o.libelleAr ?? "").trim() || null
+      String(o.libelleFr ?? "").trim() || catalog?.libelleFr || `Catégorie ${code}`
+    const libelleAr = String(o.libelleAr ?? "").trim() || catalog?.libelleAr || null
+    if (!catalog) {
+      throw new ApiError(400, `Catégorie « ${code} » inconnue.`)
+    }
     const parsed = {
       code,
       libelleFr,
       libelleAr,
-      placesListe: parsePlacesListe(o.placesListe, code),
+      placesListe: placesListeMaxForPermisCode(code),
       surListeExamen: o.surListeExamen !== false,
       prixPermis: parsePrixPermis(o.prixPermis),
-      ordre: Number(o.ordre) || i + 1,
+      ordre: defaultOrdreForPermisCode(code),
     }
     byCode.set(code, parsed)
   }
@@ -251,47 +272,22 @@ export async function createCategoriesPermisForAutoEcole(
   })
 }
 
-function defaultCategorieRow(autoEcoleId: string, c: (typeof DEFAULT_CATEGORIES)[number]) {
-  return {
-    autoEcoleId,
-    code: c.code,
-    libelleFr: c.libelleFr,
-    libelleAr: c.libelleAr,
-    placesListe: c.placesListe,
-    surListeExamen: true,
-    prixPermis: c.prixPermis,
-    ordre: c.ordre,
-    actif: true,
-  }
+export async function listCategoriesPermisForAutoEcole(
+  db: PrismaDb,
+  autoEcoleId: string,
+): Promise<CategoriePermisEcole[]> {
+  return db.categoriePermisEcole.findMany({
+    where: { autoEcoleId },
+    orderBy: [{ ordre: "asc" }, { code: "asc" }],
+  })
 }
 
+/** Liste les catégories de l'école (sans création automatique). */
 export async function ensureDefaultCategoriesPermis(
   db: PrismaDb,
   autoEcoleId: string,
 ): Promise<CategoriePermisEcole[]> {
-  const existing = await db.categoriePermisEcole.findMany({
-    where: { autoEcoleId },
-    orderBy: [{ ordre: "asc" }, { code: "asc" }],
-  })
-  const existingCodes = new Set(existing.map((c) => c.code.toUpperCase()))
-  const missing = DEFAULT_CATEGORIES.filter((c) => !existingCodes.has(c.code))
-
-  if (existing.length === 0) {
-    await db.categoriePermisEcole.createMany({
-      data: DEFAULT_CATEGORIES.map((c) => defaultCategorieRow(autoEcoleId, c)),
-    })
-  } else if (missing.length > 0) {
-    await db.categoriePermisEcole.createMany({
-      data: missing.map((c) => defaultCategorieRow(autoEcoleId, c)),
-      skipDuplicates: true,
-    })
-    return db.categoriePermisEcole.findMany({
-      where: { autoEcoleId },
-      orderBy: [{ ordre: "asc" }, { code: "asc" }],
-    })
-  }
-
-  return existing
+  return listCategoriesPermisForAutoEcole(db, autoEcoleId)
 }
 
 export async function assertCategoriePermisForTenant(

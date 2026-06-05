@@ -11,6 +11,9 @@ import {
   listeExamenGroupKeysFromCandidats,
 } from "@/lib/api/liste-examen-groups"
 import {
+  sectionTableRowCount,
+} from "@/lib/liste-examen-places-reglement"
+import {
   toMessagesCategorieDto,
   type ListeExamenMessageDto,
 } from "@/lib/api/liste-examen-messages"
@@ -187,11 +190,7 @@ export function buildSectionsForPrint(
       })
       .sort((a, b) => a.ordre - b.ordre)
 
-    const placesMin =
-      catsInGroup.length > 0
-        ? Math.max(...catsInGroup.map((c) => c.placesListe))
-        : Math.max(items.length, 1)
-    const rowCount = Math.max(placesMin, items.length)
+    const rowCount = sectionTableRowCount(gk, items.length)
 
     return {
       categoriePermisId: primaryCat?.id ?? items[0]?.categoriePermisId ?? gk,

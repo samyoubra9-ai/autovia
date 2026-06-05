@@ -2,6 +2,7 @@ import { categoriePermisArLabel } from "@/lib/api/categories-permis"
 import { listeExamenGroupKey } from "@/lib/api/liste-examen-groups"
 import type { CategoriePermisEcole, Eleve, NatureExamenListe } from "@prisma/client"
 import { ApiError } from "@/lib/api/errors"
+import { placesListeMaxForGroupKey } from "@/lib/liste-examen-places-reglement"
 
 export const NATURE_EXAMEN_AR: Record<NatureExamenListe, string> = {
   code: "قانون المرور",
@@ -69,7 +70,7 @@ export function validateCandidatsLimits(
     if (inactive) {
       throw new ApiError(400, `La catégorie « ${inactive.code} » est inactive.`)
     }
-    const maxPlaces = Math.max(...catsInGroup.map((c) => c.placesListe))
+    const maxPlaces = placesListeMaxForGroupKey(gk)
     const label = gk === "A" ? "A / A1" : gk
     if (count > maxPlaces) {
       throw new ApiError(
