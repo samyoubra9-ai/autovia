@@ -17,6 +17,20 @@ enum SubscriptionStatus {
   CANCELLED
 }
 
+enum SubscriptionPlan {
+  ESSENTIEL
+  PRO
+  ELITE
+}
+
+enum BillingPeriod {
+  ANNUAL
+  MONTHLY
+  TRIAL
+  COMPLIMENTARY
+  CUSTOM
+}
+
 enum UserRole {
   OWNER
   ADMIN
@@ -31,7 +45,8 @@ model SiteAdmin {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  auditLogs SiteAdminAuditLog[]
+  auditLogs                  SiteAdminAuditLog[]
+  subscriptionBillingRecords SubscriptionBillingRecord[]
 
   @@map("site_admins")
 }
@@ -72,7 +87,9 @@ model AutoEcole {
   listeNatureCreneauActive     Boolean @default(true) @map("liste_nature_creneau_active")
   listeNatureCirculationActive Boolean @default(true) @map("liste_nature_circulation_active")
   subscriptionStatus SubscriptionStatus @default(EXPIRED) @map("subscription_status")
-  trialEndsAt        DateTime           @map("trial_ends_at")
+  subscriptionPlan   SubscriptionPlan?    @map("subscription_plan")
+  maxElevesOverride  Int?                 @map("max_eleves_override")
+  trialEndsAt        DateTime             @map("trial_ends_at")
   paidUntil          DateTime?          @map("paid_until")
   adminNotes         String?            @map("admin_notes")
   createdAt          DateTime           @default(now()) @map("created_at")
@@ -88,9 +105,30 @@ model AutoEcole {
   candidatEngagements CandidatEngagement[]
   listesExamen       ListeExamen[]
   categoriesPermis   CategoriePermisEcole[]
-  adminAuditLogs     SiteAdminAuditLog[]
+  adminAuditLogs             SiteAdminAuditLog[]
+  subscriptionBillingRecords SubscriptionBillingRecord[]
 
   @@map("auto_ecoles")
+}
+
+model SubscriptionBillingRecord {
+  id               String            @id @default(cuid())
+  autoEcoleId      String            @map("auto_ecole_id")
+  siteAdminId      String?           @map("site_admin_id")
+  subscriptionPlan SubscriptionPlan? @map("subscription_plan")
+  amountDzd        Int?              @map("amount_dzd")
+  billingPeriod    BillingPeriod     @map("billing_period")
+  paidUntil        DateTime?         @map("paid_until") @db.Date
+  reference        String?
+  notes            String?
+  accessAction     String            @map("access_action")
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  autoEcole AutoEcole  @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+  siteAdmin SiteAdmin? @relation(fields: [siteAdminId], references: [id], onDelete: SetNull)
+
+  @@index([autoEcoleId, createdAt(sort: Desc)])
+  @@map("subscription_billing_records")
 }
 
 model User {
