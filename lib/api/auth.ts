@@ -113,8 +113,27 @@ export async function requireTenant(request: Request): Promise<TenantContext> {
   }
 }
 
+const ELEVE_IDENTIFIANT_RE = /^ELV-(\d{4})-(\d+)$/
+
 export async function generateEleveIdentifiant(autoEcoleId: string): Promise<string> {
-  const count = await prisma.eleve.count({ where: { autoEcoleId } })
   const year = new Date().getFullYear()
-  return `ELV-${year}-${String(count + 1).padStart(4, "0")}`
+  const prefix = `ELV-${year}-`
+
+  const rows = await prisma.eleve.findMany({
+    where: {
+      autoEcoleId,
+      identifiant: { startsWith: prefix },
+    },
+    select: { identifiant: true },
+  })
+
+  let maxSeq = 0
+  for (const row of rows) {
+    const match = row.identifiant.match(ELEVE_IDENTIFIANT_RE)
+    if (match && Number(match[1]) === year) {
+      maxSeq = Math.max(maxSeq, Number.parseInt(match[2], 10))
+    }
+  }
+
+  return `${prefix}${String(maxSeq + 1).padStart(4, "0")}`
 }

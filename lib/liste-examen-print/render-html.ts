@@ -1,4 +1,3 @@
-import { permisCodeEnArabe } from "@/lib/api/categories-permis"
 import type { ListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import {
   listeExamenContinuationContext,
@@ -6,9 +5,9 @@ import {
   listeExamenFirstPageMultiHint,
   listeExamenMultiPageLegalNotice,
   listeExamenPageLabel,
-  listeExamenReferenceLine,
 } from "./document-meta"
 import { buildListeExamenPrintPages, type ListeExamenTableChunk } from "./pagination"
+import { listeExamenMoniteurCategorieLabel } from "./moniteur-categorie-label"
 import { listeExamenPrintStyles } from "./styles"
 
 function escapeHtml(s: string): string {
@@ -23,12 +22,22 @@ function pad2(n: number): string {
   return String(Number(n) || 0).padStart(2, "0")
 }
 
+function renderNomCell(data: { nomListe?: string; prenomListe?: string; nomCompletAr?: string } | null): string {
+  if (!data) return ""
+  const nom = data.nomListe?.trim() ?? ""
+  const prenom = data.prenomListe?.trim() ?? ""
+  if (nom && prenom) {
+    return `<span class="cell-nom-n">${escapeHtml(nom)}</span><span class="cell-nom-p">${escapeHtml(prenom)}</span>`
+  }
+  if (nom || prenom) return escapeHtml(nom || prenom)
+  return escapeHtml(data.nomCompletAr ?? "")
+}
+
 function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): string {
   const safeRows = chunk.rows.length > 0 ? chunk.rows : [null]
   return safeRows
     .map((data, i) => {
       const isEmpty = !data
-      const rowNum = String(chunk.rowStartIndex + i + 1).padStart(2, "0")
       const resultText = data?.resultatAr?.trim() || ""
 
       const vehicleCell =
@@ -47,9 +56,8 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
 
       return `<tr class="${isEmpty ? "row-empty" : ""}">
         ${vehicleCell}
-        <td>${rowNum}</td>
         <td>${escapeHtml(data?.numeroDossier ?? "")}</td>
-        <td class="cell-nom">${escapeHtml(data?.nomCompletAr ?? "")}</td>
+        <td class="cell-nom">${renderNomCell(data)}</td>
         <td>${escapeHtml(data?.dateNaissance ?? "")}</td>
         ${groupeCell}
         <td>${escapeHtml(data?.natureExamenAr ?? "")}</td>
@@ -63,9 +71,8 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
 function tableHead(): string {
   return `<thead><tr>
     <th style="width:4%"></th>
-    <th style="width:5%">الرقم</th>
-    <th style="width:12%">رقم التسجيل</th>
-    <th style="width:30%">اللقب والاسم</th>
+    <th style="width:14%">رقم التسجيل</th>
+    <th style="width:33%">اللقب والاسم</th>
     <th style="width:12%">تاريخ الميلاد</th>
     <th style="width:5%"></th>
     <th style="width:12%">طبيعة الامتحان</th>
@@ -76,17 +83,17 @@ function tableHead(): string {
 
 export function renderListeExamenPrintHtml(
   liste: ListeExamenDto,
-  autoEcoleNom?: string,
+  _autoEcoleNom?: string,
 ): string {
   const sections = liste.sections ?? []
   const pages = buildListeExamenPrintPages(sections)
   const stats = liste.stats ?? { code: 0, creneau: 0, circulation: 0, total: 0 }
-  const referenceLine = listeExamenReferenceLine(liste.referenceEnvoi)
   const totalPages = pages.length
   const firstPageHint = listeExamenFirstPageMultiHint(totalPages)
   const legal = listeExamenMultiPageLegalNotice(totalPages)
-  const ecoleNom = autoEcoleNom?.trim() || liste.ecoleNomAr?.trim() || ""
   const inspecteur = liste.inspecteurNom?.trim() ?? ""
+  const moniteurCategorie = listeExamenMoniteurCategorieLabel(sections)
+  const moniteur2Nom = liste.moniteur2Nom?.trim() ?? ""
 
   const pagesHtml = pages
     .map((page) => {
@@ -96,11 +103,10 @@ export function renderListeExamenPrintHtml(
         ? `<div class="top-header">الجمهورية الجزائرية الديمقراطية الشعبية<br/>وزارة الداخلية والجماعات المحلية والنقل</div>
         <div class="header-section">
           <div class="header-right">المندوبية الوطنية للأمن في الطرق<br/>المندوبية الولائية للأمن في الطرق<br/>ولاية : ${escapeHtml(liste.wilaya)}</div>
-          <div class="header-left">ختم مدرسة تعليم السياقة${ecoleNom ? `<span class="ecole-nom-ar">${escapeHtml(ecoleNom)}</span>` : ""}</div>
+          <div class="header-left">ختم مدرسة تعليم السياقة</div>
         </div>
         <div class="main-title-container">
           <div class="main-title">قائمة المرشحين لإمتحان رخصة السياقة</div>
-          ${referenceLine ? `<p class="doc-reference">الرقم: ${escapeHtml(referenceLine)}</p>` : ""}
         </div>
         ${firstPageHint && page.pageIndex === 0 ? `<p class="first-page-hint">${escapeHtml(firstPageHint)}</p>` : ""}
         `
@@ -113,7 +119,6 @@ export function renderListeExamenPrintHtml(
             <span>تاريخ الإيداع: ${escapeHtml(liste.dateDepot)}</span>
             <span>تاريخ الإمتحان: ${escapeHtml(liste.dateExamen)}</span>
           </div>
-          ${referenceLine ? `<div class="exam-details-reference">الرقم: ${escapeHtml(referenceLine)}</div>` : ""}
           <div class="exam-details-bottom">اسم و لقب المفتش: ${escapeHtml(inspecteur)}</div>
         </div>`
         : ""
@@ -136,8 +141,8 @@ export function renderListeExamenPrintHtml(
         ? `<div class="footer-layout footer-section">
           <div class="footer-right-side">
             <div class="trainers-info">
-              <p>اسم ولقب الممرن الأول : ${escapeHtml(liste.moniteur1Nom?.trim() || "—")} مكلف: ${escapeHtml(permisCodeEnArabe(liste.moniteur1Categorie || "") || "—")}</p>
-              <p>اسم ولقب الممرن الثاني: ${escapeHtml(liste.moniteur2Nom?.trim() || "—")} مكلف: ${escapeHtml(permisCodeEnArabe(liste.moniteur2Categorie || "") || "—")}</p>
+              <p>اسم ولقب الممرن الأول : ${escapeHtml(liste.moniteur1Nom?.trim() || "—")} مكلف: ${escapeHtml(moniteurCategorie)}</p>
+              ${moniteur2Nom ? `<p>اسم ولقب الممرن الثاني: ${escapeHtml(moniteur2Nom)} مكلف: ${escapeHtml(moniteurCategorie)}</p>` : ""}
             </div>
             <table class="stats-table">
               <thead><tr>

@@ -24,6 +24,10 @@ import {
   parseResultatStored,
   type ResultatExamenCandidat,
 } from "@/lib/api/resultat-examen-candidat"
+import {
+  candidatNomPartsFromEleve,
+  formatCandidatNomLabel,
+} from "@/lib/liste-examen-print/format-candidat-nom"
 import type {
   CategoriePermisEcole,
   Eleve,
@@ -50,6 +54,10 @@ export type ListeExamenCandidatDto = {
   resultatAr: string
   numeroDossier: string
   sansDossier: boolean
+  /** اللقب — en tête de cellule */
+  nomListe: string
+  /** الاسم — après espace */
+  prenomListe: string
   nomCompletAr: string
   dateNaissance: string
   categorieAr: string
@@ -116,17 +124,10 @@ type CandidatWithRelations = ListeExamenCandidat & {
   categoriePermis: CategoriePermisEcole
 }
 
-function displayNomComplet(eleve: Eleve): string {
-  const nomAr = eleve.nomAr?.trim() ?? ""
-  const prenomAr = eleve.prenomAr?.trim() ?? ""
-  const ar = `${nomAr} ${prenomAr}`.trim()
-  if (ar) return ar
-  return `${eleve.nom} ${eleve.prenom}`.trim()
-}
-
 function toCandidatDto(c: CandidatWithRelations): ListeExamenCandidatDto {
   const dossier = c.eleve.numeroDossier?.trim() ?? ""
   const cat = c.categoriePermis ?? c.eleve.categoriePermis
+  const nomParts = candidatNomPartsFromEleve(c.eleve)
   return {
     id: c.id,
     eleveId: c.eleveId,
@@ -142,7 +143,9 @@ function toCandidatDto(c: CandidatWithRelations): ListeExamenCandidatDto {
     resultatAr: formatResultatPrint(parseResultatStored(c.resultat)),
     numeroDossier: dossier,
     sansDossier: !dossier,
-    nomCompletAr: displayNomComplet(c.eleve),
+    nomListe: nomParts.nom,
+    prenomListe: nomParts.prenom,
+    nomCompletAr: formatCandidatNomLabel(nomParts),
     dateNaissance: safeFormatDateListe(c.eleve.dateNaissance),
     categorieAr: categoriePermisArLabel(cat),
     sexe: c.eleve.sexe === "feminin" ? "feminin" : "masculin",

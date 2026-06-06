@@ -79,7 +79,21 @@ html, body {
 }
 .main-data-table thead th { background: #e8eaed; border-bottom: 2px solid #000; }
 .cell-nom {
+  position: relative;
   font-family: 'Traditional Arabic', 'Segoe UI', Tahoma, sans-serif; line-height: 1.3;
+  text-align: start;
+  padding-inline: 4px;
+}
+.cell-nom-n { unicode-bidi: isolate; position: relative; z-index: 1; }
+.cell-nom-p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  unicode-bidi: isolate;
+  max-width: 55%;
+  text-align: center;
+  white-space: nowrap;
 }
 .row-empty td { background: #ececec !important; color: #999 !important; font-weight: normal; }
 .rotated-cell { width: 4%; max-width: 28px; }

@@ -25,7 +25,7 @@ export function listeExamenContinuationContext(params: {
     `تاريخ الإمتحان ${params.dateExamen}`,
   ]
   const ref = listeExamenReferenceLine(params.referenceEnvoi)
-  if (ref) parts.push(`الرقم ${ref}`)
+  if (ref) parts.push(ref)
   return parts.join(" · ")
 }
 
