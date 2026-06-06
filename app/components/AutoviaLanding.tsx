@@ -14,6 +14,7 @@ import { ContactForm } from "./landing/ContactForm"
 import { ContactEmail } from "./landing/ContactEmail"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
+import { SUBSCRIPTION_PRICING, formatDzdAmount } from "@/lib/subscription-plans"
 
 const CheckIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -48,32 +49,29 @@ function LandingAnchor({
 
 export function AutoviaLanding({ links }: { links: LandingLinks }) {
   const products = buildProductCards(links)
-  const [isAnnual, setIsAnnual] = useState(true)
-  const [priceFade, setPriceFade] = useState(1)
-  const [priceValue, setPriceValue] = useState("12 000")
-  const [pricePeriod, setPricePeriod] = useState("/ an")
-  const [priceCalcText, setPriceCalcText] = useState(
-    "Soit 1 000 DZD / mois. Vous économisez 2 400 DZD !",
-  )
+  const [essentielAnnual, setEssentielAnnual] = useState(true)
+  const [proAnnual, setProAnnual] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
-  const togglePlan = () => {
-    setPriceFade(0)
-    const next = !isAnnual
-    window.setTimeout(() => {
-      if (next) {
-        setPriceValue("12 000")
-        setPricePeriod("/ an")
-        setPriceCalcText("Soit 1 000 DZD / mois. Vous économisez 2 400 DZD !")
-      } else {
-        setPriceValue("1 200")
-        setPricePeriod("/ mois")
-        setPriceCalcText("Facturé mensuellement (14 400 DZD / an au total).")
-      }
-      setIsAnnual(next)
-      setPriceFade(1)
-    }, 150)
-  }
+  const essentiel = SUBSCRIPTION_PRICING.ESSENTIEL
+  const pro = SUBSCRIPTION_PRICING.PRO
+  const elite = SUBSCRIPTION_PRICING.ELITE
+
+  const essentielPrice = essentielAnnual
+    ? formatDzdAmount(essentiel.annualDzd).replace(" DZD", "")
+    : formatDzdAmount(essentiel.monthlyDzd).replace(" DZD", "")
+  const essentielPeriod = essentielAnnual ? "/ an" : "/ mois"
+  const essentielCalc = essentielAnnual
+    ? `Soit ${formatDzdAmount(Math.round(essentiel.annualDzd / 12))} / mois. Vous économisez ${formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd)} !`
+    : `Facturé mensuellement (${formatDzdAmount(essentiel.annualFromMonthlyDzd)} / an au total).`
+
+  const proPrice = proAnnual
+    ? formatDzdAmount(pro.annualDzd).replace(" DZD", "")
+    : formatDzdAmount(pro.monthlyDzd).replace(" DZD", "")
+  const proPeriod = proAnnual ? "/ an" : "/ mois"
+  const proCalc = proAnnual
+    ? `Soit ${formatDzdAmount(Math.round(pro.annualDzd / 12))} / mois. Vous économisez ${formatDzdAmount(pro.annualSavingsVsMonthlyDzd)} !`
+    : `Facturé mensuellement (${formatDzdAmount(pro.annualFromMonthlyDzd)} / an au total).`
 
   return (
     <div className="ds-landing-page">
@@ -245,11 +243,14 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
       <section id="pricing" className="ds-pricing ds-container">
         <div className="ds-section-header">
           <p className="ds-eyebrow">Tarifs</p>
-          <h2>Un tarif simple, sans surprise</h2>
-          <p>Accès complet à toutes les fonctionnalités pour votre auto-école.</p>
+          <h2>Des offres adaptées à la taille de votre école</h2>
+          <p>
+            Paiement annuel avantageux — le mensuel coûte plus cher sur l&apos;année. L&apos;offre
+            sur mesure reste à négocier.
+          </p>
         </div>
 
-        <div className="ds-pricing-grid">
+        <div className="ds-pricing-grid ds-pricing-grid--wide">
           <div className="ds-pricing-card ds-pricing-card--trial">
             <div className="ds-trial-tag">Essai gratuit</div>
             <div className="ds-price-header">
@@ -279,41 +280,82 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
             </LandingAnchor>
           </div>
 
-          <div className="ds-pricing-card ds-popular">
-            <div className="ds-popular-tag">Autovia Pro</div>
+          <div className="ds-pricing-card">
+            <div className="ds-popular-tag ds-popular-tag--essentiel">Essentiel</div>
             <div className="ds-billing-toggle ds-billing-toggle--inline">
               <span>Mensuel</span>
               <button
                 type="button"
-                className={`ds-toggle-switch ${isAnnual ? "ds-annual" : ""}`}
-                onClick={togglePlan}
-                aria-label={isAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
+                className={`ds-toggle-switch ${essentielAnnual ? "ds-annual" : ""}`}
+                onClick={() => setEssentielAnnual((v) => !v)}
+                aria-label={essentielAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
               />
               <span>
-                Annuel <span className="ds-save-badge">2 MOIS OFFERTS</span>
+                Annuel{" "}
+                <span className="ds-save-badge">
+                  −{formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
+                </span>
               </span>
             </div>
             <div className="ds-price-header">
-              <h3>Accès complet</h3>
+              <h3>Petite auto-école</h3>
               <div className="ds-price-amount">
-                <span style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-                  {priceValue}
-                </span>
+                <span>{essentielPrice}</span>
                 <span className="ds-price-currency">DZD</span>
-                <span className="ds-price-period" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-                  {pricePeriod}
-                </span>
+                <span className="ds-price-period">{essentielPeriod}</span>
               </div>
-              <div className="ds-price-calc" style={{ opacity: priceFade, transition: "opacity 0.15s ease" }}>
-                {priceCalcText}
-              </div>
+              <div className="ds-price-calc">{essentielCalc}</div>
             </div>
 
             <ul className="ds-feature-list">
-              <li><CheckIcon /> Candidats illimités</li>
+              <li><CheckIcon /> Jusqu&apos;à 120 dossiers (selon catégories)</li>
               <li><CheckIcon /> Plannings & moniteurs</li>
               <li><CheckIcon /> Paiements & reçus</li>
               <li><CheckIcon /> Listes d&apos;examen & impression</li>
+              <li><CheckIcon /> Portail candidat (QR)</li>
+            </ul>
+
+            <LandingAnchor
+              href={links.backdashSignUp}
+              external
+              className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
+            >
+              Commencer
+            </LandingAnchor>
+          </div>
+
+          <div className="ds-pricing-card ds-popular">
+            <div className="ds-popular-tag">Pro</div>
+            <div className="ds-billing-toggle ds-billing-toggle--inline">
+              <span>Mensuel</span>
+              <button
+                type="button"
+                className={`ds-toggle-switch ${proAnnual ? "ds-annual" : ""}`}
+                onClick={() => setProAnnual((v) => !v)}
+                aria-label={proAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
+              />
+              <span>
+                Annuel{" "}
+                <span className="ds-save-badge">
+                  −{formatDzdAmount(pro.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
+                </span>
+              </span>
+            </div>
+            <div className="ds-price-header">
+              <h3>École structurée</h3>
+              <div className="ds-price-amount">
+                <span>{proPrice}</span>
+                <span className="ds-price-currency">DZD</span>
+                <span className="ds-price-period">{proPeriod}</span>
+              </div>
+              <div className="ds-price-calc">{proCalc}</div>
+            </div>
+
+            <ul className="ds-feature-list">
+              <li><CheckIcon /> Jusqu&apos;à 300 dossiers</li>
+              <li><CheckIcon /> Catégories illimitées</li>
+              <li><CheckIcon /> Moniteurs & véhicules illimités</li>
+              <li><CheckIcon /> Listes d&apos;examen & impressions</li>
               <li><CheckIcon /> Portail candidat (QR)</li>
               <li><CheckIcon /> Support prioritaire</li>
             </ul>
@@ -323,7 +365,30 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               external
               className="ds-btn ds-btn-primary ds-btn-lg ds-btn-block"
             >
-              Créer mon compte
+              Choisir Pro
+            </LandingAnchor>
+          </div>
+
+          <div className="ds-pricing-card ds-pricing-card--elite">
+            <div className="ds-price-header">
+              <h3>{elite.label}</h3>
+              <div className="ds-price-amount ds-price-amount--elite">
+                <span>Sur mesure</span>
+              </div>
+              <div className="ds-price-calc ds-price-calc--muted">
+                Volume illimité — tarif, options et intégrations à négocier avec notre équipe.
+              </div>
+            </div>
+
+            <ul className="ds-feature-list">
+              <li><CheckIcon /> Dossiers illimités</li>
+              <li><CheckIcon /> Multi-sites ou groupe</li>
+              <li><CheckIcon /> Options avancées sur demande</li>
+              <li><CheckIcon /> Accompagnement dédié</li>
+            </ul>
+
+            <LandingAnchor href="#contact" className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block">
+              Nous contacter
             </LandingAnchor>
           </div>
         </div>

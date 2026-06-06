@@ -5,6 +5,27 @@ export function listeExamenGroupKey(code: string): string {
   return c
 }
 
+/** Catégories semi-remorque (suffixe E) — liste d'impression séparée, 15 places. */
+export const SEMI_REMORQUE_PERMIS_CODES = new Set(["BE", "CE", "DE", "C1E"])
+
+export function isSemiRemorquePermisCode(code: string): boolean {
+  return SEMI_REMORQUE_PERMIS_CODES.has(code.trim().toUpperCase())
+}
+
+export function isSemiRemorqueGroupKey(groupKey: string): boolean {
+  return isSemiRemorquePermisCode(groupKey)
+}
+
+export type ListeExamenPrintVariant = "principal" | "semi-remorque"
+
+export function candidatMatchesPrintVariant(
+  categorieCode: string,
+  variant: ListeExamenPrintVariant,
+): boolean {
+  const isE = isSemiRemorquePermisCode(categorieCode)
+  return variant === "semi-remorque" ? isE : !isE
+}
+
 export function categoriesInListeGroup<T extends { code: string }>(
   categories: T[],
   groupKey: string,

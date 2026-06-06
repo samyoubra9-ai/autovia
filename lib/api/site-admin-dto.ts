@@ -1,11 +1,23 @@
 import { getAccessDetail, hasAutoEcoleAccess } from "@/lib/access"
+import { buildEleveQuotaSnapshot } from "@/lib/eleve-quota"
 import {
   canResumePaid,
   canResumeTrial,
   getPaidDaysLeft,
   getTrialDaysLeft,
 } from "@/lib/api/site-admin-access-update"
-import type { SubscriptionStatus } from "@prisma/client"
+import { subscriptionPlanLabel } from "@/lib/subscription-plans"
+import type { SubscriptionPlan, SubscriptionStatus } from "@prisma/client"
+
+export type SiteAdminQuotaDto = {
+  maxEleves: number | null
+  currentEleves: number
+  remaining: number | null
+  formulaQuota: number
+  isTrial: boolean
+  isUnlimited: boolean
+  usagePercent: number | null
+}
 
 export type SiteAdminAutoEcoleDto = {
   id: string
@@ -15,6 +27,10 @@ export type SiteAdminAutoEcoleDto = {
   telephone: string | null
   emailContact: string | null
   subscriptionStatus: SubscriptionStatus
+  subscriptionPlan: SubscriptionPlan | null
+  subscriptionPlanLabel: string
+  maxElevesOverride: number | null
+  quota: SiteAdminQuotaDto
   trialEndsAt: string
   paidUntil: string | null
   adminNotes: string | null
@@ -47,29 +63,48 @@ export type SiteAdminDashboardStats = {
   newLast30Days: number
 }
 
-export function toSiteAdminAutoEcoleDto(
-  ae: {
-    id: string
-    nom: string
-    slug: string
-    ville: string | null
-    telephone: string | null
-    emailContact: string | null
-    subscriptionStatus: SubscriptionStatus
-    trialEndsAt: Date
-    paidUntil: Date | null
-    adminNotes: string | null
-    createdAt: Date
-    updatedAt: Date
-    users: Array<{ prenom: string; nom: string; email: string }>
-    _count?: {
-      eleves: number
-      users: number
-      moniteurs: number
-      vehicules: number
-      listesExamen: number
-    }
+type AutoEcoleForAdminDto = {
+  id: string
+  nom: string
+  slug: string
+  ville: string | null
+  telephone: string | null
+  emailContact: string | null
+  subscriptionStatus: SubscriptionStatus
+  subscriptionPlan: SubscriptionPlan | null
+  maxElevesOverride: number | null
+  trialEndsAt: Date
+  paidUntil: Date | null
+  adminNotes: string | null
+  createdAt: Date
+  updatedAt: Date
+  users: Array<{ prenom: string; nom: string; email: string }>
+  categoriesPermis?: Array<{ code: string }>
+  _count?: {
+    eleves: number
+    users: number
+    moniteurs: number
+    vehicules: number
+    listesExamen: number
+  }
+}
+
+export const siteAdminAutoEcoleInclude = {
+  users: { where: { role: "OWNER" as const }, take: 1 },
+  categoriesPermis: { where: { actif: true }, select: { code: true } },
+  _count: {
+    select: {
+      eleves: true,
+      users: true,
+      moniteurs: true,
+      vehicules: true,
+      listesExamen: true,
+    },
   },
+} as const
+
+export function toSiteAdminAutoEcoleDto(
+  ae: AutoEcoleForAdminDto,
   now: Date = new Date(),
 ): SiteAdminAutoEcoleDto {
   const owner = ae.users[0] ?? null
@@ -80,6 +115,21 @@ export function toSiteAdminAutoEcoleDto(
   }
   const trialLeft = getTrialDaysLeft(ae.trialEndsAt, now)
   const paidLeft = getPaidDaysLeft(ae.paidUntil, now)
+  const currentEleves = ae._count?.eleves ?? 0
+
+  const snapshot = buildEleveQuotaSnapshot({
+    subscriptionStatus: ae.subscriptionStatus,
+    subscriptionPlan: ae.subscriptionPlan,
+    maxElevesOverride: ae.maxElevesOverride,
+    activeCategoryCodes: ae.categoriesPermis?.map((c) => c.code) ?? [],
+    currentEleveCount: currentEleves,
+  })
+
+  const usagePercent =
+    snapshot.maxEleves != null && snapshot.maxEleves > 0
+      ? Math.min(100, Math.round((currentEleves / snapshot.maxEleves) * 100))
+      : null
+
   return {
     id: ae.id,
     nom: ae.nom,
@@ -88,6 +138,18 @@ export function toSiteAdminAutoEcoleDto(
     telephone: ae.telephone,
     emailContact: ae.emailContact,
     subscriptionStatus: ae.subscriptionStatus,
+    subscriptionPlan: ae.subscriptionPlan,
+    subscriptionPlanLabel: subscriptionPlanLabel(ae.subscriptionPlan),
+    maxElevesOverride: ae.maxElevesOverride,
+    quota: {
+      maxEleves: snapshot.maxEleves,
+      currentEleves: snapshot.currentEleves,
+      remaining: snapshot.remaining,
+      formulaQuota: snapshot.formulaQuota,
+      isTrial: snapshot.isTrial,
+      isUnlimited: snapshot.isUnlimited,
+      usagePercent,
+    },
     trialEndsAt: ae.trialEndsAt.toISOString(),
     paidUntil: ae.paidUntil?.toISOString() ?? null,
     adminNotes: ae.adminNotes,
@@ -99,7 +161,7 @@ export function toSiteAdminAutoEcoleDto(
       ? { prenom: owner.prenom, nom: owner.nom, email: owner.email }
       : null,
     counts: {
-      eleves: ae._count?.eleves ?? 0,
+      eleves: currentEleves,
       users: ae._count?.users ?? 0,
       moniteurs: ae._count?.moniteurs ?? 0,
       vehicules: ae._count?.vehicules ?? 0,

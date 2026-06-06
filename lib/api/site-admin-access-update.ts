@@ -1,5 +1,5 @@
 import { getTrialEndsAt } from "@/lib/auth-utils"
-import type { AutoEcole, SubscriptionStatus } from "@prisma/client"
+import type { AutoEcole, BillingPeriod, SubscriptionPlan, SubscriptionStatus } from "@prisma/client"
 
 export type SiteAdminAccessAction =
   | "block"
@@ -19,6 +19,17 @@ export type SiteAdminAccessPatchBody = {
   extendTrialDays?: number
   paidUntil?: string | null
   adminNotes?: string
+  /** Pack commercial (unlock_paid ou mise à jour admin) */
+  subscriptionPlan?: SubscriptionPlan | null
+  /** Quota dossiers forcé par admin (null = calcul auto) */
+  maxElevesOverride?: number | null
+  /** Facturation enregistrée à l'activation (unlock_paid) */
+  billingPeriod?: BillingPeriod | string | null
+  billingAmountDzd?: number | null
+  billingReference?: string | null
+  billingNotes?: string | null
+  /** false = ne pas créer d'entrée facturation */
+  recordBilling?: boolean
   nom?: string
   ville?: string | null
   telephone?: string | null
@@ -80,6 +91,7 @@ export function applySiteAdminAccessUpdate(
   body: SiteAdminAccessPatchBody,
 ): {
   subscriptionStatus: SubscriptionStatus
+  subscriptionPlan: SubscriptionPlan | null
   trialEndsAt: Date
   paidUntil: Date | null
   message: string
@@ -87,12 +99,14 @@ export function applySiteAdminAccessUpdate(
   const action = resolveSiteAdminAccessAction(ae, body)
   let trialEndsAt = ae.trialEndsAt
   let paidUntil = ae.paidUntil
+  let subscriptionPlan = ae.subscriptionPlan
   const now = new Date()
 
   switch (action) {
     case "block":
       return {
         subscriptionStatus: "EXPIRED",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil,
         message: (() => {
@@ -116,6 +130,7 @@ export function applySiteAdminAccessUpdate(
       const days = getTrialDaysLeft(trialEndsAt, now)
       return {
         subscriptionStatus: "TRIAL",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil: null,
         message: `Essai repris — il reste ${days} jour${days > 1 ? "s" : ""} (jusqu'au ${trialEndsAt.toLocaleDateString("fr-FR")}).`,
@@ -126,6 +141,7 @@ export function applySiteAdminAccessUpdate(
       trialEndsAt = getTrialEndsAt(now)
       return {
         subscriptionStatus: "TRIAL",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil: null,
         message: "Nouvel essai gratuit de 15 jours activé.",
@@ -137,6 +153,7 @@ export function applySiteAdminAccessUpdate(
       trialEndsAt = addDays(base, extra)
       return {
         subscriptionStatus: "TRIAL",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil: null,
         message: `Essai prolongé de ${extra} jours (fin le ${trialEndsAt.toLocaleDateString("fr-FR")}).`,
@@ -146,13 +163,21 @@ export function applySiteAdminAccessUpdate(
     case "unlock_paid": {
       const raw = body.paidUntil
       paidUntil = raw ? new Date(String(raw)) : null
+      subscriptionPlan = body.subscriptionPlan ?? ae.subscriptionPlan ?? "ESSENTIEL"
+      const planLabel =
+        subscriptionPlan === "PRO"
+          ? "Pro"
+          : subscriptionPlan === "ELITE"
+            ? "Élite"
+            : "Essentiel"
       return {
         subscriptionStatus: "ACTIVE",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil,
         message: paidUntil
-          ? `Accès débloqué (payé) jusqu'au ${paidUntil.toLocaleDateString("fr-FR")}.`
-          : "Accès débloqué (abonnement actif, sans date de fin).",
+          ? `Accès débloqué (plan ${planLabel}) jusqu'au ${paidUntil.toLocaleDateString("fr-FR")}.`
+          : `Accès débloqué — plan ${planLabel} (sans date de fin).`,
       }
     }
 
@@ -163,6 +188,7 @@ export function applySiteAdminAccessUpdate(
       const days = getPaidDaysLeft(paidUntil, now)!
       return {
         subscriptionStatus: "ACTIVE",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil,
         message: `Abonnement repris — ${days} jour${days > 1 ? "s" : ""} restant${days > 1 ? "s" : ""}.`,
@@ -172,6 +198,7 @@ export function applySiteAdminAccessUpdate(
     case "cancel":
       return {
         subscriptionStatus: "CANCELLED",
+        subscriptionPlan,
         trialEndsAt,
         paidUntil,
         message: "Compte annulé (dates conservées en base).",

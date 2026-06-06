@@ -3,6 +3,8 @@ import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { ensureDefaultCategoriesPermis } from "@/lib/api/categories-permis"
+import { assertNatureExamenAllowedForPermis } from "@/lib/api/permis-a1"
+import { eleveMatchesListeExamenNature } from "@/lib/api/formation"
 import {
   type CandidatInput,
   isEligibleForCirculation,
@@ -17,6 +19,10 @@ import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
 import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
 import { syncExamenEngagement } from "@/lib/api/candidat-engagement"
 import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
+import {
+  lookupDatesDernierExamen,
+  resolveDateDernierExamenForCandidat,
+} from "@/lib/api/liste-examen-date-dernier"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 import type { NatureExamenListe } from "@prisma/client"
 
@@ -209,6 +215,15 @@ export async function POST(request: Request) {
     }
 
     const eleveMap = new Map(eleves.map((e) => [e.id, e]))
+    const datesLookup = await lookupDatesDernierExamen(
+      prisma,
+      tenant.autoEcoleId,
+      header.dateExamen,
+      candidatInputs.map((c) => ({
+        eleveId: c.eleveId,
+        natureExamen: c.natureExamen,
+      })),
+    )
     const ordreByCat = new Map<string, number>()
     const built: {
       eleveId: string
@@ -223,6 +238,25 @@ export async function POST(request: Request) {
       if (!eleve?.categoriePermis) continue
 
       assertNatureAllowed(input.natureExamen, listeSettings)
+
+      try {
+        assertNatureExamenAllowedForPermis(
+          eleve.categoriePermis.code,
+          input.natureExamen,
+          `${eleve.prenom} ${eleve.nom}`,
+        )
+      } catch (e) {
+        throw new ApiError(400, e instanceof Error ? e.message : "Nature invalide.")
+      }
+
+      if (
+        !eleveMatchesListeExamenNature(eleve, input.natureExamen)
+      ) {
+        throw new ApiError(
+          400,
+          `${eleve.prenom} ${eleve.nom} : étape formation incompatible avec « ${input.natureExamen} ».`,
+        )
+      }
 
       if (
         input.natureExamen === "circulation" &&
@@ -243,9 +277,14 @@ export async function POST(request: Request) {
         categoriePermisId: catId,
         ordre: nextOrdre,
         natureExamen: input.natureExamen,
-        dateDernierExamen: input.dateDernierExamen
-          ? parseDateOnly(input.dateDernierExamen, "Date dernier examen")
-          : null,
+        dateDernierExamen: resolveDateDernierExamenForCandidat(
+          datesLookup,
+          eleve.id,
+          input.natureExamen,
+          input.dateDernierExamen
+            ? parseDateOnly(input.dateDernierExamen, "Date dernier examen")
+            : null,
+        ),
       })
     }
 

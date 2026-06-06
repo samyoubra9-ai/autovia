@@ -2,7 +2,7 @@ import { getTrialEndsAt, slugifyAutoEcole } from "@/lib/auth-utils"
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireSiteAdminApi } from "@/lib/api/site-admin-auth"
-import { buildSiteAdminStats, toSiteAdminAutoEcoleDto } from "@/lib/api/site-admin-dto"
+import { buildSiteAdminStats, siteAdminAutoEcoleInclude, toSiteAdminAutoEcoleDto } from "@/lib/api/site-admin-dto"
 import { prisma } from "@/lib/prisma"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -18,21 +18,7 @@ export async function GET(request: Request) {
 
     const autoEcoles = await prisma.autoEcole.findMany({
       orderBy: { createdAt: "desc" },
-      include: {
-        users: {
-          where: { role: "OWNER" },
-          take: 1,
-        },
-        _count: {
-          select: {
-            eleves: true,
-            users: true,
-            moniteurs: true,
-            vehicules: true,
-            listesExamen: true,
-          },
-        },
-      },
+      include: siteAdminAutoEcoleInclude,
     })
 
     const rows = autoEcoles.map((ae) => toSiteAdminAutoEcoleDto(ae))
@@ -117,18 +103,7 @@ export async function POST(request: Request) {
             },
           },
         },
-        include: {
-          users: { where: { role: "OWNER" }, take: 1 },
-          _count: {
-            select: {
-              eleves: true,
-              users: true,
-              moniteurs: true,
-              vehicules: true,
-              listesExamen: true,
-            },
-          },
-        },
+        include: siteAdminAutoEcoleInclude,
       })
 
       return jsonWithCors(

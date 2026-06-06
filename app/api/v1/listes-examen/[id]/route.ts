@@ -81,7 +81,7 @@ export async function PATCH(request: Request, { params }: Params) {
             throw new ApiError(400, "Candidat introuvable sur cette liste.")
           }
 
-          const data = candidatDataOnResultat(u.resultat, liste.dateExamen)
+          const data = candidatDataOnResultat(u.resultat)
           await tx.listeExamenCandidat.update({
             where: { id: candidat.id },
             data,

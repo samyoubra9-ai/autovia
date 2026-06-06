@@ -1,9 +1,10 @@
 import { getAccessDetail, hasAutoEcoleAccess } from "@/lib/access"
-import { getTrialMaxEleves, isTrialSubscription } from "@/lib/plan-limits"
+import { loadEleveQuotaSnapshot } from "@/lib/api/eleve-quota-context"
 import { requireAuthUser } from "@/lib/api/auth"
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
 import { prisma } from "@/lib/prisma"
+import { subscriptionPlanLabel } from "@/lib/subscription-plans"
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -49,6 +50,7 @@ export async function GET(request: Request) {
 
     const ae = tenant.autoEcole
     const hasAccess = hasAutoEcoleAccess(ae)
+    const quota = await loadEleveQuotaSnapshot(prisma, ae.id)
 
     return jsonWithCors(
       {
@@ -67,15 +69,21 @@ export async function GET(request: Request) {
           nom: ae.nom,
           slug: ae.slug,
           subscriptionStatus: ae.subscriptionStatus,
+          subscriptionPlan: ae.subscriptionPlan,
+          subscriptionPlanLabel: subscriptionPlanLabel(ae.subscriptionPlan),
           trialEndsAt: ae.trialEndsAt.toISOString(),
           paidUntil: ae.paidUntil?.toISOString() ?? null,
           accessDetail: getAccessDetail(ae),
         },
         plan: {
-          isTrial: isTrialSubscription(ae.subscriptionStatus),
-          maxEleves: isTrialSubscription(ae.subscriptionStatus)
-            ? getTrialMaxEleves()
-            : null,
+          isTrial: quota.isTrial,
+          isUnlimited: quota.isUnlimited,
+          maxEleves: quota.maxEleves,
+          currentEleves: quota.currentEleves,
+          remaining: quota.remaining,
+          formulaQuota: quota.formulaQuota,
+          subscriptionPlan: quota.subscriptionPlan,
+          subscriptionPlanLabel: subscriptionPlanLabel(quota.subscriptionPlan),
         },
       },
       origin,

@@ -1,12 +1,17 @@
-import { listeExamenGroupKey } from '@/lib/api/liste-examen-groups'
+import {
+  isSemiRemorquePermisCode,
+  listeExamenGroupKey,
+} from '@/lib/api/liste-examen-groups'
 
 /**
  * Barème officiel liste d'examen — places max. par section :
- * B = 15, A + A1 (même section, quota partagé) = 10 au total, autres = 5.
+ * B = 15, A + A1 (même section, quota partagé) = 10 au total,
+ * semi-remorque (BE, CE, DE, C1E) = 15 (liste séparée à l'impression), autres = 5.
  */
 export const LISTE_EXAMEN_PLACES_REGLEMENT = {
   groupeB: 15,
   groupeA: 10,
+  groupeSemiRemorque: 15,
   autres: 5,
 } as const
 
@@ -14,6 +19,7 @@ export function placesListeMaxForPermisCode(code: string): number {
   const c = code.trim().toUpperCase()
   if (c === 'B') return LISTE_EXAMEN_PLACES_REGLEMENT.groupeB
   if (c === 'A' || c === 'A1') return LISTE_EXAMEN_PLACES_REGLEMENT.groupeA
+  if (isSemiRemorquePermisCode(c)) return LISTE_EXAMEN_PLACES_REGLEMENT.groupeSemiRemorque
   return LISTE_EXAMEN_PLACES_REGLEMENT.autres
 }
 
@@ -22,6 +28,7 @@ export function placesListeMaxForGroupKey(groupKey: string): number {
   const gk = groupKey.trim().toUpperCase()
   if (gk === 'B') return LISTE_EXAMEN_PLACES_REGLEMENT.groupeB
   if (gk === 'A') return LISTE_EXAMEN_PLACES_REGLEMENT.groupeA
+  if (isSemiRemorquePermisCode(gk)) return LISTE_EXAMEN_PLACES_REGLEMENT.groupeSemiRemorque
   return LISTE_EXAMEN_PLACES_REGLEMENT.autres
 }
 
@@ -36,6 +43,7 @@ export function placesReglementLabelForCode(code: string): string {
   const c = code.trim().toUpperCase()
   if (c === 'B') return 'B — 15 places max.'
   if (c === 'A' || c === 'A1') return 'A / A1 — 10 places max. (partagées)'
+  if (isSemiRemorquePermisCode(c)) return `${c} — 15 places max. (liste semi-remorque séparée)`
   return `${c || 'Autre'} — 5 places max.`
 }
 

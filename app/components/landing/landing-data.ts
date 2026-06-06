@@ -97,7 +97,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Combien de candidats puis-je gérer ?",
-    a: "L'essai gratuit permet jusqu'à 10 élèves pendant 15 jours. Le plan Pro inclut un nombre illimité de candidats et de moniteurs.",
+    a: "L'essai gratuit permet jusqu'à 10 élèves pendant 15 jours. Le plan Essentiel couvre jusqu'à 120 dossiers (selon vos catégories de permis), le plan Pro jusqu'à 300 dossiers, et l'offre Élite est illimitée sur devis.",
   },
   {
     q: "Les données sont-elles sécurisées ?",

@@ -5,7 +5,14 @@ import {
   type CandidatEngagementDto,
 } from "@/lib/api/candidat-engagement"
 import { ApiError } from "@/lib/api/errors"
-import { getEtapesValidees } from "@/lib/api/formation"
+import { getEtapesValidees, getProgressPercent, isParcoursTermine } from "@/lib/api/formation"
+import {
+  A1_PERMIS_OBTENU_LABEL,
+  A1_SUIVI_FELICITATIONS,
+  A1_SUIVI_MESSAGE_B_18_ANS,
+  isA1CodePhaseComplete,
+  isA1Eleve,
+} from "@/lib/api/permis-a1"
 import { formatCodeSuiviDisplay, normalizeCodeSuivi } from "@/lib/api/code-suivi"
 import { NATURE_EXAMEN_AR } from "@/lib/api/liste-examen"
 import {
@@ -28,14 +35,10 @@ const ETAPE_LABELS: Record<(typeof ETAPES_PUBLIC)[number], string> = {
   circulation: "Circulation",
 }
 
-function getProgressPercentPublic(eleve: {
-  etapeCodeValidee: boolean
-  etapeCreneauValidee: boolean
-  etapeCirculationValidee: boolean
-}) {
-  const v = getEtapesValidees(eleve)
-  const done = ETAPES_PUBLIC.filter((e) => v[e]).length
-  return Math.round((done / ETAPES_PUBLIC.length) * 100)
+function getProgressPercentPublic(
+  eleve: Parameters<typeof getProgressPercent>[0],
+) {
+  return getProgressPercent(eleve)
 }
 
 export type SuiviPublicDto = {
@@ -53,6 +56,8 @@ export type SuiviPublicDto = {
     progressionPercent: number
     /** true lorsque la circulation est validée par le moniteur (parcours candidat terminé). */
     formationTerminee: boolean
+    /** A1 : permis obtenu au code (parcours clos, message permis B à 18 ans). */
+    a1PermisObtenu: boolean
     etapes: Array<{
       code: (typeof ETAPES_PUBLIC)[number]
       label: string
@@ -133,7 +138,8 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
   }
 
   const etapesValidees = getEtapesValidees(eleve)
-  const formationTerminee = Boolean(eleve.etapeCirculationValidee)
+  const formationTerminee = isParcoursTermine(eleve)
+  const a1PermisObtenu = isA1Eleve(eleve) && isA1CodePhaseComplete(eleve)
   const totalPaye = (eleve.paiements ?? []).reduce((s, p) => s + (p.montant ?? 0), 0)
   const prixPermis = eleve.prixPermis ?? 0
   const resteAPayer = Math.max(0, prixPermis - totalPaye)
@@ -188,6 +194,7 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
     parcours: {
       progressionPercent: formationTerminee ? 100 : getProgressPercentPublic(eleve),
       formationTerminee,
+      a1PermisObtenu,
       etapes: formationTerminee
         ? []
         : ETAPES_PUBLIC.map((step) => ({
@@ -420,15 +427,26 @@ function buildNotifications(dto: SuiviPublicDto): SuiviPublicDto["notifications"
   }
 
   if (dto.parcours.formationTerminee) {
-    items.push({
-      id: "parcours-felicitations",
-      type: "parcours",
-      title: "Félicitations !",
-      message:
-        "Vous avez validé votre formation. Récupérez votre permis auprès du moniteur qui vous suit.",
-      at: null,
-      urgent: false,
-    })
+    if (dto.parcours.a1PermisObtenu) {
+      items.push({
+        id: "parcours-a1-obtenu",
+        type: "parcours",
+        title: A1_PERMIS_OBTENU_LABEL,
+        message: `${A1_SUIVI_FELICITATIONS} ${A1_SUIVI_MESSAGE_B_18_ANS}`,
+        at: null,
+        urgent: false,
+      })
+    } else {
+      items.push({
+        id: "parcours-felicitations",
+        type: "parcours",
+        title: "Félicitations !",
+        message:
+          "Vous avez validé votre formation. Récupérez votre permis auprès du moniteur qui vous suit.",
+        at: null,
+        urgent: false,
+      })
+    }
   } else {
     const etapeCourante = dto.candidat.statutFormation
     const label = STATUT_FORMATION_LABELS[etapeCourante] ?? etapeCourante

@@ -5,6 +5,7 @@ import { signOut } from "@/app/auth/actions"
 import { AutoEcoleAccessRow } from "@/app/components/admin/AutoEcoleAccessRow"
 import { CreateAutoEcoleForm } from "@/app/components/admin/CreateAutoEcoleForm"
 import { requireSiteAdmin } from "@/lib/admin-auth"
+import { toBillingRecordDto } from "@/lib/api/subscription-billing"
 import { hasAutoEcoleAccess } from "@/lib/access"
 import { prisma } from "@/lib/prisma"
 
@@ -23,6 +24,10 @@ export default async function AdminPage() {
         where: { role: "OWNER" },
         take: 1,
       },
+      subscriptionBillingRecords: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
     },
   })
 
@@ -32,12 +37,14 @@ export default async function AdminPage() {
     ville: ae.ville,
     emailContact: ae.emailContact,
     subscriptionStatus: ae.subscriptionStatus,
+    subscriptionPlan: ae.subscriptionPlan,
     trialEndsAt: ae.trialEndsAt.toISOString(),
     paidUntil: ae.paidUntil?.toISOString() ?? null,
     adminNotes: ae.adminNotes,
     owner: ae.users[0]
       ? { prenom: ae.users[0].prenom, nom: ae.users[0].nom, email: ae.users[0].email }
       : null,
+    billingRecords: ae.subscriptionBillingRecords.map(toBillingRecordDto),
   }))
 
   const activeCount = autoEcoles.filter((ae) =>
@@ -100,8 +107,10 @@ export default async function AdminPage() {
               </div>
             )}
             <p className="admin-meta" style={{ marginTop: 16 }}>
-              <strong>Débloquer (payé)</strong> : accès backdash après paiement.{" "}
-              <strong>Essai 15 j</strong> : essai gratuit. <strong>Bloquer</strong> : coupe l&apos;accès.
+              <strong>Débloquer & enregistrer</strong> : choisissez le plan, la période et le
+              montant — une ligne de facturation est créée automatiquement.{" "}
+              <strong>Essai 15 j</strong> : essai gratuit sans facturation.{" "}
+              <strong>Bloquer</strong> : coupe l&apos;accès.
             </p>
           </section>
         </div>

@@ -7,8 +7,10 @@ import { formatDateListe, NATURE_EXAMEN_AR } from "@/lib/api/liste-examen"
 import {
   categoriesInListeGroup,
   categoriesUsedByListeCandidats,
+  candidatMatchesPrintVariant,
   listeExamenGroupKey,
   listeExamenGroupKeysFromCandidats,
+  type ListeExamenPrintVariant,
 } from "@/lib/api/liste-examen-groups"
 import {
   sectionTableRowCount,
@@ -92,7 +94,15 @@ export type ListeExamenDto = {
   createdAt: string
   candidats: ListeExamenCandidatDto[]
   sections: ListeExamenSectionPrint[]
+  /** Sections semi-remorque (BE, CE, DE, C1E) — impression séparée. */
+  sectionsSemiRemorque: ListeExamenSectionPrint[]
   stats: {
+    code: number
+    creneau: number
+    circulation: number
+    total: number
+  }
+  statsSemiRemorque: {
     code: number
     creneau: number
     circulation: number
@@ -156,10 +166,27 @@ function padRows(
   return rows.slice(0, total)
 }
 
+export function countStatsForCandidats(
+  candidats: Pick<ListeExamenCandidatDto, "natureExamen">[],
+) {
+  return {
+    code: candidats.filter((c) => c.natureExamen === "code").length,
+    creneau: candidats.filter((c) => c.natureExamen === "creneau").length,
+    circulation: candidats.filter((c) => c.natureExamen === "circulation").length,
+    total: candidats.length,
+  }
+}
+
 export function buildSectionsForPrint(
   candidats: ListeExamenCandidatDto[],
   categories: CategoriePermisEcole[] | CategoriePermisDto[],
+  variant: ListeExamenPrintVariant = "principal",
 ): ListeExamenSectionPrint[] {
+  const filtered = candidats.filter((c) =>
+    candidatMatchesPrintVariant(c.categorieCode, variant),
+  )
+  if (filtered.length === 0) return []
+
   type CatRow = { id: string; code: string; libelleFr: string; libelleAr: string | null; placesListe: number; ordre: number; actif: boolean; surListeExamen: boolean }
   const all: CatRow[] = categories.map((c) => ({
     id: c.id,
@@ -172,15 +199,15 @@ export function buildSectionsForPrint(
     surListeExamen: "surListeExamen" in c ? c.surListeExamen : true,
   }))
 
-  const allCats = categoriesUsedByListeCandidats(all, candidats)
-  const orderedKeys = listeExamenGroupKeysFromCandidats(candidats, all)
+  const allCats = categoriesUsedByListeCandidats(all, filtered)
+  const orderedKeys = listeExamenGroupKeysFromCandidats(filtered, all)
 
   return orderedKeys.map((gk) => {
     const catsInGroup = categoriesInListeGroup(allCats, gk)
     const primaryCat =
       catsInGroup.find((c) => c.code.toUpperCase() === gk) ?? catsInGroup[0]
 
-    const items = candidats
+    const items = filtered
       .filter((c) => {
         const code =
           c.categorieCode ||
@@ -201,6 +228,20 @@ export function buildSectionsForPrint(
       rows: padRows(items, rowCount),
     }
   })
+}
+
+export function listeExamenDtoForPrint(
+  dto: ListeExamenDto,
+  variant: ListeExamenPrintVariant = "principal",
+): ListeExamenDto {
+  if (variant === "semi-remorque") {
+    return {
+      ...dto,
+      sections: dto.sectionsSemiRemorque,
+      stats: dto.statsSemiRemorque,
+    }
+  }
+  return dto
 }
 
 type ListeWithMessages = ListeExamen & {
@@ -230,9 +271,19 @@ export function toListeExamenDto(
     })
     .map(toCandidatDto)
 
-  const sections = buildSectionsForPrint(
+  const categoryDtos = allCategories.map(toCategoriePermisDto)
+  const principalCandidats = candidats.filter((c) =>
+    candidatMatchesPrintVariant(c.categorieCode, "principal"),
+  )
+  const semiRemorqueCandidats = candidats.filter((c) =>
+    candidatMatchesPrintVariant(c.categorieCode, "semi-remorque"),
+  )
+
+  const sections = buildSectionsForPrint(candidats, categoryDtos, "principal")
+  const sectionsSemiRemorque = buildSectionsForPrint(
     candidats,
-    allCategories.map(toCategoriePermisDto),
+    categoryDtos,
+    "semi-remorque",
   )
 
   return {
@@ -256,12 +307,9 @@ export function toListeExamenDto(
     createdAt: liste.createdAt?.toISOString?.() ?? new Date().toISOString(),
     candidats,
     sections,
-    stats: {
-      code: candidats.filter((c) => c.natureExamen === "code").length,
-      creneau: candidats.filter((c) => c.natureExamen === "creneau").length,
-      circulation: candidats.filter((c) => c.natureExamen === "circulation").length,
-      total: candidats.length,
-    },
+    sectionsSemiRemorque,
+    stats: countStatsForCandidats(principalCandidats),
+    statsSemiRemorque: countStatsForCandidats(semiRemorqueCandidats),
     messagesCategorie: liste.messagesCategorie
       ? toMessagesCategorieDto(liste.messagesCategorie, allCategories)
       : [],

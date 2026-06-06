@@ -9,6 +9,12 @@ import {
   type EtapeParcours,
 } from "@/lib/api/formation"
 import { etapesValideesForStatut } from "@/lib/api/formation-sync"
+import {
+  canReprendreConduiteA1,
+  eleveUpdateOnReprendreConduiteA1,
+  etapesValideesForStatutA1,
+  isA1Eleve,
+} from "@/lib/api/permis-a1"
 import { removeElevePhotoFromStorage } from "@/lib/api/eleve-photo"
 import {
   assertCategoriePermisForTenant,
@@ -78,6 +84,26 @@ export async function PATCH(request: Request, { params }: Params) {
 
     const body = await request.json()
 
+    if (body.reprendreConduiteA1 === true) {
+      if (!isA1Eleve(existing)) {
+        throw new ApiError(400, "Action réservée aux candidats permis A1.")
+      }
+      if (!canReprendreConduiteA1(existing)) {
+        throw new ApiError(
+          400,
+          "Reprise conduite A1 : code obtenu et 18 ans révolus requis.",
+        )
+      }
+      const eleve = await prisma.eleve.update({
+        where: { id },
+        data: eleveUpdateOnReprendreConduiteA1(),
+        include: eleveInclude,
+      })
+      const dto = toEleveDto(eleve)
+      if (!dto) throw new ApiError(500, "Données élève invalides.")
+      return jsonWithCors({ eleve: dto }, origin)
+    }
+
     if (body.validateEtape) {
       const etape = String(body.validateEtape) as EtapeParcours
       if (!["code", "creneau", "circulation"].includes(etape)) {
@@ -89,7 +115,11 @@ export async function PATCH(request: Request, { params }: Params) {
         where: { id },
         data: {
           [field]: true,
-          statutFormation: statutAfterValidateEtape(etape, existing.statutFormation),
+          statutFormation: statutAfterValidateEtape(
+            etape,
+            existing.statutFormation,
+            existing,
+          ),
         },
         include: eleveInclude,
       })
@@ -124,7 +154,9 @@ export async function PATCH(request: Request, { params }: Params) {
         : resolvePrixPermisEleve(categorie, existing, input.categoriePermisId)
     await assertNoDuplicates(tenant.autoEcoleId, input.nin, input.telephone, id)
 
-    const impliedEtapes = etapesValideesForStatut(input.statutFormation)
+    const impliedEtapes = isA1Eleve({ categoriePermis: categorie })
+      ? etapesValideesForStatutA1(input.statutFormation)
+      : etapesValideesForStatut(input.statutFormation)
     assertStatutFormationAllowed(
       {
         etapeCodeValidee: existing.etapeCodeValidee || impliedEtapes.etapeCodeValidee,
@@ -132,6 +164,8 @@ export async function PATCH(request: Request, { params }: Params) {
           existing.etapeCreneauValidee || impliedEtapes.etapeCreneauValidee,
         etapeCirculationValidee:
           existing.etapeCirculationValidee || impliedEtapes.etapeCirculationValidee,
+        statutFormation: existing.statutFormation,
+        categoriePermis: categorie,
       },
       input.statutFormation,
     )

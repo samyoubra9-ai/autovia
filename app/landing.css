@@ -997,11 +997,45 @@ html:has(.ds-landing-page) body {
   margin: 0 auto;
 }
 
+.ds-landing-page .ds-pricing-grid--wide {
+  max-width: 1120px;
+}
+
 @media (min-width: 768px) {
   .ds-landing-page .ds-pricing-grid {
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
   }
+}
+
+@media (min-width: 1024px) {
+  .ds-landing-page .ds-pricing-grid--wide {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ds-landing-page .ds-pricing-card--elite {
+  grid-column: 1 / -1;
+  border-style: dashed;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 50%);
+}
+
+@media (min-width: 1024px) {
+  .ds-landing-page .ds-pricing-grid--wide .ds-pricing-card--elite {
+    grid-column: 1 / -1;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.ds-landing-page .ds-price-amount--elite {
+  font-size: 1.75rem;
+  color: var(--ds-text);
+}
+
+.ds-landing-page .ds-popular-tag--essentiel {
+  background: var(--ds-success);
 }
 
 .ds-landing-page .ds-pricing-card {

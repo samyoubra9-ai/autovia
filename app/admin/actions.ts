@@ -5,8 +5,14 @@ import { revalidatePath } from "next/cache"
 import { getTrialEndsAt, slugifyAutoEcole } from "@/lib/auth-utils"
 import {
   applySiteAdminAccessUpdate,
+  resolveSiteAdminAccessAction,
   type SiteAdminAccessPatchBody,
 } from "@/lib/api/site-admin-access-update"
+import {
+  buildBillingRecordFromAccessPatch,
+  createSubscriptionBillingRecord,
+  shouldRecordBillingOnAccessAction,
+} from "@/lib/api/subscription-billing"
 import { requireSiteAdmin } from "@/lib/admin-auth"
 import { prisma } from "@/lib/prisma"
 import { createAdminClient } from "@/lib/supabase/admin"
@@ -116,17 +122,33 @@ export async function updateAutoEcoleAccess(
 
   try {
     const patch = applySiteAdminAccessUpdate(autoEcole, input)
-    await prisma.autoEcole.update({
-      where: { id: input.autoEcoleId },
-      data: {
-        subscriptionStatus: patch.subscriptionStatus,
-        trialEndsAt: patch.trialEndsAt,
-        paidUntil: patch.paidUntil,
-        ...(input.adminNotes !== undefined
-          ? { adminNotes: input.adminNotes.trim() || null }
-          : {}),
-      },
+    const action = input.action ?? resolveSiteAdminAccessAction(autoEcole, input)
+
+    await prisma.$transaction(async (tx) => {
+      await tx.autoEcole.update({
+        where: { id: input.autoEcoleId },
+        data: {
+          subscriptionStatus: patch.subscriptionStatus,
+          subscriptionPlan: patch.subscriptionPlan,
+          trialEndsAt: patch.trialEndsAt,
+          paidUntil: patch.paidUntil,
+          ...(input.adminNotes !== undefined
+            ? { adminNotes: input.adminNotes.trim() || null }
+            : {}),
+        },
+      })
+
+      const billingDraft = buildBillingRecordFromAccessPatch(action, input, patch)
+      if (billingDraft && shouldRecordBillingOnAccessAction(action, input.recordBilling)) {
+        const { siteAdmin } = await requireSiteAdmin()
+        await createSubscriptionBillingRecord(tx, {
+          ...billingDraft,
+          autoEcoleId: input.autoEcoleId,
+          siteAdminId: siteAdmin.id,
+        })
+      }
     })
+
     revalidatePath("/admin")
     return { success: patch.message }
   } catch (e) {

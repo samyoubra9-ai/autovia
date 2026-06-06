@@ -1,6 +1,10 @@
 import type { Eleve, ListeExamenCandidat, NatureExamenListe } from "@prisma/client"
 import type { ResultatExamenCandidat } from "@/lib/api/resultat-examen-candidat"
 import { etapeToPrismaField, statutAfterValidateEtape } from "@/lib/api/formation"
+import {
+  eleveUpdateOnA1CodeAdmis,
+  isA1Eleve,
+} from "@/lib/api/permis-a1"
 import { parseResultatExamen } from "@/lib/api/resultat-examen-candidat"
 
 export type CandidatResultatUpdate = {
@@ -33,12 +37,20 @@ function etapeFromNature(nature: NatureExamenListe): "code" | "creneau" | "circu
  * et fait avancer le statut formation.
  */
 export function eleveUpdateOnAdmis(
-  eleve: Eleve,
+  eleve: Eleve & { categoriePermis?: { code: string } | null },
   nature: NatureExamenListe,
 ): Partial<Eleve> | null {
+  if (isA1Eleve(eleve) && nature === "code") {
+    const patch = eleveUpdateOnA1CodeAdmis()
+    if (eleve.etapeCodeValidee && eleve.statutFormation === patch.statutFormation) {
+      return null
+    }
+    return patch
+  }
+
   const etape = etapeFromNature(nature)
   const field = etapeToPrismaField(etape)
-  const nextStatut = statutAfterValidateEtape(etape, eleve.statutFormation)
+  const nextStatut = statutAfterValidateEtape(etape, eleve.statutFormation, eleve)
 
   const patch: Partial<Eleve> = { [field]: true }
 
@@ -58,10 +70,6 @@ export function eleveUpdateOnAdmis(
 
 export function candidatDataOnResultat(
   resultat: ResultatExamenCandidat | null,
-  dateExamen: Date,
-): Pick<ListeExamenCandidat, "resultat" | "dateDernierExamen"> {
-  if (resultat === "admis") {
-    return { resultat: resultat as string, dateDernierExamen: dateExamen }
-  }
-  return { resultat: resultat as string | null, dateDernierExamen: null }
+): Pick<ListeExamenCandidat, "resultat"> {
+  return { resultat: resultat as string | null }
 }

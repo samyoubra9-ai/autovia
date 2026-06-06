@@ -28,9 +28,7 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
   return safeRows
     .map((data, i) => {
       const isEmpty = !data
-      const rowNum = data
-        ? String(data.ordre || i + 1).padStart(2, "0")
-        : String(i + 1).padStart(2, "0")
+      const rowNum = String(chunk.rowStartIndex + i + 1).padStart(2, "0")
       const resultText = data?.resultatAr?.trim() || ""
 
       const vehicleCell =
