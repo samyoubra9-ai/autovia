@@ -22,12 +22,18 @@ function pad2(n: number): string {
   return String(Number(n) || 0).padStart(2, "0")
 }
 
+function emptyCell(value: string | undefined | null, isEmptyRow: boolean): string {
+  const t = value?.trim() ?? ""
+  if (t) return escapeHtml(t)
+  return isEmptyRow ? "&nbsp;" : ""
+}
+
 function renderNomCell(data: { nomListe?: string; prenomListe?: string; nomCompletAr?: string } | null): string {
   if (!data) return ""
   const nom = data.nomListe?.trim() ?? ""
   const prenom = data.prenomListe?.trim() ?? ""
   if (nom && prenom) {
-    return `<span class="cell-nom-n">${escapeHtml(nom)}</span><span class="cell-nom-p">${escapeHtml(prenom)}</span>`
+    return `<span class="cell-nom-inner"><span class="cell-nom-n">${escapeHtml(nom)}</span><span class="cell-nom-p">${escapeHtml(prenom)}</span></span>`
   }
   if (nom || prenom) return escapeHtml(nom || prenom)
   return escapeHtml(data.nomCompletAr ?? "")
@@ -56,13 +62,13 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
 
       return `<tr class="${isEmpty ? "row-empty" : ""}">
         ${vehicleCell}
-        <td>${escapeHtml(data?.numeroDossier ?? "")}</td>
-        <td class="cell-nom">${renderNomCell(data)}</td>
-        <td>${escapeHtml(data?.dateNaissance ?? "")}</td>
+        <td>${emptyCell(data?.numeroDossier, isEmpty)}</td>
+        <td class="cell-nom">${isEmpty ? "&nbsp;" : renderNomCell(data)}</td>
+        <td>${emptyCell(data?.dateNaissance, isEmpty)}</td>
         ${groupeCell}
-        <td>${escapeHtml(data?.natureExamenAr ?? "")}</td>
-        <td>${escapeHtml(data?.dateDernierExamen ?? "")}</td>
-        <td>${escapeHtml(resultText)}</td>
+        <td>${emptyCell(data?.natureExamenAr, isEmpty)}</td>
+        <td>${emptyCell(data?.dateDernierExamen, isEmpty)}</td>
+        <td>${emptyCell(resultText, isEmpty)}</td>
       </tr>`
     })
     .join("")

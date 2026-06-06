@@ -75,27 +75,29 @@ html, body {
 .main-data-table th, .main-data-table td {
   border: 1px solid #000; padding: 2px 4px; text-align: center;
   vertical-align: middle; font-weight: bold; line-height: 1.2;
-  height: 5.9mm;
+  height: 5.9mm; min-height: 5.9mm;
 }
 .main-data-table thead th { background: #e8eaed; border-bottom: 2px solid #000; }
 .cell-nom {
-  position: relative;
   font-family: 'Traditional Arabic', 'Segoe UI', Tahoma, sans-serif; line-height: 1.3;
   text-align: start;
   padding-inline: 4px;
 }
-.cell-nom-n { unicode-bidi: isolate; position: relative; z-index: 1; }
-.cell-nom-p {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  unicode-bidi: isolate;
-  max-width: 55%;
-  text-align: center;
-  white-space: nowrap;
+.cell-nom-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  min-height: 1em;
 }
-.row-empty td { background: #ececec !important; color: #999 !important; font-weight: normal; }
+.cell-nom-n { unicode-bidi: isolate; justify-self: start; }
+.cell-nom-p { grid-column: 2; unicode-bidi: isolate; justify-self: center; white-space: nowrap; }
+.row-empty td {
+  background: #ececec !important;
+  color: #999 !important;
+  font-weight: normal;
+  border: 1px solid #000 !important;
+}
 .rotated-cell { width: 4%; max-width: 28px; }
 .rotated-text {
   writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap;
