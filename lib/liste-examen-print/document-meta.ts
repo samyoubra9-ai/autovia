@@ -3,9 +3,8 @@ export function listeExamenReferenceLine(referenceEnvoi: string | null | undefin
   return ref || null
 }
 
-export function listeExamenPageLabel(pageIndex: number, totalPages: number): string {
-  if (totalPages <= 1) return ""
-  return `صفحة ${pageIndex + 1} / ${totalPages}`
+export function listeExamenPageLabel(_pageIndex: number, _totalPages: number): string {
+  return ""
 }
 
 export function listeExamenContinuationTitle(pageIndex: number, totalPages: number): string {
@@ -29,12 +28,10 @@ export function listeExamenContinuationContext(params: {
   return parts.join(" · ")
 }
 
-export function listeExamenMultiPageLegalNotice(totalPages: number): string | null {
-  if (totalPages <= 1) return null
-  return `وثيقة من ${totalPages} صفحات — يُعتد بها مجتمعة فقط (الختم والإمضاء في الصفحة الأخيرة)`
+export function listeExamenMultiPageLegalNotice(_totalPages: number): string | null {
+  return null
 }
 
-export function listeExamenFirstPageMultiHint(totalPages: number): string | null {
-  if (totalPages <= 1) return null
-  return `يتواصل الجدول في الصفحة/الصفحات التالية — التوقيع والختم في الصفحة ${totalPages}`
+export function listeExamenFirstPageMultiHint(_totalPages: number): string | null {
+  return null
 }

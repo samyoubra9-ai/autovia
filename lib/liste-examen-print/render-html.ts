@@ -1,13 +1,7 @@
 import type { ListeExamenDto } from "@/lib/api/mappers-liste-examen"
-import {
-  listeExamenContinuationContext,
-  listeExamenContinuationTitle,
-  listeExamenFirstPageMultiHint,
-  listeExamenMultiPageLegalNotice,
-  listeExamenPageLabel,
-} from "./document-meta"
 import { buildListeExamenPrintPages, type ListeExamenTableChunk } from "./pagination"
 import { listeExamenMoniteurCategorieLabel } from "./moniteur-categorie-label"
+import { listeExamenPrintApplyFitScript } from "./apply-fit-script"
 import { listeExamenPrintStyles } from "./styles"
 
 function escapeHtml(s: string): string {
@@ -26,6 +20,12 @@ function emptyCell(value: string | undefined | null, isEmptyRow: boolean): strin
   const t = value?.trim() ?? ""
   if (t) return escapeHtml(t)
   return isEmptyRow ? "&nbsp;" : ""
+}
+
+function cellValHtml(value: string | undefined | null, isEmptyRow: boolean): string {
+  const inner = emptyCell(value, isEmptyRow)
+  if (!inner || inner === "&nbsp;") return "&nbsp;"
+  return `<span class="cell-val">${inner}</span>`
 }
 
 function renderNomCell(data: { nomListe?: string; prenomListe?: string; nomCompletAr?: string } | null): string {
@@ -62,13 +62,14 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
 
       return `<tr class="${isEmpty ? "row-empty" : ""}">
         ${vehicleCell}
-        <td>${emptyCell(data?.numeroDossier, isEmpty)}</td>
+        <td class="cell-ordre"><span class="cell-val">${chunk.rowStartIndex + i + 1}</span></td>
+        <td class="cell-centre">${cellValHtml(data?.numeroDossier, isEmpty)}</td>
         <td class="cell-nom">${isEmpty ? "&nbsp;" : renderNomCell(data)}</td>
-        <td>${emptyCell(data?.dateNaissance, isEmpty)}</td>
+        <td class="cell-centre">${cellValHtml(data?.dateNaissance, isEmpty)}</td>
         ${groupeCell}
-        <td>${emptyCell(data?.natureExamenAr, isEmpty)}</td>
-        <td>${emptyCell(data?.dateDernierExamen, isEmpty)}</td>
-        <td>${emptyCell(resultText, isEmpty)}</td>
+        <td class="cell-centre">${cellValHtml(data?.natureExamenAr, isEmpty)}</td>
+        <td class="cell-centre">${cellValHtml(data?.dateDernierExamen, isEmpty)}</td>
+        <td class="cell-centre">${cellValHtml(resultText, isEmpty)}</td>
       </tr>`
     })
     .join("")
@@ -77,13 +78,14 @@ function renderChunkRows(chunk: ListeExamenTableChunk, keyPrefix: string): strin
 function tableHead(): string {
   return `<thead><tr>
     <th style="width:4%"></th>
-    <th style="width:14%">رقم التسجيل</th>
-    <th style="width:33%">اللقب والاسم</th>
-    <th style="width:12%">تاريخ الميلاد</th>
+    <th style="width:4%">رقم</th>
+    <th style="width:12%">رقم التسجيل</th>
+    <th style="width:31%">اللقب والاسم</th>
+    <th style="width:11%">تاريخ الميلاد</th>
     <th style="width:5%"></th>
-    <th style="width:12%">طبيعة الامتحان</th>
-    <th style="width:12%">تاريخ آخر امتحان</th>
-    <th style="width:8%">النتيجة</th>
+    <th style="width:11%">طبيعة الامتحان</th>
+    <th style="width:11%">تاريخ آخر امتحان</th>
+    <th style="width:7%">النتيجة</th>
   </tr></thead>`
 }
 
@@ -94,9 +96,6 @@ export function renderListeExamenPrintHtml(
   const sections = liste.sections ?? []
   const pages = buildListeExamenPrintPages(sections)
   const stats = liste.stats ?? { code: 0, creneau: 0, circulation: 0, total: 0 }
-  const totalPages = pages.length
-  const firstPageHint = listeExamenFirstPageMultiHint(totalPages)
-  const legal = listeExamenMultiPageLegalNotice(totalPages)
   const inspecteur = liste.inspecteurNom?.trim() ?? ""
   const moniteurCategorie = listeExamenMoniteurCategorieLabel(sections)
   const moniteur2Nom = liste.moniteur2Nom?.trim() ?? ""
@@ -114,7 +113,6 @@ export function renderListeExamenPrintHtml(
         <div class="main-title-container">
           <div class="main-title">قائمة المرشحين لإمتحان رخصة السياقة</div>
         </div>
-        ${firstPageHint && page.pageIndex === 0 ? `<p class="first-page-hint">${escapeHtml(firstPageHint)}</p>` : ""}
         `
         : ""
 
@@ -129,24 +127,7 @@ export function renderListeExamenPrintHtml(
         </div>`
         : ""
 
-      const bannerHtml = page.showContinuationBanner
-        ? `<div class="continuation-banner">
-          <p class="continuation-title">${escapeHtml(listeExamenContinuationTitle(page.pageIndex, totalPages))}</p>
-          <p class="continuation-context">${escapeHtml(
-            listeExamenContinuationContext({
-              wilaya: liste.wilaya,
-              centreExamen: liste.centreExamen,
-              dateExamen: liste.dateExamen,
-              referenceEnvoi: liste.referenceEnvoi,
-            }),
-          )}</p>
-          ${
-            legal && !page.showFooter
-              ? `<p class="continuation-legal">${escapeHtml(legal)}</p>`
-              : ""
-          }
-        </div>`
-        : ""
+      const bannerHtml = ""
 
       const footerHtml = page.showFooter
         ? `<div class="footer-layout footer-section">
@@ -173,31 +154,22 @@ export function renderListeExamenPrintHtml(
         </div>`
         : ""
 
-      const metaHtml =
-        totalPages > 1 && page.showFooter
-          ? `<div class="page-footer-meta">
-            <span class="page-indicator">${escapeHtml(listeExamenPageLabel(page.pageIndex, totalPages))}${page.showContinuationBanner ? " — تتمة" : ""}</span>
-            ${legal ? `<span class="page-legal">${escapeHtml(legal)}</span>` : ""}
-          </div>`
-          : totalPages > 1 && !page.showFooter
-            ? `<div class="page-footer-meta">
-              <span class="page-indicator">${escapeHtml(listeExamenPageLabel(page.pageIndex, totalPages))}${page.showContinuationBanner ? " — تتمة" : ""}</span>
-              ${legal ? `<span class="page-legal">${escapeHtml(legal)}</span>` : ""}
-            </div>`
-            : ""
-
       const mainClass = page.showFooter ? "page-main page-main--footer" : "page-main"
+      const pageClass = page.footerOnly ? "page page--footer-only" : "page"
+      const tableHtml =
+        page.chunks.length > 0
+          ? `<table class="main-data-table">${tableHead()}<tbody>${rowsHtml}</tbody></table>`
+          : ""
 
-      return `<div class="page">
+      return `<div class="${pageClass}">
         ${headerHtml}
         ${examHtml}
         <div class="${mainClass}">
           ${bannerHtml}
           <div class="sheet-bottom${page.showFooter ? " sheet-bottom--footer" : ""}">
-            <table class="main-data-table">${tableHead()}<tbody>${rowsHtml}</tbody></table>
+            ${tableHtml}
             ${footerHtml}
           </div>
-          ${metaHtml}
         </div>
       </div>`
     })
@@ -212,6 +184,7 @@ export function renderListeExamenPrintHtml(
 </head>
 <body>
   <div class="doc">${pagesHtml}</div>
+  <script>${listeExamenPrintApplyFitScript()}</script>
 </body>
 </html>`
 }

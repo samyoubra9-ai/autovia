@@ -14,6 +14,7 @@ import {
 import { parseListeExamenHeaderCreate } from "@/lib/api/liste-examen-header"
 import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
+import { assignOrdreOnBuiltCandidatRows } from "@/lib/api/liste-examen-candidat-order"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { assertSetupCanCreateListeExamen } from "@/lib/api/setup-guards"
@@ -260,6 +261,9 @@ export async function POST(request: Request) {
 
     validateCandidatsLimits(built, categoriesById)
 
+    const dossierByEleve = new Map(eleves.map((e) => [e.id, e.numeroDossier]))
+    const builtOrdered = assignOrdreOnBuiltCandidatRows(built, dossierByEleve)
+
     const messageRows = parseMessagesCategorieInput(body.messagesCategorie, categories)
 
     const liste = await prisma.$transaction(
@@ -273,7 +277,7 @@ export async function POST(request: Request) {
             autoEcoleId: tenant.autoEcoleId,
             ...header,
             referenceEnvoi,
-            candidats: { create: built },
+            candidats: { create: builtOrdered },
             ...(messageRows.length > 0 && {
               messagesCategorie: {
                 create: messageRows.map((r) => ({

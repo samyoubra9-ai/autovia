@@ -47,7 +47,7 @@ export async function generateListeExamenPdf(
 
   try {
     const page = await browser.newPage()
-    await page.setContent(html, { waitUntil: "load" })
+    await page.setContent(html, { waitUntil: "networkidle0" })
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,

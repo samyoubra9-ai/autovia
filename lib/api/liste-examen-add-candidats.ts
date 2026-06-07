@@ -18,6 +18,7 @@ import { assertNatureExamenAllowedForPermis } from "@/lib/api/permis-a1"
 import { eleveUpdateOnRemoveAdmisCandidat } from "@/lib/api/liste-examen-resultats"
 import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
 import { notifyCandidatExamenListe } from "@/lib/push/candidat-events"
+import { reorderListeExamenCandidatsOrdre } from "@/lib/api/liste-examen-reorder-candidats"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 
 const candidatInclude = {
@@ -212,6 +213,7 @@ export async function addCandidatsToListeExamen(
           },
         })
       }
+      await reorderListeExamenCandidatsOrdre(tx, liste.id)
       await tx.listeExamen.update({
         where: { id: liste.id },
         data: { updatedAt: new Date() },
@@ -285,6 +287,8 @@ export async function removeCandidatFromListeExamen(
   await prisma.$transaction(
     async (tx) => {
       await tx.listeExamenCandidat.delete({ where: { id: candidat.id } })
+
+      await reorderListeExamenCandidatsOrdre(tx, liste.id)
 
       if (candidat.resultat === "admis") {
         const patch = eleveUpdateOnRemoveAdmisCandidat(candidat.eleve, candidat.natureExamen)

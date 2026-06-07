@@ -25,7 +25,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 
 | Limite / fonctionnalité | Contenu |
 |------------------------|---------|
-| Candidats actifs | **80** |
+| Candidats actifs | **90–120** (formule selon catégories, plafond 120) |
 | Moniteurs | **3** (dont 1 principal, **1 catégorie** pour le principal) |
 | Catégories de permis | **2 max** (ex. B + A ou B + A1) |
 | Véhicules | **3** |
@@ -40,9 +40,13 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Notifications push candidat | Non |
 | Support | E-mail standard |
 
-**Message commercial :** *Tout pour démarrer proprement sans payer pour ce que vous n'utilisez pas.*
+**Prix public (2026) :**
+- **Annuel :** 12 000 DZD / an (soit ~1 000 DZD / mois)
+- **Mensuel :** 1 200 DZD / mois → 14 400 DZD / an (plus cher que l'annuel)
 
-**Prix indicatif :** 4 000 – 6 000 DZD / mois — annuel −15 à 20 %.
+**Quota dossiers (implémenté) :** formule catégories avec plancher **90** et plafond **120** :
+- Standard : 60 + (n−1)×20 par catégorie hors remorque
+- Remorque (BE, CE, DE, C1E) : +60 chacune
 
 ---
 
@@ -52,7 +56,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 
 | Limite / fonctionnalité | Contenu |
 |------------------------|---------|
-| Candidats actifs | **300** (ou illimité si simplification produit) |
+| Candidats actifs | **300** |
 | Moniteurs | **Illimités** |
 | Moniteur principal | **Oui** — **plusieurs catégories** |
 | Catégories de permis | **Illimitées** |
@@ -68,9 +72,11 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Notifications push candidat | Oui |
 | Support | Prioritaire |
 
-**Message commercial :** *L'offre standard pour une auto-école qui tourne à plein régime.*
+**Prix public (2026) :**
+- **Annuel :** 20 000 DZD / an
+- **Mensuel :** 2 084 DZD / mois → 25 000 DZD / an (plus cher que l'annuel)
 
-**Prix indicatif :** 8 000 – 12 000 DZD / mois — annuel −15 à 20 %.
+**Quota dossiers :** **300** (fixe, indépendamment des catégories).
 
 ---
 

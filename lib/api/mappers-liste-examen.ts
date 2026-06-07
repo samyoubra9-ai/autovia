@@ -13,8 +13,10 @@ import {
   type ListeExamenPrintVariant,
 } from "@/lib/api/liste-examen-groups"
 import {
-  sectionTableRowCount,
-} from "@/lib/liste-examen-places-reglement"
+  compareListeExamenCandidatsForDisplay,
+  compareListeExamenCandidatsWithinCategory,
+} from "@/lib/api/liste-examen-candidat-order"
+import { sectionTableRowCount } from "@/lib/liste-examen-places-reglement"
 import {
   toMessagesCategorieDto,
   type ListeExamenMessageDto,
@@ -221,7 +223,7 @@ export function buildSectionsForPrint(
           ""
         return listeExamenGroupKey(code) === gk
       })
-      .sort((a, b) => a.ordre - b.ordre)
+      .sort(compareListeExamenCandidatsWithinCategory)
 
     const rowCount = sectionTableRowCount(gk, items.length)
 
@@ -264,18 +266,7 @@ export function toListeExamenDto(
   liste: ListeWithMessages,
   allCategories: CategoriePermisEcole[],
 ): ListeExamenDto {
-  const candidatDtos = liste.candidats.map(toCandidatDto)
-  const catsOnListe = categoriesUsedByListeCandidats(allCategories, candidatDtos)
-  const catOrder = new Map(catsOnListe.map((c, i) => [c.id, i]))
-
-  const candidats = [...liste.candidats]
-    .sort((a, b) => {
-      const oa = catOrder.get(a.categoriePermisId) ?? 999
-      const ob = catOrder.get(b.categoriePermisId) ?? 999
-      if (oa !== ob) return oa - ob
-      return a.ordre - b.ordre
-    })
-    .map(toCandidatDto)
+  const candidats = liste.candidats.map(toCandidatDto).sort(compareListeExamenCandidatsForDisplay)
 
   const categoryDtos = allCategories.map(toCategoriePermisDto)
   const principalCandidats = candidats.filter((c) =>

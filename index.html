@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>قائمة المرشحين لإمتحان رخصة السياقة</title>
+  <style>
+    @page { size: A4 portrait; margin: 4mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Segoe UI', 'Traditional Arabic', Arial, 'Times New Roman', sans-serif;
+      font-size: 13pt;
+      font-weight: 700;
+      color: #000;
+      background: #fff;
+      direction: rtl;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc {
+      width: 210mm;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 2mm 4mm;
+      border: 2px solid #000;
+    }
+    .top-header {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: bold;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+    .header-right, .header-left, .inspector-stamp-box {
+      border: 2px solid #000;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+    }
+    .header-right, .header-left {
+      padding: 4px 6px;
+      text-align: center;
+      font-size: 10pt;
+      font-weight: bold;
+      line-height: 1.35;
+      width: 6.4cm;
+      height: 3.3cm;
+      min-width: 6.4cm;
+      min-height: 3.3cm;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .main-title-container { text-align: center; margin: 7px 0; }
+    .main-title {
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 16px;
+      font-size: 14pt;
+      font-weight: bold;
+      display: inline-block;
+      background: #fff;
+    }
+    .exam-details-box {
+      border: 2px solid #000;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      font-size: 11pt;
+      font-weight: 700;
+      overflow: hidden;
+    }
+    .exam-details-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 12px;
+      font-weight: bold;
+    }
+    .exam-details-bottom {
+      padding: 0 12px 4px;
+      font-weight: bold;
+    }
+    .dots-before::before,
+    .dots-after::after {
+      content: '';
+      display: inline-block;
+      border-bottom: 1px dotted #000;
+      vertical-align: bottom;
+      height: 0.85em;
+      margin-bottom: 1px;
+    }
+    .dots-before::before { width: 0.55em; margin-left: 2px; }
+    .dots-after::after { width: 0.55em; margin-right: 2px; }
+    .dots-fill {
+      display: inline-block;
+      border-bottom: 1px dotted #000;
+      min-width: 26em;
+      height: 0.85em;
+      vertical-align: bottom;
+      margin-bottom: 1px;
+    }
+    .trainer-dots {
+      display: inline-block;
+      border-bottom: 1px dotted #000;
+      min-width: 5.5em;
+      height: 0.85em;
+      vertical-align: bottom;
+      margin: 0 1px 1px;
+    }
+    .cat-dots {
+      display: inline-block;
+      border-bottom: 1px dotted #000;
+      min-width: 0.9em;
+      height: 0.85em;
+      vertical-align: bottom;
+      margin: 0 1px 1px;
+      text-align: center;
+    }
+    .main-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #000;
+      font-size: 11pt;
+      table-layout: fixed;
+      margin-bottom: 6px;
+    }
+    .main-data-table th, .main-data-table td {
+      border: 1px solid #000;
+      padding: 2px 4px;
+      text-align: center;
+      vertical-align: middle;
+      font-weight: bold;
+      line-height: 1.2;
+      height: 5.9mm;
+      min-height: 5.9mm;
+    }
+    .main-data-table thead th {
+      background: #d3d3d3;
+      border-bottom: 2px solid #000;
+    }
+    .main-data-table tr.section-a-start td {
+      border-top: 3px solid #000;
+    }
+    .cell-nom {
+      font-family: 'Traditional Arabic', 'Segoe UI', Tahoma, sans-serif;
+      line-height: 1.3;
+      text-align: start;
+      padding-inline: 4px;
+    }
+    .cell-nom-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      min-height: 1em;
+    }
+    .cell-nom-n { unicode-bidi: isolate; justify-self: start; }
+    .cell-nom-p { grid-column: 2; unicode-bidi: isolate; justify-self: center; white-space: nowrap; }
+    .rotated-cell { width: 4%; max-width: 28px; background: #fff; }
+    .rotated-text {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      display: inline-block;
+      font-size: 10.5pt;
+      font-weight: bold;
+      line-height: 1;
+    }
+    .vehicle-gap { width: 4%; max-width: 28px; background: #fff; }
+    .side-merged-cell { font-size: 12pt; font-weight: 700; width: 5%; }
+    .footer-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 6px;
+    }
+    .footer-right-side { width: 65%; }
+    .trainers-info {
+      font-weight: bold;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      margin-bottom: 5px;
+    }
+    .trainers-info p { margin: 0; }
+    .stats-table {
+      width: 85%;
+      border-collapse: collapse;
+      border: 2px solid #000;
+      font-size: 10.5pt;
+      text-align: center;
+    }
+    .stats-table th, .stats-table td {
+      border: 1px solid #000;
+      padding: 3px 6px;
+      font-weight: bold;
+      min-height: 18px;
+    }
+    .stats-table thead th { background: #d3d3d3; }
+    .inspector-stamp-box {
+      border-radius: 12px;
+      width: 6.4cm;
+      height: 3.3cm;
+      min-width: 6.4cm;
+      min-height: 3.3cm;
+      box-sizing: border-box;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 12pt;
+      text-align: center;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media screen {
+      body { background: #f0f2f5; padding: 20px 0; }
+      .doc {
+        background: #fff;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <div class="top-header">
+      الجمهورية الجزائرية الديمقراطية الشعبية<br />
+      وزارة الداخلية والجماعات المحلية والنقل
+    </div>
+
+    <div class="header-section">
+      <div class="header-right">
+        المندوبية الوطنية للأمن في الطرق<br />
+        المندوبية الولائية للأمن في الطرق<br />
+        لولاية : بجاية
+      </div>
+      <div class="header-left">ختم مدرسة تعليم السياقة</div>
+    </div>
+
+    <div class="main-title-container">
+      <div class="main-title">قائمة المرشحين لإمتحان رخصة السياقة</div>
+    </div>
+
+    <div class="exam-details-box">
+      <div class="exam-details-row">
+        <span>مركز الإمتحان: <span class="dots-before dots-after">سيدي عيش</span></span>
+        <span>تاريخ الإيداع: <span class="dots-before dots-after">2026/05/25</span></span>
+        <span>تاريخ الإمتحان: <span class="dots-before dots-after">2026/06/01</span></span>
+      </div>
+      <div class="exam-details-bottom">
+        اسم و لقب المفتش: <span class="dots-fill"></span>
+      </div>
+    </div>
+
+    <table class="main-data-table">
+      <thead>
+        <tr>
+          <th style="width:4%"></th>
+          <th style="width:4%">الرقم</th>
+          <th style="width:12%">رقم التسجيل</th>
+          <th style="width:27%">اللقب والاسم</th>
+          <th style="width:11%">تاريخ الميلاد</th>
+          <th style="width:5%">الصنف</th>
+          <th style="width:12%">طبيعة الامتحان</th>
+          <th style="width:12%">تاريخ آخر امتحان</th>
+          <th style="width:8%">النتيجة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- الصنف ب — 15 صف -->
+        <tr>
+          <td rowspan="15" class="rotated-cell"><span class="rotated-text">المركبة الأولى</span></td>
+          <td>01</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قاسمي</span><span class="cell-nom-p">مروان</span></span></td>
+          <td>2007/04/22</td>
+          <td rowspan="15" class="side-merged-cell">ب</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>02</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">دفوف</span><span class="cell-nom-p">إيهاب</span></span></td>
+          <td>2006/11/05</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>03</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">سالمي</span><span class="cell-nom-p">تومي</span></span></td>
+          <td>2005/06/20</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>04</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">رحموني</span><span class="cell-nom-p">ريان</span></span></td>
+          <td>2005/10/06</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>05</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بوعزاوي</span><span class="cell-nom-p">عطاء الله</span></span></td>
+          <td>2006/03/03</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>06</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">أوداد</span><span class="cell-nom-p">عبد الحميد</span></span></td>
+          <td>2000/11/29</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>07</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">حناف</span><span class="cell-nom-p">فريد</span></span></td>
+          <td>2004/12/25</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>08</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قاسمي</span><span class="cell-nom-p">ياسين</span></span></td>
+          <td>2006/08/20</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>09</td><td>00005604</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قرزيف</span><span class="cell-nom-p">فاطمة الزهراء</span></span></td>
+          <td>2007/02/04</td>
+          <td>المناورات</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>10</td><td>00004991</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">مزداودي</span><span class="cell-nom-p">عبد الرحمان</span></span></td>
+          <td>2005/03/18</td>
+          <td>المناورات</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>11</td><td>00004487</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قايدي</span><span class="cell-nom-p">آسيا</span></span></td>
+          <td>2006/06/18</td>
+          <td>المناورات</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>12</td><td>00003479</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بومدين</span><span class="cell-nom-p">فريد جلول</span></span></td>
+          <td>2006/04/18</td>
+          <td>المناورات</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>13</td><td>00005675</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">خروابي</span><span class="cell-nom-p">محمد آدم</span></span></td>
+          <td>2006/02/10</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>14</td><td>00005678</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بلغازي</span><span class="cell-nom-p">كوتانا</span></span></td>
+          <td>2006/01/01</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td>15</td><td>00005688</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بلغازي</span><span class="cell-nom-p">اياد</span></span></td>
+          <td>2007/05/09</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+
+        <!-- الصنف أ — 10 صف -->
+        <tr class="section-a-start">
+          <td class="vehicle-gap"></td>
+          <td>01</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">حاج</span><span class="cell-nom-p">موس</span></span></td>
+          <td>2007/02/04</td>
+          <td rowspan="10" class="side-merged-cell">أ</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>02</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">عمروش</span><span class="cell-nom-p">رمزي</span></span></td>
+          <td>2006/08/16</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>03</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بن محمد</span><span class="cell-nom-p">عصام</span></span></td>
+          <td>2006/01/19</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>04</td><td></td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بلحاج</span><span class="cell-nom-p">جلول</span></span></td>
+          <td>2005/12/30</td>
+          <td>قانون المرور</td><td></td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>05</td><td>00005689</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">حمالي</span><span class="cell-nom-p">سعيد</span></span></td>
+          <td>2006/03/04</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>06</td><td>00005690</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">بن تونس</span><span class="cell-nom-p">قيس</span></span></td>
+          <td>2006/03/19</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>07</td><td>00005691</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">جربوع</span><span class="cell-nom-p">صباح</span></span></td>
+          <td>2006/07/28</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>08</td><td>00005692</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">شواق</span><span class="cell-nom-p">إيل ويل</span></span></td>
+          <td>2006/08/06</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>09</td><td>00005693</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قايدي</span><span class="cell-nom-p">مهدي</span></span></td>
+          <td>2005/10/24</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+        <tr>
+          <td class="vehicle-gap"></td>
+          <td>10</td><td>00005694</td>
+          <td class="cell-nom"><span class="cell-nom-inner"><span class="cell-nom-n">قايدي</span><span class="cell-nom-p">جلول</span></span></td>
+          <td>2005/12/12</td>
+          <td>السياقة</td><td>2026/05/17</td><td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer-layout">
+      <div class="footer-right-side">
+        <div class="trainers-info">
+          <p>
+            اسم ولقب الممرن الأول :
+            <span class="trainer-dots">أوبراهم محي الدين</span>
+            مكلف بالصنف: <span class="cat-dots">ب</span>
+          </p>
+          <p>
+            اسم ولقب الممرن الثاني:
+            <span class="trainer-dots">عشاط عثمان</span>
+            مكلف بالصنف: <span class="cat-dots">أ</span>
+          </p>
+        </div>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th style="width:40%">طبيعة الامتحان</th>
+              <th style="width:30%">عدد المرشحين الممتحنين</th>
+              <th style="width:30%">عدد المرشحين الناجحين</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>قانون المرور</td><td>12</td><td></td></tr>
+            <tr><td>المناورات</td><td>04</td><td></td></tr>
+            <tr><td>السياقة</td><td>09</td><td></td></tr>
+            <tr><td>المجموع</td><td>25</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="inspector-stamp-box">ختم وإمضاء المفتش</div>
+    </div>
+  </div>
+</body>
+</html>
