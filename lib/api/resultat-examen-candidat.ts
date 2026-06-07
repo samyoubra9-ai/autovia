@@ -12,6 +12,8 @@ export const RESULTATS_EXAMEN = [
 
 export type ResultatExamenCandidat = (typeof RESULTATS_EXAMEN)[number]
 
+export type ResultatSexe = "masculin" | "feminin"
+
 export const RESULTAT_LABELS: Record<ResultatExamenCandidat, string> = {
   present: "Présent",
   absent_j: "Absent justifié",
@@ -22,15 +24,30 @@ export const RESULTAT_LABELS: Record<ResultatExamenCandidat, string> = {
   admis: "Admis",
 }
 
-export const RESULTAT_PRINT: Record<ResultatExamenCandidat, string> = {
+/** Libellés arabes masculins (impression officielle). */
+export const RESULTAT_PRINT_M: Record<ResultatExamenCandidat, string> = {
   present: "حاضر",
   absent_j: "غ.م",
   absent_nj: "غ.غ.م",
   annule: "ملغى",
-  rejete: "مرفوض",
+  rejete: "راسب",
   ajourne: "مؤجل",
   admis: "ناجح",
 }
+
+/** Libellés arabes féminins (impression officielle). */
+export const RESULTAT_PRINT_F: Record<ResultatExamenCandidat, string> = {
+  present: "حاضرة",
+  absent_j: "غ.م",
+  absent_nj: "غ.غ.م",
+  annule: "ملغاة",
+  rejete: "راسبة",
+  ajourne: "مؤجلة",
+  admis: "ناجحة",
+}
+
+/** @deprecated Préférer formatResultatPrint avec le sexe du candidat. */
+export const RESULTAT_PRINT: Record<ResultatExamenCandidat, string> = RESULTAT_PRINT_M
 
 export function parseResultatExamen(raw: unknown): ResultatExamenCandidat | null {
   if (raw === null || raw === undefined || raw === "") return null
@@ -50,7 +67,9 @@ export function parseResultatStored(raw: string | null | undefined): ResultatExa
 
 export function formatResultatPrint(
   resultat: ResultatExamenCandidat | null | undefined,
+  sexe: ResultatSexe = "masculin",
 ): string {
   if (!resultat) return ""
-  return RESULTAT_PRINT[resultat] ?? ""
+  const table = sexe === "feminin" ? RESULTAT_PRINT_F : RESULTAT_PRINT_M
+  return table[resultat] ?? ""
 }

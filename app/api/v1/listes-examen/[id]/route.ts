@@ -7,6 +7,15 @@ import {
   eleveUpdateOnAdmis,
   parseCandidatsResultats,
 } from "@/lib/api/liste-examen-resultats"
+import { sameCalendarDayUtc } from "@/lib/api/liste-examen"
+import {
+  hasListeExamenHeaderPatch,
+  parseListeExamenHeaderPatch,
+} from "@/lib/api/liste-examen-header"
+import {
+  fillMissingDatesDernierExamenOnListe,
+  refreshDatesDernierExamenOnListe,
+} from "@/lib/api/liste-examen-date-dernier"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 
@@ -38,6 +47,7 @@ export async function GET(request: Request, { params }: Params) {
       ensureDefaultCategoriesPermis(prisma, tenant.autoEcoleId),
     ])
     if (!liste) throw new ApiError(404, "Liste introuvable.")
+    await fillMissingDatesDernierExamenOnListe(liste)
     let dto
     try {
       dto = toListeExamenDto(liste, categories)
@@ -58,11 +68,13 @@ export async function PATCH(request: Request, { params }: Params) {
     const { id } = await params
     const body = (await request.json()) as Record<string, unknown>
 
-    let updates
-    try {
-      updates = parseCandidatsResultats(body.candidats)
-    } catch (e) {
-      throw new ApiError(400, e instanceof Error ? e.message : "Données invalides.")
+    const headerPatch = hasListeExamenHeaderPatch(body)
+      ? parseListeExamenHeaderPatch(body)
+      : null
+    const hasCandidats = body.candidats !== undefined
+
+    if (!headerPatch && !hasCandidats) {
+      throw new ApiError(400, "Aucune modification.")
     }
 
     const liste = await prisma.listeExamen.findFirst({
@@ -72,34 +84,66 @@ export async function PATCH(request: Request, { params }: Params) {
     if (!liste) throw new ApiError(404, "Liste introuvable.")
 
     const byId = new Map(liste.candidats.map((c) => [c.id, c]))
+    const dateExamenChanged =
+      headerPatch?.dateExamen !== undefined &&
+      !sameCalendarDayUtc(headerPatch.dateExamen, liste.dateExamen)
 
     await prisma.$transaction(
       async (tx) => {
-        for (const u of updates) {
-          const candidat = byId.get(u.candidatId)
-          if (!candidat) {
-            throw new ApiError(400, "Candidat introuvable sur cette liste.")
+        if (headerPatch) {
+          await tx.listeExamen.update({
+            where: { id: liste.id },
+            data: headerPatch,
+          })
+        }
+
+        if (hasCandidats) {
+          let updates
+          try {
+            updates = parseCandidatsResultats(body.candidats)
+          } catch (e) {
+            throw new ApiError(400, e instanceof Error ? e.message : "Données invalides.")
           }
 
-          const data = candidatDataOnResultat(u.resultat)
-          await tx.listeExamenCandidat.update({
-            where: { id: candidat.id },
-            data,
-          })
+          for (const u of updates) {
+            const candidat = byId.get(u.candidatId)
+            if (!candidat) {
+              throw new ApiError(400, "Candidat introuvable sur cette liste.")
+            }
 
-          if (u.resultat === "admis") {
-            const elevePatch = eleveUpdateOnAdmis(candidat.eleve, candidat.natureExamen)
-            if (elevePatch && Object.keys(elevePatch).length > 0) {
-              await tx.eleve.update({
-                where: { id: candidat.eleveId },
-                data: elevePatch,
-              })
+            const data = candidatDataOnResultat(u.resultat)
+            await tx.listeExamenCandidat.update({
+              where: { id: candidat.id },
+              data,
+            })
+
+            if (u.resultat === "admis") {
+              const elevePatch = eleveUpdateOnAdmis(candidat.eleve, candidat.natureExamen)
+              if (elevePatch && Object.keys(elevePatch).length > 0) {
+                await tx.eleve.update({
+                  where: { id: candidat.eleveId },
+                  data: elevePatch,
+                })
+              }
             }
           }
         }
       },
       PRISMA_TRANSACTION_OPTS,
     )
+
+    if (dateExamenChanged && headerPatch?.dateExamen) {
+      await refreshDatesDernierExamenOnListe(prisma, {
+        listeId: liste.id,
+        autoEcoleId: tenant.autoEcoleId,
+        dateExamen: headerPatch.dateExamen,
+        candidats: liste.candidats.map((c) => ({
+          id: c.id,
+          eleveId: c.eleveId,
+          natureExamen: c.natureExamen,
+        })),
+      })
+    }
 
     const [refreshed, categories] = await Promise.all([
       prisma.listeExamen.findFirst({

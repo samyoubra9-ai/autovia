@@ -140,7 +140,10 @@ function toCandidatDto(c: CandidatWithRelations): ListeExamenCandidatDto {
       ? safeFormatDateListe(c.dateDernierExamen)
       : null,
     resultat: parseResultatStored(c.resultat),
-    resultatAr: formatResultatPrint(parseResultatStored(c.resultat)),
+    resultatAr: formatResultatPrint(
+      parseResultatStored(c.resultat),
+      c.eleve.sexe === "feminin" ? "feminin" : "masculin",
+    ),
     numeroDossier: dossier,
     sansDossier: !dossier,
     nomListe: nomParts.nom,

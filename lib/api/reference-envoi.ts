@@ -12,7 +12,7 @@ export async function allocateReferenceEnvoi(
   autoEcoleId: string,
   dateDepot: Date,
 ): Promise<string> {
-  const year = dateDepot.getFullYear()
+  const year = dateDepot.getUTCFullYear()
   const prefix = `${year}/`
 
   const listes = await db.listeExamen.findMany({

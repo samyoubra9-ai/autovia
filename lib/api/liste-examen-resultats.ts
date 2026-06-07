@@ -31,11 +31,6 @@ function etapeFromNature(nature: NatureExamenListe): "code" | "creneau" | "circu
   return nature
 }
 
-/**
- * Promotion automatique après « admis » sur une liste d'examen officielle.
- * Valide l'étape correspondant à la nature (code / créneau / circulation)
- * et fait avancer le statut formation.
- */
 export function eleveUpdateOnAdmis(
   eleve: Eleve & { categoriePermis?: { code: string } | null },
   nature: NatureExamenListe,
@@ -66,6 +61,28 @@ export function eleveUpdateOnAdmis(
   }
 
   return patch
+}
+
+/** Annule la promotion « admis » si elle correspond encore à cette inscription. */
+export function eleveUpdateOnRemoveAdmisCandidat(
+  eleve: Eleve & { categoriePermis?: { code: string } | null },
+  nature: NatureExamenListe,
+): Partial<Eleve> | null {
+  if (isA1Eleve(eleve) && nature === "code") {
+    if (!eleve.etapeCodeValidee || eleve.statutFormation !== "valide") return null
+    return { etapeCodeValidee: false, statutFormation: "code" }
+  }
+
+  const field = etapeToPrismaField(nature)
+  if (!eleve[field]) return null
+
+  const statutApresAdmis = statutAfterValidateEtape(nature, nature, eleve)
+  if (eleve.statutFormation !== statutApresAdmis) return null
+
+  return {
+    [field]: false,
+    statutFormation: nature,
+  }
 }
 
 export function candidatDataOnResultat(

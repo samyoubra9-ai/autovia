@@ -140,6 +140,11 @@ export function renderListeExamenPrintHtml(
               referenceEnvoi: liste.referenceEnvoi,
             }),
           )}</p>
+          ${
+            legal && !page.showFooter
+              ? `<p class="continuation-legal">${escapeHtml(legal)}</p>`
+              : ""
+          }
         </div>`
         : ""
 

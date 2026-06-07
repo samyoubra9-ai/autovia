@@ -18,9 +18,13 @@ html, body {
   max-width: 210mm;
   margin: 0 auto;
   padding: 2mm 4mm;
-  page-break-after: always;
-  break-after: page;
+  page-break-inside: avoid;
+  break-inside: avoid-page;
   overflow: visible;
+}
+.page + .page {
+  page-break-before: always;
+  break-before: page;
 }
 .page:last-child { page-break-after: auto; break-after: auto; }
 .top-header {
@@ -64,10 +68,16 @@ html, body {
 }
 .continuation-title { margin: 0; font-size: 9pt; text-align: center; }
 .continuation-context { margin: 0; font-size: 8pt; text-align: center; line-height: 1.35; }
+.continuation-legal { margin: 0; font-size: 7.5pt; font-weight: bold; text-align: center; color: #333; line-height: 1.3; }
+.page-main {
+  page-break-inside: avoid; break-inside: avoid-page;
+}
 .page-main--footer {
   page-break-inside: avoid; break-inside: avoid-page;
 }
 .sheet-bottom--footer { page-break-inside: avoid; break-inside: avoid-page; }
+.main-data-table thead { display: table-header-group; }
+.main-data-table tr { page-break-inside: avoid; break-inside: avoid; }
 .main-data-table {
   width: 100%; border-collapse: collapse; border: 2px solid #000;
   font-size: 9pt; table-layout: fixed;

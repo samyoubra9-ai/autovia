@@ -14,7 +14,7 @@ import {
   isA1Eleve,
 } from "@/lib/api/permis-a1"
 import { formatCodeSuiviDisplay, normalizeCodeSuivi } from "@/lib/api/code-suivi"
-import { NATURE_EXAMEN_AR } from "@/lib/api/liste-examen"
+import { formatDateListe, NATURE_EXAMEN_AR } from "@/lib/api/liste-examen"
 import {
   formatResultatPrint,
   parseResultatStored,
@@ -178,6 +178,7 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
   const examensOfficiels = buildExamensOfficiels(
     eleve.listeExamenCandidats ?? [],
     eleveGroupKey,
+    eleve.sexe === "feminin" ? "feminin" : "masculin",
   )
 
   const dto: SuiviPublicDto = {
@@ -254,13 +255,6 @@ export async function getSuiviPublicByCode(rawCode: string): Promise<SuiviPublic
   return dto
 }
 
-function formatDateListe(d: Date): string {
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, "0")
-  const day = String(d.getDate()).padStart(2, "0")
-  return `${y}/${m}/${day}`
-}
-
 function trimPublicText(v: unknown): string | null {
   if (v == null) return null
   const s = String(v).trim()
@@ -298,7 +292,11 @@ function messageForEleveGroup(
   }
 }
 
-function buildExamensOfficiels(rows: ListeCandidatRow[], eleveGroupKey: string) {
+function buildExamensOfficiels(
+  rows: ListeCandidatRow[],
+  eleveGroupKey: string,
+  sexe: "masculin" | "feminin",
+) {
   return rows
     .map((row) => {
       const d = row.listeExamen?.dateExamen
@@ -317,7 +315,7 @@ function buildExamensOfficiels(rows: ListeCandidatRow[], eleveGroupKey: string) 
         natureExamen: String(nature),
         natureLabel: NATURE_EXAMEN_AR[nature] ?? String(nature),
         resultat,
-        resultatLabel: resultat ? formatResultatPrint(resultat) : null,
+        resultatLabel: resultat ? formatResultatPrint(resultat, sexe) : null,
         messageCategorie: msg.message,
         heureConvocation: msg.heureConvocation,
         engagement: null as CandidatEngagementDto | null,

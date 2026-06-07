@@ -8,8 +8,10 @@ import { eleveMatchesListeExamenNature } from "@/lib/api/formation"
 import {
   type CandidatInput,
   isEligibleForCirculation,
+  parseOptionalListeDateOnly,
   validateCandidatsLimits,
 } from "@/lib/api/liste-examen"
+import { parseListeExamenHeaderCreate } from "@/lib/api/liste-examen-header"
 import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
@@ -40,38 +42,8 @@ export async function OPTIONS(request: Request) {
   return new Response(null, { status: 204, headers: { ...jsonWithCors({}, origin).headers } })
 }
 
-function parseDateOnly(value: unknown, label: string): Date {
-  const s = String(value ?? "").trim()
-  if (!s) throw new ApiError(400, `${label} requis.`)
-  const d = new Date(s.includes("T") ? s : `${s}T12:00:00`)
-  if (Number.isNaN(d.getTime())) throw new ApiError(400, `${label} invalide.`)
-  return d
-}
-
 function parseHeader(body: Record<string, unknown>) {
-  const centreExamen = String(body.centreExamen ?? "").trim()
-  const wilaya = String(body.wilaya ?? "").trim()
-  if (!centreExamen) throw new ApiError(400, "Centre d'examen requis.")
-  if (!wilaya) throw new ApiError(400, "Wilaya requise.")
-
-  return {
-    centreExamen,
-    wilaya,
-    dateDepot: parseDateOnly(body.dateDepot, "Date de dépôt"),
-    dateExamen: parseDateOnly(body.dateExamen, "Date d'examen"),
-    inspecteurNom: String(body.inspecteurNom ?? "").trim() || null,
-    moniteur1Nom: String(body.moniteur1Nom ?? "").trim() || null,
-    moniteur1Categorie: String(body.moniteur1Categorie ?? "").trim() || null,
-    moniteur2Nom: String(body.moniteur2Nom ?? "").trim() || null,
-    moniteur2Categorie: String(body.moniteur2Categorie ?? "").trim() || null,
-    ecoleNomAr: String(body.ecoleNomAr ?? "").trim() || null,
-    ecoleAdresse: String(body.ecoleAdresse ?? "").trim() || null,
-    ecoleRegistre: String(body.ecoleRegistre ?? "").trim() || null,
-    ecoleTelephone: String(body.ecoleTelephone ?? "").trim() || null,
-    referenceEnvoi: String(body.referenceEnvoi ?? "").trim() || null,
-    lieuRedaction: String(body.lieuRedaction ?? "").trim() || null,
-    statut: body.statut === "validee" ? ("validee" as const) : ("brouillon" as const),
-  }
+  return parseListeExamenHeaderCreate(body)
 }
 
 function parseCandidats(raw: unknown): CandidatInput[] {
@@ -281,9 +253,7 @@ export async function POST(request: Request) {
           datesLookup,
           eleve.id,
           input.natureExamen,
-          input.dateDernierExamen
-            ? parseDateOnly(input.dateDernierExamen, "Date dernier examen")
-            : null,
+          parseOptionalListeDateOnly(input.dateDernierExamen),
         ),
       })
     }

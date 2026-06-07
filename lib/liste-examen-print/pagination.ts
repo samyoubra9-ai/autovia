@@ -119,6 +119,7 @@ function capacityForPage(
   remaining: number,
   pageCap: number,
   caps: ListeExamenPrintCaps,
+  options?: { isFirstPage?: boolean },
 ): { capacity: number; showFooter: boolean } {
   const minTail = caps.minRowsBeforeFooterPage
   const footerMax = caps.footerPageMaxTableRows
@@ -137,6 +138,11 @@ function capacityForPage(
     return { capacity: pageCap, showFooter: false }
   }
 
+  // 1re page : toujours remplir au maximum (évite en-tête seul + grande zone vide).
+  if (options?.isFirstPage && remaining > pageCap) {
+    return { capacity: pageCap, showFooter: false }
+  }
+
   if (tailIfFullPage > 0 && tailIfFullPage < minTail) {
     for (let footerRows = footerMax; footerRows >= minTail; footerRows--) {
       const take = remaining - footerRows
@@ -151,6 +157,24 @@ function capacityForPage(
   }
 
   return { capacity: pageCap, showFooter: false }
+}
+
+function padPageToTargetRows(
+  page: ListeExamenPrintPagePlan,
+  targetRows: number,
+): ListeExamenPrintPagePlan {
+  if (page.showFooter || targetRows <= 0) return page
+  const current = pageRowCount(page)
+  if (current >= targetRows) return page
+  const pad = targetRows - current
+  const chunks = [...page.chunks]
+  const last = chunks[chunks.length - 1]
+  if (!last) return page
+  chunks[chunks.length - 1] = {
+    ...last,
+    rows: [...last.rows, ...Array<ListeExamenSectionPrint["rows"][number]>(pad).fill(null)],
+  }
+  return { ...page, chunks }
 }
 
 function rebalancePages(
@@ -269,7 +293,9 @@ function buildLongListPages(
     const remaining = rowsFromCursor(allChunks, cursor)
     const isFirst = pages.length === 0
     const pageCap = isFirst ? caps.firstPageRows : caps.middlePageRows
-    const { capacity, showFooter } = capacityForPage(remaining, pageCap, caps)
+    const { capacity, showFooter } = capacityForPage(remaining, pageCap, caps, {
+      isFirstPage: isFirst,
+    })
 
     const { taken, next } = takeRows(allChunks, cursor, capacity)
     pages.push({
@@ -290,8 +316,13 @@ function buildLongListPages(
   }
 
   const balanced = rebalancePages(pages, caps)
-  const totalPages = balanced.length
-  return balanced.map((p, i) => ({ ...p, pageIndex: i, totalPages }))
+  const padded = balanced.map((page) => {
+    if (page.showFooter) return page
+    const cap = page.showOfficialHeader ? caps.firstPageRows : caps.middlePageRows
+    return padPageToTargetRows(page, cap)
+  })
+  const totalPages = padded.length
+  return padded.map((p, i) => ({ ...p, pageIndex: i, totalPages }))
 }
 
 export function buildListeExamenPrintPages(

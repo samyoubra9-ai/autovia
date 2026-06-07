@@ -5,6 +5,7 @@ import {
   parseResultatStored,
   RESULTAT_LABELS,
   type ResultatExamenCandidat,
+  type ResultatSexe,
 } from "@/lib/api/resultat-examen-candidat"
 import { isA1Eleve } from "@/lib/api/permis-a1"
 import type { NatureExamenListe, Prisma } from "@prisma/client"
@@ -108,6 +109,7 @@ function moniteurLabel(
 
 function buildExamensOfficiels(
   candidats: EleveArchiveRow["listeExamenCandidats"],
+  sexe: ResultatSexe,
 ): EleveArchiveExamenRow[] {
   return candidats
     .map((c) => {
@@ -123,7 +125,7 @@ function buildExamensOfficiels(
         wilaya: le.wilaya,
         resultat,
         resultatLabel: resultat ? RESULTAT_LABELS[resultat] : null,
-        resultatAr: formatResultatPrint(resultat) || null,
+        resultatAr: formatResultatPrint(resultat, sexe) || null,
       }
     })
     .sort((a, b) => {
@@ -181,7 +183,10 @@ export function buildEleveArchiveDossier(
   ecoleNom: string,
   genereLe: Date = new Date(),
 ): EleveArchiveDossierDto {
-  const examens = buildExamensOfficiels(eleve.listeExamenCandidats)
+  const examens = buildExamensOfficiels(
+    eleve.listeExamenCandidats,
+    eleve.sexe === "feminin" ? "feminin" : "masculin",
+  )
   const totalPaye = eleve.paiements.reduce((s, p) => s + (p.montant ?? 0), 0)
   const prixPermis = eleve.prixPermis ?? 0
   const a1 =

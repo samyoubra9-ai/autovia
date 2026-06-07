@@ -4,6 +4,7 @@ import { requireTenant } from "@/lib/api/auth"
 import { ensureDefaultCategoriesPermis } from "@/lib/api/categories-permis"
 import { toAutoEcolePrintSettings } from "@/lib/api/auto-ecole-print"
 import { toListeExamenDto, listeExamenDtoForPrint } from "@/lib/api/mappers-liste-examen"
+import { fillMissingDatesDernierExamenOnListe } from "@/lib/api/liste-examen-date-dernier"
 import type { ListeExamenPrintVariant } from "@/lib/api/liste-examen-groups"
 import { generateListeExamenPdf } from "@/lib/liste-examen-print/generate-pdf"
 import { renderListeExamenPrintHtml } from "@/lib/liste-examen-print/render-html"
@@ -55,6 +56,8 @@ export async function GET(request: Request, { params }: Params) {
 
     if (!liste) throw new ApiError(404, "Liste introuvable.")
     if (!autoEcole) throw new ApiError(404, "Auto-école introuvable.")
+
+    await fillMissingDatesDernierExamenOnListe(liste)
 
     const dto = listeExamenDtoForPrint(toListeExamenDto(liste, categories), variant)
     if (dto.sections.length === 0) {
