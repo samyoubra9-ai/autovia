@@ -1,0 +1,310 @@
+{
+  "meta": {
+    "homeTitle": "",
+    "homeDescription": "",
+    "homeOgTitle": "",
+    "homeOgDescription": "",
+    "layoutTitleDefault": "",
+    "layoutTitleTemplate": "",
+    "layoutDescription": "",
+    "layoutOgAlt": ""
+  },
+  "nav": {
+    "ariaMain": "",
+    "logoAria": "",
+    "learn": "",
+    "products": "",
+    "features": "",
+    "pricing": "",
+    "faq": "",
+    "contact": "",
+    "candidateSpace": "",
+    "signIn": "",
+    "getStarted": "",
+    "myCode": "",
+    "openMenu": "",
+    "closeMenu": "",
+    "menuTitle": "",
+    "close": "",
+    "mobileSectionsAria": "",
+    "alreadyHaveCode": "",
+    "schoolSignIn": "",
+    "freeTrial": ""
+  },
+  "hero": {
+    "badge": "",
+    "title": "",
+    "lead": "",
+    "bullets": [
+      "",
+      "",
+      ""
+    ],
+    "ctaTrial": "",
+    "ctaPlatform": ""
+  },
+  "trust": {
+    "items": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "products": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "learnMore": "",
+    "cards": [
+      {
+        "id": "",
+        "title": "",
+        "subtitle": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "subtitle": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "subtitle": "",
+        "description": ""
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "blocks": [
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      }
+    ],
+    "bento": [
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      },
+      {
+        "id": "",
+        "title": "",
+        "description": ""
+      }
+    ]
+  },
+  "workflow": {
+    "eyebrow": "",
+    "title": "",
+    "steps": [
+      {
+        "step": "",
+        "title": "",
+        "text": ""
+      },
+      {
+        "step": "",
+        "title": "",
+        "text": ""
+      },
+      {
+        "step": "",
+        "title": "",
+        "text": ""
+      }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "periodYear": "",
+    "periodMonth": "",
+    "monthlyLabel": "",
+    "annualLabel": "",
+    "toggleToMonthly": "",
+    "toggleToAnnual": "",
+    "annualCalc": "",
+    "monthlyCalc": "",
+    "currency": "",
+    "trial": {
+      "tag": "",
+      "title": "",
+      "price": "",
+      "calc": "",
+      "features": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "cta": ""
+    },
+    "essentiel": {
+      "tag": "",
+      "title": "",
+      "features": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "cta": ""
+    },
+    "pro": {
+      "tag": "",
+      "title": "",
+      "features": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "cta": ""
+    },
+    "elite": {
+      "title": "",
+      "priceLabel": "",
+      "calc": "",
+      "features": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "cta": ""
+    }
+  },
+  "plans": {
+    "essentielLabel": "",
+    "proLabel": "",
+    "eliteLabel": ""
+  },
+  "faq": {
+    "eyebrow": "",
+    "title": "",
+    "items": [
+      {
+        "q": "",
+        "a": ""
+      },
+      {
+        "q": "",
+        "a": ""
+      },
+      {
+        "q": "",
+        "a": ""
+      },
+      {
+        "q": "",
+        "a": ""
+      }
+    ]
+  },
+  "contact": {
+    "eyebrow": "",
+    "title": "",
+    "introBeforeEmail": "",
+    "introAfterEmail": "",
+    "subjectPlaceholder": "",
+    "subjects": {
+      "demo": "",
+      "tarifs": "",
+      "support": "",
+      "autre": ""
+    },
+    "honeypotLabel": "",
+    "nameLabel": "",
+    "emailLabel": "",
+    "emailPlaceholder": "",
+    "schoolLabel": "",
+    "subjectLabel": "",
+    "messageLabel": "",
+    "messagePlaceholder": "",
+    "submit": "",
+    "submitting": "",
+    "successTitle": "",
+    "successText": "",
+    "sendAnother": "",
+    "errorGeneric": "",
+    "errorNetwork": ""
+  },
+  "cta": {
+    "title": "",
+    "subtitle": "",
+    "button": ""
+  },
+  "footer": {
+    "tagline": "",
+    "productTitle": "",
+    "legalTitle": "",
+    "contactTitle": "",
+    "contactHint": "",
+    "linkLearn": "",
+    "linkFeatures": "",
+    "linkPricing": "",
+    "linkFaq": "",
+    "linkContact": "",
+    "linkMentions": "",
+    "linkPrivacy": "",
+    "linkCgu": "",
+    "linkCookies": "",
+    "copyright": "",
+    "creditsPrefix": "",
+    "moniteurName": "",
+    "moniteurRole": "",
+    "creditsJoin": "",
+    "developerName": "",
+    "developerRole": "",
+    "legalBack": ""
+  },
+  "images": {
+    "hero": "",
+    "backdash": "",
+    "planning": "",
+    "eleves": "",
+    "listeExamen": "",
+    "candidat": ""
+  },
+  "apprendre": {
+    "title": "",
+    "description": "",
+    "backLabel": "",
+    "brandSubtitle": "",
+    "intro": "",
+    "comingSoonTitle": "",
+    "comingSoonText": "",
+    "comingSoonHint": "",
+    "backHome": ""
+  },
+  "locale": {
+    "switchToFr": "",
+    "switchToKab": ""
+  }
+}

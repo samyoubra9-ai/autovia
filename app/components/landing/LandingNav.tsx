@@ -3,6 +3,9 @@
 import Image from "next/image"
 import { useCallback, useEffect, useId, useState, type ReactNode } from "react"
 
+import { LocaleSwitcher } from "@/app/components/vitrine/LocaleSwitcher"
+import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvider"
+
 import type { LandingLinks } from "./landing-links"
 
 function NavAnchor({
@@ -37,19 +40,20 @@ function NavAnchor({
   )
 }
 
-const NAV_ITEMS = [
-  { href: "/apprendre", label: "Apprendre", external: false },
-  { href: "#produits", label: "Produits", external: false },
-  { href: "#features", label: "Fonctionnalités", external: false },
-  { href: "#pricing", label: "Tarifs", external: false },
-  { href: "#faq", label: "FAQ", external: false },
-  { href: "#contact", label: "Contact", external: false },
-] as const
-
 export function LandingNav({ links }: { links: LandingLinks }) {
+  const m = useVitrineMessages()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const menuId = useId()
+
+  const navItems = [
+    { href: "/apprendre", label: m.nav.learn, external: false },
+    { href: "#produits", label: m.nav.products, external: false },
+    { href: "#features", label: m.nav.features, external: false },
+    { href: "#pricing", label: m.nav.pricing, external: false },
+    { href: "#faq", label: m.nav.faq, external: false },
+    { href: "#contact", label: m.nav.contact, external: false },
+  ] as const
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
@@ -77,7 +81,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
   }, [menuOpen, closeMenu])
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)")
+    const mq = window.matchMedia("(min-width: 1280px)")
     const onChange = () => {
       if (mq.matches) closeMenu()
     }
@@ -89,9 +93,9 @@ export function LandingNav({ links }: { links: LandingLinks }) {
     <header
       className={`ds-header${scrolled ? " ds-header--scrolled" : ""}${menuOpen ? " ds-header--menu-open" : ""}`}
     >
-      <div className="ds-container">
-        <nav className="ds-nav" aria-label="Navigation principale">
-          <a href="/" className="ds-logo" aria-label="Autovia — accueil">
+      <div className="ds-container ds-header-container">
+        <nav className="ds-nav" aria-label={m.nav.ariaMain}>
+          <a href="/" className="ds-logo" aria-label={m.nav.logoAria}>
             <Image
               src="/brand/favicon/favicon-96x96.png"
               alt=""
@@ -103,57 +107,51 @@ export function LandingNav({ links }: { links: LandingLinks }) {
             Auto<span>via</span>
           </a>
 
-          <div className="ds-nav-desktop">
-            <div className="ds-nav-links">
-              {NAV_ITEMS.map((item) => (
-                <NavAnchor key={item.href} href={item.href} external={item.external}>
-                  {item.label}
-                </NavAnchor>
-              ))}
-              <NavAnchor href={links.candidatUrl} external className="ds-nav-link-candidat">
-                Espace candidat
+          <div className="ds-nav-links" aria-label={m.nav.mobileSectionsAria}>
+            {navItems.map((item) => (
+              <NavAnchor key={item.href} href={item.href} external={item.external}>
+                {item.label}
               </NavAnchor>
-            </div>
+            ))}
+            <NavAnchor href={links.candidatUrl} external className="ds-nav-link-candidat">
+              {m.nav.candidateSpace}
+            </NavAnchor>
+          </div>
+
+          <div className="ds-nav-end">
+            <LocaleSwitcher />
             <div className="ds-nav-actions">
               <NavAnchor
                 href={links.backdashSignIn}
                 external
-                className="ds-btn ds-btn-ghost"
+                className="ds-btn ds-btn-ghost ds-btn-nav"
               >
-                Connexion
+                {m.nav.signIn}
               </NavAnchor>
               <NavAnchor
                 href={links.backdashSignUp}
                 external
-                className="ds-btn ds-btn-primary"
+                className="ds-btn ds-btn-primary ds-btn-nav"
               >
-                Démarrer
+                {m.nav.getStarted}
               </NavAnchor>
             </div>
-          </div>
-
-          <div className="ds-nav-mobile-bar">
-            <NavAnchor
-              href={links.candidatUrl}
-              external
-              className="ds-btn ds-btn-ghost ds-btn-sm ds-nav-mobile-code"
-            >
-              Mon code
-            </NavAnchor>
-            <button
-              type="button"
-              className="ds-nav-toggle"
-              aria-expanded={menuOpen}
-              aria-controls={menuId}
-              aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-              onClick={() => setMenuOpen((o) => !o)}
-            >
-              <span className="ds-nav-toggle-icon" aria-hidden>
-                <span />
-                <span />
-                <span />
-              </span>
-            </button>
+            <div className="ds-nav-mobile-bar">
+              <button
+                type="button"
+                className="ds-nav-toggle"
+                aria-expanded={menuOpen}
+                aria-controls={menuId}
+                aria-label={menuOpen ? m.nav.closeMenu : m.nav.openMenu}
+                onClick={() => setMenuOpen((o) => !o)}
+              >
+                <span className="ds-nav-toggle-icon" aria-hidden>
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              </button>
+            </div>
           </div>
         </nav>
       </div>
@@ -166,17 +164,17 @@ export function LandingNav({ links }: { links: LandingLinks }) {
         <button
           type="button"
           className="ds-mobile-menu-backdrop"
-          aria-label="Fermer le menu"
+          aria-label={m.nav.closeMenu}
           tabIndex={menuOpen ? 0 : -1}
           onClick={closeMenu}
         />
         <div className="ds-mobile-menu-panel">
           <div className="ds-mobile-menu-head">
-            <span className="ds-mobile-menu-title">Menu</span>
+            <span className="ds-mobile-menu-title">{m.nav.menuTitle}</span>
             <button
               type="button"
               className="ds-mobile-menu-close"
-              aria-label="Fermer"
+              aria-label={m.nav.close}
               onClick={closeMenu}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -185,8 +183,8 @@ export function LandingNav({ links }: { links: LandingLinks }) {
             </button>
           </div>
 
-          <nav className="ds-mobile-menu-links" aria-label="Sections">
-            {NAV_ITEMS.map((item) => (
+          <nav className="ds-mobile-menu-links" aria-label={m.nav.mobileSectionsAria}>
+            {navItems.map((item) => (
               <NavAnchor
                 key={item.href}
                 href={item.href}
@@ -203,7 +201,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               className="ds-mobile-menu-link ds-mobile-menu-link--highlight"
               onClick={closeMenu}
             >
-              Espace candidat
+              {m.nav.candidateSpace}
             </NavAnchor>
           </nav>
 
@@ -214,7 +212,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               className="ds-btn ds-btn-secondary ds-btn-block"
               onClick={closeMenu}
             >
-              J&apos;ai déjà mon code
+              {m.nav.alreadyHaveCode}
             </NavAnchor>
             <NavAnchor
               href={links.backdashSignIn}
@@ -222,7 +220,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               className="ds-btn ds-btn-ghost ds-btn-block"
               onClick={closeMenu}
             >
-              Connexion auto-école
+              {m.nav.schoolSignIn}
             </NavAnchor>
             <NavAnchor
               href={links.backdashSignUp}
@@ -230,7 +228,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               className="ds-btn ds-btn-primary ds-btn-block"
               onClick={closeMenu}
             >
-              Essai gratuit
+              {m.nav.freeTrial}
             </NavAnchor>
           </div>
         </div>

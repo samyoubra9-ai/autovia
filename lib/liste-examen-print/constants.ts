@@ -6,9 +6,19 @@ import { deriveListeExamenPrintCaps } from "./physical-layout"
  */
 export const LISTE_EXAMEN_PAGE_MARGIN_MM = 4
 
-export { LISTE_EXAMEN_TABLE_ROW_MM } from "./physical-layout"
+export {
+  LISTE_EXAMEN_TABLE_ROW_MM,
+  LISTE_EXAMEN_TABLE_NOM_FONT_PT,
+  LISTE_EXAMEN_TABLE_NOM_VAL_SHIFT_MM,
+  LISTE_EXAMEN_TABLE_BODY_FONT_PT,
+  LISTE_EXAMEN_TABLE_CELL_FONT_PT,
+  LISTE_EXAMEN_TABLE_HEAD_FONT_PT,
+  LISTE_EXAMEN_TABLE_SIDE_FONT_PT,
+  LISTE_EXAMEN_TABLE_ROTATED_FONT_PT,
+  LISTE_EXAMEN_TABLE_CELL_VAL_SHIFT_MM,
+  listeExamenPrintTableCssVars,
+} from "./physical-layout"
 
 export const LISTE_EXAMEN_PRINT_CAPS = deriveListeExamenPrintCaps()
 
 export type ListeExamenPrintCaps = typeof LISTE_EXAMEN_PRINT_CAPS
-

@@ -1,20 +1,18 @@
 "use client"
 
-import Image from "next/image"
 import { useState, type ReactNode } from "react"
 
+import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvider"
+import { formatVitrineMessage } from "@/lib/i18n/vitrine-messages"
+import { SUBSCRIPTION_PRICING, formatDzdAmount } from "@/lib/subscription-plans"
+
 import { LandingImage } from "./landing/LandingImage"
-import {
-  FAQ_ITEMS,
-  FEATURE_BLOCKS,
-  HERO_BULLETS,
-  WORKFLOW_STEPS,
-} from "./landing/landing-data"
+import { FEATURE_BLOCK_IMAGE_KEYS } from "./landing/landing-data"
 import { ContactForm } from "./landing/ContactForm"
 import { ContactEmail } from "./landing/ContactEmail"
+import { LandingFooter } from "./landing/LandingFooter"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
-import { SUBSCRIPTION_PRICING, formatDzdAmount } from "@/lib/subscription-plans"
 
 const CheckIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -48,30 +46,46 @@ function LandingAnchor({
 }
 
 export function AutoviaLanding({ links }: { links: LandingLinks }) {
-  const products = buildProductCards(links)
+  const m = useVitrineMessages()
+  const products = buildProductCards(links, m.products.cards)
   const [essentielAnnual, setEssentielAnnual] = useState(true)
   const [proAnnual, setProAnnual] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   const essentiel = SUBSCRIPTION_PRICING.ESSENTIEL
   const pro = SUBSCRIPTION_PRICING.PRO
-  const elite = SUBSCRIPTION_PRICING.ELITE
 
   const essentielPrice = essentielAnnual
     ? formatDzdAmount(essentiel.annualDzd).replace(" DZD", "")
     : formatDzdAmount(essentiel.monthlyDzd).replace(" DZD", "")
-  const essentielPeriod = essentielAnnual ? "/ an" : "/ mois"
+  const essentielPeriod = essentielAnnual ? m.pricing.periodYear : m.pricing.periodMonth
   const essentielCalc = essentielAnnual
-    ? `Soit ${formatDzdAmount(Math.round(essentiel.annualDzd / 12))} / mois. Vous économisez ${formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd)} !`
-    : `Facturé mensuellement (${formatDzdAmount(essentiel.annualFromMonthlyDzd)} / an au total).`
+    ? formatVitrineMessage(m.pricing.annualCalc, {
+        monthlyEquivalent: formatDzdAmount(Math.round(essentiel.annualDzd / 12)),
+        savings: formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd),
+      })
+    : formatVitrineMessage(m.pricing.monthlyCalc, {
+        annualTotal: formatDzdAmount(essentiel.annualFromMonthlyDzd),
+      })
 
   const proPrice = proAnnual
     ? formatDzdAmount(pro.annualDzd).replace(" DZD", "")
     : formatDzdAmount(pro.monthlyDzd).replace(" DZD", "")
-  const proPeriod = proAnnual ? "/ an" : "/ mois"
+  const proPeriod = proAnnual ? m.pricing.periodYear : m.pricing.periodMonth
   const proCalc = proAnnual
-    ? `Soit ${formatDzdAmount(Math.round(pro.annualDzd / 12))} / mois. Vous économisez ${formatDzdAmount(pro.annualSavingsVsMonthlyDzd)} !`
-    : `Facturé mensuellement (${formatDzdAmount(pro.annualFromMonthlyDzd)} / an au total).`
+    ? formatVitrineMessage(m.pricing.annualCalc, {
+        monthlyEquivalent: formatDzdAmount(Math.round(pro.annualDzd / 12)),
+        savings: formatDzdAmount(pro.annualSavingsVsMonthlyDzd),
+      })
+    : formatVitrineMessage(m.pricing.monthlyCalc, {
+        annualTotal: formatDzdAmount(pro.annualFromMonthlyDzd),
+      })
+
+  const featureBlocks = m.features.blocks.map((block, index) => ({
+    ...block,
+    imageKey: FEATURE_BLOCK_IMAGE_KEYS[index],
+    reverse: index === 1,
+  }))
 
   return (
     <div className="ds-landing-page">
@@ -80,16 +94,11 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
       <section className="ds-hero">
         <div className="ds-container ds-hero-grid">
           <div className="ds-hero-copy">
-            <span className="ds-badge">Auto-écoles en Algérie 🇩🇿</span>
-            <h1>
-              Le SaaS qui simplifie la gestion de votre auto-école
-            </h1>
-            <p className="ds-hero-lead">
-              Plannings, candidats, paiements, listes d&apos;examen et suivi mobile — une
-              plateforme claire pour votre équipe et vos élèves.
-            </p>
+            <span className="ds-badge">{m.hero.badge}</span>
+            <h1>{m.hero.title}</h1>
+            <p className="ds-hero-lead">{m.hero.lead}</p>
             <ul className="ds-hero-bullets">
-              {HERO_BULLETS.map((item) => (
+              {m.hero.bullets.map((item) => (
                 <li key={item}>
                   <CheckIcon />
                   {item}
@@ -102,10 +111,10 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
                 external
                 className="ds-btn ds-btn-primary ds-btn-lg"
               >
-                Essai gratuit
+                {m.hero.ctaTrial}
               </LandingAnchor>
               <a href="#produits" className="ds-btn ds-btn-secondary ds-btn-lg">
-                Voir la plateforme
+                {m.hero.ctaPlatform}
               </a>
             </div>
           </div>
@@ -119,22 +128,25 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <section className="ds-trust">
         <div className="ds-container ds-trust-inner">
-          <span>Conçu pour les professionnels de la conduite</span>
-          <span className="ds-trust-dot" aria-hidden />
-          <span>Interface en français</span>
-          <span className="ds-trust-dot" aria-hidden />
-          <span>Listes d&apos;examen & suivi QR</span>
+          {m.trust.items.flatMap((item, index) => {
+            const nodes = [
+              <span key={item}>{item}</span>,
+            ]
+            if (index < m.trust.items.length - 1) {
+              nodes.push(
+                <span key={`dot-${index}`} className="ds-trust-dot" aria-hidden />,
+              )
+            }
+            return nodes
+          })}
         </div>
       </section>
 
       <section id="produits" className="ds-products ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">Écosystème</p>
-          <h2>Un seul abonnement, trois espaces</h2>
-          <p>
-            Autovia pour l&apos;auto-école, portail candidat pour les élèves, et ce site pour
-            découvrir le service.
-          </p>
+          <p className="ds-eyebrow">{m.products.eyebrow}</p>
+          <h2>{m.products.title}</h2>
+          <p>{m.products.subtitle}</p>
         </div>
         <div className="ds-products-grid">
           {products.map((product) => (
@@ -154,7 +166,7 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
                   external={product.external}
                   className="ds-link-arrow"
                 >
-                  En savoir plus →
+                  {m.products.learnMore}
                 </LandingAnchor>
               </div>
             </article>
@@ -164,14 +176,14 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <section id="features" className="ds-features ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">Fonctionnalités</p>
-          <h2>Tout le métier, sans complexité</h2>
-          <p>Des écrans pensés pour le quotidien des auto-écoles algériennes.</p>
+          <p className="ds-eyebrow">{m.features.eyebrow}</p>
+          <h2>{m.features.title}</h2>
+          <p>{m.features.subtitle}</p>
         </div>
         <div className="ds-feature-showcase">
-          {FEATURE_BLOCKS.map((block) => (
+          {featureBlocks.map((block) => (
             <article
-              key={block.title}
+              key={block.id}
               className={`ds-feature-row ${block.reverse ? "ds-feature-row--reverse" : ""}`}
             >
               <div className="ds-feature-copy">
@@ -193,44 +205,41 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           ))}
         </div>
         <div className="ds-bento-grid">
-          <div className="ds-bento-item ds-large">
-            <div className="ds-bento-icon" aria-hidden>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
+          {m.features.bento.map((item, index) => (
+            <div
+              key={item.id}
+              className={`ds-bento-item${index === 0 ? " ds-large" : ""}`}
+            >
+              <div className="ds-bento-icon" aria-hidden>
+                {index === 0 ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                ) : index === 1 ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12" y2="18" />
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                )}
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
             </div>
-            <h3>Données isolées par auto-école</h3>
-            <p>Chaque établissement dispose de son espace sécurisé. Vos candidats et paiements restent confidentiels.</p>
-          </div>
-          <div className="ds-bento-item">
-            <div className="ds-bento-icon" aria-hidden>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="5" y="2" width="14" height="20" rx="2" />
-                <line x1="12" y1="18" x2="12" y2="18" />
-              </svg>
-            </div>
-            <h3>Utilisable sur mobile</h3>
-            <p>Consultez le planning et les fiches depuis un téléphone ou une tablette.</p>
-          </div>
-          <div className="ds-bento-item">
-            <div className="ds-bento-icon" aria-hidden>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
-            </div>
-            <h3>Statistiques en temps réel</h3>
-            <p>Tableau de bord : inscriptions, séances du mois, examens à venir, encaissements.</p>
-          </div>
+          ))}
         </div>
       </section>
 
       <section className="ds-workflow ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">Mise en route</p>
-          <h2>Opérationnel en trois étapes</h2>
+          <p className="ds-eyebrow">{m.workflow.eyebrow}</p>
+          <h2>{m.workflow.title}</h2>
         </div>
         <ol className="ds-workflow-steps">
-          {WORKFLOW_STEPS.map((step) => (
+          {m.workflow.steps.map((step) => (
             <li key={step.step}>
               <span className="ds-step-num">{step.step}</span>
               <h3>{step.title}</h3>
@@ -242,33 +251,31 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <section id="pricing" className="ds-pricing ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">Tarifs</p>
-          <h2>Des offres adaptées à la taille de votre école</h2>
-          <p>
-            Paiement annuel avantageux — le mensuel coûte plus cher sur l&apos;année. L&apos;offre
-            sur mesure reste à négocier.
-          </p>
+          <p className="ds-eyebrow">{m.pricing.eyebrow}</p>
+          <h2>{m.pricing.title}</h2>
+          <p>{m.pricing.subtitle}</p>
         </div>
 
         <div className="ds-pricing-grid ds-pricing-grid--wide">
           <div className="ds-pricing-card ds-pricing-card--trial">
-            <div className="ds-trial-tag">Essai gratuit</div>
+            <div className="ds-trial-tag">{m.pricing.trial.tag}</div>
             <div className="ds-price-header">
-              <h3>Découverte</h3>
+              <h3>{m.pricing.trial.title}</h3>
               <div className="ds-price-amount ds-price-amount--trial">
-                <span>0</span>
-                <span className="ds-price-currency">DZD</span>
+                <span>{m.pricing.trial.price}</span>
+                <span className="ds-price-currency">{m.pricing.currency}</span>
               </div>
               <div className="ds-price-calc ds-price-calc--muted">
-                15 jours · jusqu&apos;à 10 élèves · sans carte bancaire
+                {m.pricing.trial.calc}
               </div>
             </div>
 
             <ul className="ds-feature-list">
-              <li><CheckIcon /> Jusqu&apos;à 10 élèves</li>
-              <li><CheckIcon /> Tableau de bord complet</li>
-              <li><CheckIcon /> Paiements & plannings</li>
-              <li><CheckIcon /> Listes d&apos;examen</li>
+              {m.pricing.trial.features.map((feature) => (
+                <li key={feature}>
+                  <CheckIcon /> {feature}
+                </li>
+              ))}
             </ul>
 
             <LandingAnchor
@@ -276,43 +283,43 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               external
               className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
             >
-              Essai gratuit
+              {m.pricing.trial.cta}
             </LandingAnchor>
           </div>
 
           <div className="ds-pricing-card">
-            <div className="ds-popular-tag ds-popular-tag--essentiel">Essentiel</div>
+            <div className="ds-popular-tag ds-popular-tag--essentiel">{m.pricing.essentiel.tag}</div>
             <div className="ds-billing-toggle ds-billing-toggle--inline">
-              <span>Mensuel</span>
+              <span>{m.pricing.monthlyLabel}</span>
               <button
                 type="button"
                 className={`ds-toggle-switch ${essentielAnnual ? "ds-annual" : ""}`}
                 onClick={() => setEssentielAnnual((v) => !v)}
-                aria-label={essentielAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
+                aria-label={essentielAnnual ? m.pricing.toggleToMonthly : m.pricing.toggleToAnnual}
               />
               <span>
-                Annuel{" "}
+                {m.pricing.annualLabel}{" "}
                 <span className="ds-save-badge">
                   −{formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
                 </span>
               </span>
             </div>
             <div className="ds-price-header">
-              <h3>Petite auto-école</h3>
+              <h3>{m.pricing.essentiel.title}</h3>
               <div className="ds-price-amount">
                 <span>{essentielPrice}</span>
-                <span className="ds-price-currency">DZD</span>
+                <span className="ds-price-currency">{m.pricing.currency}</span>
                 <span className="ds-price-period">{essentielPeriod}</span>
               </div>
               <div className="ds-price-calc">{essentielCalc}</div>
             </div>
 
             <ul className="ds-feature-list">
-              <li><CheckIcon /> Jusqu&apos;à 120 dossiers (selon catégories)</li>
-              <li><CheckIcon /> Plannings & moniteurs</li>
-              <li><CheckIcon /> Paiements & reçus</li>
-              <li><CheckIcon /> Listes d&apos;examen & impression</li>
-              <li><CheckIcon /> Portail candidat (QR)</li>
+              {m.pricing.essentiel.features.map((feature) => (
+                <li key={feature}>
+                  <CheckIcon /> {feature}
+                </li>
+              ))}
             </ul>
 
             <LandingAnchor
@@ -320,44 +327,43 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               external
               className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
             >
-              Commencer
+              {m.pricing.essentiel.cta}
             </LandingAnchor>
           </div>
 
           <div className="ds-pricing-card ds-popular">
-            <div className="ds-popular-tag">Pro</div>
+            <div className="ds-popular-tag">{m.pricing.pro.tag}</div>
             <div className="ds-billing-toggle ds-billing-toggle--inline">
-              <span>Mensuel</span>
+              <span>{m.pricing.monthlyLabel}</span>
               <button
                 type="button"
                 className={`ds-toggle-switch ${proAnnual ? "ds-annual" : ""}`}
                 onClick={() => setProAnnual((v) => !v)}
-                aria-label={proAnnual ? "Basculer vers mensuel" : "Basculer vers annuel"}
+                aria-label={proAnnual ? m.pricing.toggleToMonthly : m.pricing.toggleToAnnual}
               />
               <span>
-                Annuel{" "}
+                {m.pricing.annualLabel}{" "}
                 <span className="ds-save-badge">
                   −{formatDzdAmount(pro.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
                 </span>
               </span>
             </div>
             <div className="ds-price-header">
-              <h3>École structurée</h3>
+              <h3>{m.pricing.pro.title}</h3>
               <div className="ds-price-amount">
                 <span>{proPrice}</span>
-                <span className="ds-price-currency">DZD</span>
+                <span className="ds-price-currency">{m.pricing.currency}</span>
                 <span className="ds-price-period">{proPeriod}</span>
               </div>
               <div className="ds-price-calc">{proCalc}</div>
             </div>
 
             <ul className="ds-feature-list">
-              <li><CheckIcon /> Jusqu&apos;à 300 dossiers</li>
-              <li><CheckIcon /> Catégories illimitées</li>
-              <li><CheckIcon /> Moniteurs & véhicules illimités</li>
-              <li><CheckIcon /> Listes d&apos;examen & impressions</li>
-              <li><CheckIcon /> Portail candidat (QR)</li>
-              <li><CheckIcon /> Support prioritaire</li>
+              {m.pricing.pro.features.map((feature) => (
+                <li key={feature}>
+                  <CheckIcon /> {feature}
+                </li>
+              ))}
             </ul>
 
             <LandingAnchor
@@ -365,30 +371,31 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
               external
               className="ds-btn ds-btn-primary ds-btn-lg ds-btn-block"
             >
-              Choisir Pro
+              {m.pricing.pro.cta}
             </LandingAnchor>
           </div>
 
           <div className="ds-pricing-card ds-pricing-card--elite">
             <div className="ds-price-header">
-              <h3>{elite.label}</h3>
+              <h3>{m.pricing.elite.title}</h3>
               <div className="ds-price-amount ds-price-amount--elite">
-                <span>Sur mesure</span>
+                <span>{m.pricing.elite.priceLabel}</span>
               </div>
               <div className="ds-price-calc ds-price-calc--muted">
-                Volume illimité — tarif, options et intégrations à négocier avec notre équipe.
+                {m.pricing.elite.calc}
               </div>
             </div>
 
             <ul className="ds-feature-list">
-              <li><CheckIcon /> Dossiers illimités</li>
-              <li><CheckIcon /> Multi-sites ou groupe</li>
-              <li><CheckIcon /> Options avancées sur demande</li>
-              <li><CheckIcon /> Accompagnement dédié</li>
+              {m.pricing.elite.features.map((feature) => (
+                <li key={feature}>
+                  <CheckIcon /> {feature}
+                </li>
+              ))}
             </ul>
 
             <LandingAnchor href="#contact" className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block">
-              Nous contacter
+              {m.pricing.elite.cta}
             </LandingAnchor>
           </div>
         </div>
@@ -396,11 +403,11 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <section id="faq" className="ds-faq ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">FAQ</p>
-          <h2>Questions fréquentes</h2>
+          <p className="ds-eyebrow">{m.faq.eyebrow}</p>
+          <h2>{m.faq.title}</h2>
         </div>
         <div className="ds-faq-list">
-          {FAQ_ITEMS.map((item, index) => {
+          {m.faq.items.map((item, index) => {
             const open = openFaq === index
             return (
               <div key={item.q} className={`ds-faq-item ${open ? "ds-faq-item--open" : ""}`}>
@@ -422,13 +429,12 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
 
       <section id="contact" className="ds-contact ds-container">
         <div className="ds-section-header">
-          <p className="ds-eyebrow">Contact</p>
-          <h2>Écrivez-nous</h2>
+          <p className="ds-eyebrow">{m.contact.eyebrow}</p>
+          <h2>{m.contact.title}</h2>
           <p>
-            Une question sur Autovia, une démo ou un devis ? Envoyez-nous un
-            message ou écrivez directement à{" "}
-            <ContactEmail className="ds-contact-email-link" /> — nous vous
-            répondrons rapidement.
+            {m.contact.introBeforeEmail}{" "}
+            <ContactEmail className="ds-contact-email-link" />{" "}
+            {m.contact.introAfterEmail}
           </p>
         </div>
         <div className="ds-contact-card">
@@ -439,38 +445,20 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
       <section className="ds-cta-band">
         <div className="ds-container ds-cta-band-inner">
           <div>
-            <h2>Prêt à moderniser votre auto-école ?</h2>
-            <p>Rejoignez Autovia et centralisez votre gestion dès aujourd&apos;hui.</p>
+            <h2>{m.cta.title}</h2>
+            <p>{m.cta.subtitle}</p>
           </div>
           <LandingAnchor
             href={links.backdashSignUp}
             external
             className="ds-btn ds-btn-white ds-btn-lg"
           >
-            Commencer gratuitement
+            {m.cta.button}
           </LandingAnchor>
         </div>
       </section>
 
-      <footer className="ds-footer">
-        <div className="ds-container ds-footer-inner">
-          <a href="/" className="ds-logo">
-            <Image
-              src="/brand/favicon/favicon-96x96.png"
-              alt=""
-              width={28}
-              height={28}
-              className="ds-logo-img"
-            />
-            Auto<span>via</span>
-          </a>
-          <p>
-            &copy; {new Date().getFullYear()} Autovia — Auto-écoles en Algérie.
-            {" · "}
-            <ContactEmail className="ds-footer-email" />
-          </p>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   )
 }

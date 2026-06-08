@@ -1,11 +1,12 @@
+"use client"
+
 import Image from "next/image"
 
-import { LANDING_IMAGES } from "./landing-data"
-
-type ImageKey = keyof typeof LANDING_IMAGES
+import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvider"
+import { LANDING_IMAGE_PATHS, type LandingImageKey } from "./landing-data"
 
 type LandingImageProps = {
-  imageKey: ImageKey
+  imageKey: LandingImageKey
   className?: string
   priority?: boolean
   sizes?: string
@@ -17,11 +18,14 @@ export function LandingImage({
   priority = false,
   sizes = "(max-width: 768px) 100vw, 50vw",
 }: LandingImageProps) {
-  const img = LANDING_IMAGES[imageKey]
+  const m = useVitrineMessages()
+  const img = LANDING_IMAGE_PATHS[imageKey]
+  const alt = m.images[imageKey]
+
   return (
     <Image
       src={img.src}
-      alt={img.alt}
+      alt={alt}
       width={img.width}
       height={img.height}
       className={className}

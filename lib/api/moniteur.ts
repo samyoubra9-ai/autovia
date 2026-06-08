@@ -206,11 +206,12 @@ export async function resolveMoniteurListeSlot(
       include: moniteurCategoriesInclude,
     })
     if (!m) {
-      throw new Error(`Moniteur ${slot} introuvable ou inactif.`)
+      throw new ApiError(400, `Moniteur ${slot} introuvable ou inactif.`)
     }
+    const clientCategorie = String(body[catKey] ?? "").trim()
     return {
       nom: displayMoniteurNomComplet(m),
-      categorie: moniteurListeCategorieLabel(m),
+      categorie: clientCategorie || moniteurListeCategorieLabel(m),
     }
   }
 

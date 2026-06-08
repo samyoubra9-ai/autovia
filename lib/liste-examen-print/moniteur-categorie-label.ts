@@ -26,3 +26,21 @@ export function listeExamenMoniteurCategorieLabel(
 
   return "—"
 }
+
+/** Catégorie « مكلف » pour un moniteur : valeur enregistrée, sinon dérivée de la liste. */
+export function listeExamenMoniteurSlotCategorieLabel(
+  storedCategorie: string | null | undefined,
+  sections: ListeExamenSectionPrint[],
+  schoolCategories?: SchoolCategoryRef[] | null,
+): string {
+  const stored = storedCategorie?.trim()
+  if (stored) {
+    if (!stored.includes("/")) return stored
+    const first = stored
+      .split("/")
+      .map((s) => s.trim())
+      .find(Boolean)
+    if (first) return first
+  }
+  return listeExamenMoniteurCategorieLabel(sections, schoolCategories)
+}

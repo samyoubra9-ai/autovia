@@ -1,21 +1,25 @@
 "use client"
 
 import { useState, type FormEvent } from "react"
+
+import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvider"
+import { formatVitrineMessage } from "@/lib/i18n/vitrine-messages"
 import { getPublicContactEmail } from "@/lib/contact/public-email"
 
 type FormStatus = "idle" | "loading" | "success" | "error"
 
-const SUBJECT_OPTIONS = [
-  { value: "", label: "Choisir un sujet (optionnel)" },
-  { value: "demo", label: "Demande de démo" },
-  { value: "tarifs", label: "Question sur les tarifs" },
-  { value: "support", label: "Support technique" },
-  { value: "autre", label: "Autre" },
-] as const
-
 export function ContactForm() {
+  const m = useVitrineMessages()
   const [status, setStatus] = useState<FormStatus>("idle")
   const [errorMessage, setErrorMessage] = useState("")
+
+  const subjectOptions = [
+    { value: "", label: m.contact.subjectPlaceholder },
+    { value: "demo", label: m.contact.subjects.demo },
+    { value: "tarifs", label: m.contact.subjects.tarifs },
+    { value: "support", label: m.contact.subjects.support },
+    { value: "autre", label: m.contact.subjects.autre },
+  ] as const
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -34,6 +38,8 @@ export function ContactForm() {
       website: String(fd.get("website") ?? ""),
     }
 
+    const contactEmail = getPublicContactEmail()
+
     try {
       const res = await fetch("/api/v1/public/contact", {
         method: "POST",
@@ -47,7 +53,7 @@ export function ContactForm() {
         setStatus("error")
         setErrorMessage(
           data.error ||
-            `Une erreur est survenue. Écrivez-nous à ${getPublicContactEmail()}.`,
+            formatVitrineMessage(m.contact.errorGeneric, { email: contactEmail }),
         )
         return
       }
@@ -57,7 +63,7 @@ export function ContactForm() {
     } catch {
       setStatus("error")
       setErrorMessage(
-        `Connexion impossible. Écrivez-nous à ${getPublicContactEmail()}.`,
+        formatVitrineMessage(m.contact.errorNetwork, { email: contactEmail }),
       )
     }
   }
@@ -65,17 +71,14 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <div className="ds-contact-success" role="status">
-        <h3>Message envoyé</h3>
-        <p>
-          Merci ! Nous avons bien reçu votre message et vous répondrons à
-          l&apos;adresse indiquée dès que possible.
-        </p>
+        <h3>{m.contact.successTitle}</h3>
+        <p>{m.contact.successText}</p>
         <button
           type="button"
           className="ds-btn ds-btn-secondary"
           onClick={() => setStatus("idle")}
         >
-          Envoyer un autre message
+          {m.contact.sendAnother}
         </button>
       </div>
     )
@@ -84,7 +87,7 @@ export function ContactForm() {
   return (
     <form className="ds-contact-form" onSubmit={handleSubmit} noValidate>
       <div className="ds-contact-honeypot" aria-hidden>
-        <label htmlFor="contact-website">Site web</label>
+        <label htmlFor="contact-website">{m.contact.honeypotLabel}</label>
         <input
           id="contact-website"
           name="website"
@@ -96,7 +99,7 @@ export function ContactForm() {
 
       <div className="ds-contact-grid">
         <div className="ds-contact-field">
-          <label htmlFor="contact-name">Nom *</label>
+          <label htmlFor="contact-name">{m.contact.nameLabel}</label>
           <input
             id="contact-name"
             name="name"
@@ -109,7 +112,7 @@ export function ContactForm() {
         </div>
 
         <div className="ds-contact-field">
-          <label htmlFor="contact-email">Votre e-mail *</label>
+          <label htmlFor="contact-email">{m.contact.emailLabel}</label>
           <input
             id="contact-email"
             name="email"
@@ -117,13 +120,13 @@ export function ContactForm() {
             required
             autoComplete="email"
             maxLength={254}
-            placeholder="vous@exemple.com"
+            placeholder={m.contact.emailPlaceholder}
             disabled={status === "loading"}
           />
         </div>
 
         <div className="ds-contact-field">
-          <label htmlFor="contact-auto-ecole">Auto-école (optionnel)</label>
+          <label htmlFor="contact-auto-ecole">{m.contact.schoolLabel}</label>
           <input
             id="contact-auto-ecole"
             name="autoEcole"
@@ -135,14 +138,14 @@ export function ContactForm() {
         </div>
 
         <div className="ds-contact-field">
-          <label htmlFor="contact-subject">Sujet</label>
+          <label htmlFor="contact-subject">{m.contact.subjectLabel}</label>
           <select
             id="contact-subject"
             name="subject"
             defaultValue=""
             disabled={status === "loading"}
           >
-            {SUBJECT_OPTIONS.map((opt) => (
+            {subjectOptions.map((opt) => (
               <option key={opt.value || "default"} value={opt.value}>
                 {opt.label}
               </option>
@@ -151,7 +154,7 @@ export function ContactForm() {
         </div>
 
         <div className="ds-contact-field ds-contact-field--full">
-          <label htmlFor="contact-message">Message *</label>
+          <label htmlFor="contact-message">{m.contact.messageLabel}</label>
           <textarea
             id="contact-message"
             name="message"
@@ -159,7 +162,7 @@ export function ContactForm() {
             rows={5}
             minLength={10}
             maxLength={5000}
-            placeholder="Décrivez votre demande…"
+            placeholder={m.contact.messagePlaceholder}
             disabled={status === "loading"}
           />
         </div>
@@ -176,7 +179,7 @@ export function ContactForm() {
         className="ds-btn ds-btn-primary ds-btn-lg"
         disabled={status === "loading"}
       >
-        {status === "loading" ? "Envoi en cours…" : "Envoyer le message"}
+        {status === "loading" ? m.contact.submitting : m.contact.submit}
       </button>
     </form>
   )

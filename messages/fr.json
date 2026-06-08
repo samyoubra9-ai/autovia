@@ -1,0 +1,310 @@
+{
+  "meta": {
+    "homeTitle": "Autovia - La gestion d'auto-école simplifiée",
+    "homeDescription": "SaaS pour auto-écoles en Algérie : planning, listes d'examen, paiements et suivi candidat par QR.",
+    "homeOgTitle": "Autovia — Gestion d'auto-école",
+    "homeOgDescription": "Plateforme complète pour auto-écoles : plannings, candidats, listes d'examen et portail élève.",
+    "layoutTitleDefault": "Autovia - La gestion d'auto-école simplifiée",
+    "layoutTitleTemplate": "%s | Autovia",
+    "layoutDescription": "Plateforme moderne pour auto-écoles en Algérie : plannings, candidats, paiements et tableau de bord sur une seule interface.",
+    "layoutOgAlt": "Autovia — gestion d'auto-école"
+  },
+  "nav": {
+    "ariaMain": "Navigation principale",
+    "logoAria": "Autovia — accueil",
+    "learn": "Apprendre",
+    "products": "Produits",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "candidateSpace": "Espace candidat",
+    "signIn": "Connexion",
+    "getStarted": "Démarrer",
+    "myCode": "Mon code",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "menuTitle": "Menu",
+    "close": "Fermer",
+    "mobileSectionsAria": "Sections",
+    "alreadyHaveCode": "J'ai déjà mon code",
+    "schoolSignIn": "Connexion auto-école",
+    "freeTrial": "Essai gratuit"
+  },
+  "hero": {
+    "badge": "Auto-écoles en Algérie 🇩🇿",
+    "title": "Le SaaS qui simplifie la gestion de votre auto-école",
+    "lead": "Plannings, candidats, paiements, listes d'examen et suivi mobile — une plateforme claire pour votre équipe et vos élèves.",
+    "bullets": [
+      "Planning moniteurs sans chevauchement",
+      "Listes d'examen imprimables (format officiel)",
+      "Suivi candidat mobile par QR"
+    ],
+    "ctaTrial": "Essai gratuit",
+    "ctaPlatform": "Voir la plateforme"
+  },
+  "trust": {
+    "items": [
+      "Conçu pour les professionnels de la conduite",
+      "Interface en français",
+      "Listes d'examen & suivi QR"
+    ]
+  },
+  "products": {
+    "eyebrow": "Écosystème",
+    "title": "Un seul abonnement, trois espaces",
+    "subtitle": "Autovia pour l'auto-école, portail candidat pour les élèves, et ce site pour découvrir le service.",
+    "learnMore": "En savoir plus →",
+    "cards": [
+      {
+        "id": "backdash",
+        "title": "Autovia",
+        "subtitle": "Espace auto-école",
+        "description": "Tableau de bord, élèves, moniteurs, véhicules, séances, paiements et listes d'examen — tout le quotidien de votre école."
+      },
+      {
+        "id": "candidat",
+        "title": "Portail candidat",
+        "subtitle": "PWA mobile",
+        "description": "Vos élèves consultent leur progression, leurs séances et leur code de suivi depuis le téléphone, même hors ligne."
+      },
+      {
+        "id": "platform",
+        "title": "Inscription",
+        "subtitle": "Essai gratuit",
+        "description": "Création de compte, paramètres d'impression, catégories de permis et gestion de l'accès à la plateforme."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Fonctionnalités",
+    "title": "Tout le métier, sans complexité",
+    "subtitle": "Des écrans pensés pour le quotidien des auto-écoles algériennes.",
+    "blocks": [
+      {
+        "id": "planning",
+        "title": "Plannings de conduite intelligents",
+        "description": "Organisez les créneaux par moniteur et par véhicule. Visualisez la semaine en un coup d'œil et évitez les doubles réservations."
+      },
+      {
+        "id": "eleves",
+        "title": "Candidats & trésorerie centralisés",
+        "description": "Fiche complète par élève : étapes du permis, reste à payer, historique des versements et documents. Gardez la caisse sous contrôle."
+      },
+      {
+        "id": "listeExamen",
+        "title": "Listes d'examen prêtes à imprimer",
+        "description": "Génération des listes avec pagination A4, texte arabe et signature. Conçu pour les pratiques des auto-écoles en Algérie."
+      }
+    ],
+    "bento": [
+      {
+        "id": "isolated",
+        "title": "Données isolées par auto-école",
+        "description": "Chaque établissement dispose de son espace sécurisé. Vos candidats et paiements restent confidentiels."
+      },
+      {
+        "id": "mobile",
+        "title": "Utilisable sur mobile",
+        "description": "Consultez le planning et les fiches depuis un téléphone ou une tablette."
+      },
+      {
+        "id": "stats",
+        "title": "Statistiques en temps réel",
+        "description": "Tableau de bord : inscriptions, séances du mois, examens à venir, encaissements."
+      }
+    ]
+  },
+  "workflow": {
+    "eyebrow": "Mise en route",
+    "title": "Opérationnel en trois étapes",
+    "steps": [
+      {
+        "step": "01",
+        "title": "Créez votre auto-école",
+        "text": "Inscription en ligne, choix des catégories de permis et paramètres d'impression en quelques minutes."
+      },
+      {
+        "step": "02",
+        "title": "Gérez au quotidien",
+        "text": "Ajoutez les candidats, planifiez les séances, enregistrez les paiements et préparez les listes d'examen."
+      },
+      {
+        "step": "03",
+        "title": "Vos candidats suivent leur dossier",
+        "text": "Chaque élève reçoit un code de suivi pour consulter sa progression sur l'application candidat."
+      }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Tarifs",
+    "title": "Des offres adaptées à la taille de votre école",
+    "subtitle": "Paiement annuel avantageux — le mensuel coûte plus cher sur l'année. L'offre sur mesure reste à négocier.",
+    "periodYear": "/ an",
+    "periodMonth": "/ mois",
+    "monthlyLabel": "Mensuel",
+    "annualLabel": "Annuel",
+    "toggleToMonthly": "Basculer vers mensuel",
+    "toggleToAnnual": "Basculer vers annuel",
+    "annualCalc": "Soit {monthlyEquivalent} / mois. Vous économisez {savings} !",
+    "monthlyCalc": "Facturé mensuellement ({annualTotal} / an au total).",
+    "currency": "DZD",
+    "trial": {
+      "tag": "Essai gratuit",
+      "title": "Découverte",
+      "price": "0",
+      "calc": "15 jours · jusqu'à 10 élèves · sans carte bancaire",
+      "features": [
+        "Jusqu'à 10 élèves",
+        "Tableau de bord complet",
+        "Paiements & plannings",
+        "Listes d'examen"
+      ],
+      "cta": "Essai gratuit"
+    },
+    "essentiel": {
+      "tag": "Essentiel",
+      "title": "Petite auto-école",
+      "features": [
+        "Jusqu'à 120 dossiers (selon catégories)",
+        "Plannings & moniteurs",
+        "Paiements & reçus",
+        "Listes d'examen & impression",
+        "Portail candidat (QR)"
+      ],
+      "cta": "Commencer"
+    },
+    "pro": {
+      "tag": "Pro",
+      "title": "École structurée",
+      "features": [
+        "Jusqu'à 300 dossiers",
+        "Catégories illimitées",
+        "Moniteurs & véhicules illimités",
+        "Listes d'examen & impressions",
+        "Portail candidat (QR)",
+        "Support prioritaire"
+      ],
+      "cta": "Choisir Pro"
+    },
+    "elite": {
+      "title": "Élite / Sur mesure",
+      "priceLabel": "Sur mesure",
+      "calc": "Volume illimité — tarif, options et intégrations à négocier avec notre équipe.",
+      "features": [
+        "Dossiers illimités",
+        "Multi-sites ou groupe",
+        "Options avancées sur demande",
+        "Accompagnement dédié"
+      ],
+      "cta": "Nous contacter"
+    }
+  },
+  "plans": {
+    "essentielLabel": "Essentiel",
+    "proLabel": "Pro",
+    "eliteLabel": "Élite / Sur mesure"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Questions fréquentes",
+    "items": [
+      {
+        "q": "Autovia est-il adapté aux auto-écoles en Algérie ?",
+        "a": "Oui. Listes d'examen, libellés bilingues, catégories de permis et flux métier sont pensés pour le marché local."
+      },
+      {
+        "q": "Faut-il installer un logiciel sur le PC ?",
+        "a": "Non. Autovia fonctionne dans le navigateur ; l'app candidat s'installe comme une PWA sur téléphone."
+      },
+      {
+        "q": "Combien de candidats puis-je gérer ?",
+        "a": "L'essai gratuit permet jusqu'à 10 élèves pendant 15 jours. Le plan Essentiel couvre jusqu'à 120 dossiers (selon vos catégories de permis), le plan Pro jusqu'à 300 dossiers, et l'offre Élite est illimitée sur devis."
+      },
+      {
+        "q": "Les données sont-elles sécurisées ?",
+        "a": "Hébergement cloud avec authentification sécurisée. Chaque auto-école accède uniquement à ses propres données."
+      }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Écrivez-nous",
+    "introBeforeEmail": "Une question sur Autovia, une démo ou un devis ? Envoyez-nous un message ou écrivez directement à",
+    "introAfterEmail": "— nous vous répondrons rapidement.",
+    "subjectPlaceholder": "Choisir un sujet (optionnel)",
+    "subjects": {
+      "demo": "Demande de démo",
+      "tarifs": "Question sur les tarifs",
+      "support": "Support technique",
+      "autre": "Autre"
+    },
+    "honeypotLabel": "Site web",
+    "nameLabel": "Nom *",
+    "emailLabel": "Votre e-mail *",
+    "emailPlaceholder": "vous@exemple.com",
+    "schoolLabel": "Auto-école (optionnel)",
+    "subjectLabel": "Sujet",
+    "messageLabel": "Message *",
+    "messagePlaceholder": "Décrivez votre demande…",
+    "submit": "Envoyer le message",
+    "submitting": "Envoi en cours…",
+    "successTitle": "Message envoyé",
+    "successText": "Merci ! Nous avons bien reçu votre message et vous répondrons à l'adresse indiquée dès que possible.",
+    "sendAnother": "Envoyer un autre message",
+    "errorGeneric": "Une erreur est survenue. Écrivez-nous à {email}.",
+    "errorNetwork": "Connexion impossible. Écrivez-nous à {email}."
+  },
+  "cta": {
+    "title": "Prêt à moderniser votre auto-école ?",
+    "subtitle": "Rejoignez Autovia et centralisez votre gestion dès aujourd'hui.",
+    "button": "Commencer gratuitement"
+  },
+  "footer": {
+    "tagline": "La gestion d'auto-école simplifiée pour les professionnels en Algérie.",
+    "productTitle": "Produit",
+    "legalTitle": "Légal",
+    "contactTitle": "Contact",
+    "contactHint": "Une question ou une démo ?",
+    "linkLearn": "Apprendre",
+    "linkFeatures": "Fonctionnalités",
+    "linkPricing": "Tarifs",
+    "linkFaq": "FAQ",
+    "linkContact": "Contact",
+    "linkMentions": "Mentions légales",
+    "linkPrivacy": "Politique de confidentialité",
+    "linkCgu": "Conditions d'utilisation",
+    "linkCookies": "Cookies",
+    "copyright": "Autovia — Auto-écoles en Algérie.",
+    "creditsPrefix": "Site réalisé par",
+    "moniteurName": "Achat Athmane",
+    "moniteurRole": "moniteur de conduite",
+    "creditsJoin": "et",
+    "developerName": "Samy Oubraham",
+    "developerRole": "développeur web",
+    "legalBack": "Retour à l'accueil"
+  },
+  "images": {
+    "hero": "Tableau de bord Autovia — gestion auto-école",
+    "backdash": "Interface Autovia — espace auto-école",
+    "planning": "Planning des séances de conduite",
+    "eleves": "Candidats et trésorerie — fiches élèves et paiements",
+    "listeExamen": "Listes d'examen et impression officielle",
+    "candidat": "Application candidat — suivi par code QR"
+  },
+  "apprendre": {
+    "title": "Apprendre",
+    "description": "Quiz et entraînement au code de la route — panneaux, QCM. Bientôt disponible sur Autovia.",
+    "backLabel": "Accueil",
+    "brandSubtitle": "Espace apprentissage",
+    "intro": "Entraînez-vous au code de la route et aux panneaux — quiz gratuits, sans compte. Votre score reste sur votre appareil.",
+    "comingSoonTitle": "Bientôt disponible",
+    "comingSoonText": "Nous préparons des quiz sur les panneaux et le code de la route. Revenez prochainement.",
+    "comingSoonHint": "À venir : quiz panneaux, QCM, score local",
+    "backHome": "Retour à l'accueil"
+  },
+  "locale": {
+    "switchToFr": "Français",
+    "switchToKab": "Taqbaylit"
+  }
+}

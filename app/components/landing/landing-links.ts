@@ -1,3 +1,10 @@
+import type { VitrineMessages } from "@/lib/i18n/vitrine-messages"
+
+import {
+  PRODUCT_CARD_IMAGE_KEYS,
+  type LandingImageKey,
+} from "./landing-data"
+
 /** URLs injectées depuis le serveur (lib/app-urls + .env). */
 export type LandingLinks = {
   /** NEXT_PUBLIC_BACKDASH_URL + /sign-in */
@@ -8,37 +15,30 @@ export type LandingLinks = {
   candidatUrl: string
 }
 
-export function buildProductCards(links: LandingLinks) {
-  return [
-    {
-      id: "backdash",
-      title: "Autovia",
-      subtitle: "Espace auto-école",
-      description:
-        "Tableau de bord, élèves, moniteurs, véhicules, séances, paiements et listes d'examen — tout le quotidien de votre école.",
-      imageKey: "backdash" as const,
-      href: links.backdashSignIn,
-      external: true,
-    },
-    {
-      id: "candidat",
-      title: "Portail candidat",
-      subtitle: "PWA mobile",
-      description:
-        "Vos élèves consultent leur progression, leurs séances et leur code de suivi depuis le téléphone, même hors ligne.",
-      imageKey: "candidat" as const,
-      href: links.candidatUrl,
-      external: true,
-    },
-    {
-      id: "platform",
-      title: "Inscription",
-      subtitle: "Essai gratuit",
-      description:
-        "Création de compte, paramètres d'impression, catégories de permis et gestion de l'accès à la plateforme.",
-      imageKey: "hero" as const,
-      href: links.backdashSignUp,
-      external: true,
-    },
-  ]
+const PRODUCT_HREFS: Record<
+  "backdash" | "candidat" | "platform",
+  (links: LandingLinks) => { href: string; external: boolean }
+> = {
+  backdash: (links) => ({ href: links.backdashSignIn, external: true }),
+  candidat: (links) => ({ href: links.candidatUrl, external: true }),
+  platform: (links) => ({ href: links.backdashSignUp, external: true }),
+}
+
+export function buildProductCards(
+  links: LandingLinks,
+  cards: VitrineMessages["products"]["cards"],
+) {
+  return cards.map((card) => {
+    const id = card.id as keyof typeof PRODUCT_CARD_IMAGE_KEYS
+    const link = PRODUCT_HREFS[id](links)
+    return {
+      id: card.id,
+      title: card.title,
+      subtitle: card.subtitle,
+      description: card.description,
+      imageKey: PRODUCT_CARD_IMAGE_KEYS[id] as LandingImageKey,
+      href: link.href,
+      external: link.external,
+    }
+  })
 }

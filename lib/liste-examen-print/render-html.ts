@@ -1,6 +1,6 @@
 import type { ListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { buildListeExamenPrintPages, type ListeExamenTableChunk } from "./pagination"
-import { listeExamenMoniteurCategorieLabel } from "./moniteur-categorie-label"
+import { listeExamenMoniteurSlotCategorieLabel } from "./moniteur-categorie-label"
 import { listeExamenPrintApplyFitScript } from "./apply-fit-script"
 import { listeExamenPrintStyles } from "./styles"
 
@@ -97,7 +97,14 @@ export function renderListeExamenPrintHtml(
   const pages = buildListeExamenPrintPages(sections)
   const stats = liste.stats ?? { code: 0, creneau: 0, circulation: 0, total: 0 }
   const inspecteur = liste.inspecteurNom?.trim() ?? ""
-  const moniteurCategorie = listeExamenMoniteurCategorieLabel(sections)
+  const moniteur1Categorie = listeExamenMoniteurSlotCategorieLabel(
+    liste.moniteur1Categorie,
+    sections,
+  )
+  const moniteur2Categorie = listeExamenMoniteurSlotCategorieLabel(
+    liste.moniteur2Categorie,
+    sections,
+  )
   const moniteur2Nom = liste.moniteur2Nom?.trim() ?? ""
 
   const pagesHtml = pages
@@ -123,7 +130,7 @@ export function renderListeExamenPrintHtml(
             <span>تاريخ الإيداع: ${escapeHtml(liste.dateDepot)}</span>
             <span>تاريخ الإمتحان: ${escapeHtml(liste.dateExamen)}</span>
           </div>
-          <div class="exam-details-bottom">اسم و لقب المفتش: ${escapeHtml(inspecteur)}</div>
+          <div class="exam-details-bottom">اسم و لقب المفتش: ${inspecteur ? `${escapeHtml(inspecteur)} ` : ""}<span class="dots-fill"></span></div>
         </div>`
         : ""
 
@@ -133,8 +140,8 @@ export function renderListeExamenPrintHtml(
         ? `<div class="footer-layout footer-section">
           <div class="footer-right-side">
             <div class="trainers-info">
-              <p>اسم ولقب الممرن الأول : ${escapeHtml(liste.moniteur1Nom?.trim() || "—")} مكلف: ${escapeHtml(moniteurCategorie)}</p>
-              ${moniteur2Nom ? `<p>اسم ولقب الممرن الثاني: ${escapeHtml(moniteur2Nom)} مكلف: ${escapeHtml(moniteurCategorie)}</p>` : ""}
+              <p>اسم ولقب الممرن الأول : ${escapeHtml(liste.moniteur1Nom?.trim() || "—")} مكلف: ${escapeHtml(moniteur1Categorie)}</p>
+              ${moniteur2Nom ? `<p>اسم ولقب الممرن الثاني: ${escapeHtml(moniteur2Nom)} مكلف: ${escapeHtml(moniteur2Categorie)}</p>` : ""}
             </div>
             <table class="stats-table">
               <thead><tr>

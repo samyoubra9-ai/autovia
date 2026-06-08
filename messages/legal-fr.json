@@ -1,0 +1,234 @@
+{
+  "mentionsLegales": {
+    "metaTitle": "Mentions légales",
+    "metaDescription": "Informations légales du site Autovia : éditeur, hébergement, propriété intellectuelle et contact.",
+    "title": "Mentions légales",
+    "lastUpdated": "Dernière mise à jour : juin 2026",
+    "sections": [
+      {
+        "title": "Éditeur du site",
+        "paragraphs": [
+          "Le site autovia.space (ci-après « le Site ») est édité par Autovia, plateforme SaaS dédiée à la gestion des auto-écoles en Algérie.",
+          "Contact : {email}"
+        ]
+      },
+      {
+        "title": "Directeur de la publication",
+        "paragraphs": [
+          "Le directeur de la publication est le représentant légal d'Autovia, joignable à l'adresse {email}."
+        ]
+      },
+      {
+        "title": "Conception et réalisation",
+        "paragraphs": [
+          "Conception métier et contenu pédagogique : Achat Athmane, moniteur de conduite.",
+          "Conception technique et développement web : Samy Oubraham, développeur web."
+        ]
+      },
+      {
+        "title": "Hébergement",
+        "paragraphs": [
+          "Le Site et les services associés sont hébergés par un prestataire cloud professionnel. Les données applicatives des auto-écoles sont stockées de manière sécurisée, avec accès restreint par établissement.",
+          "Pour toute question relative à l'hébergement, contactez-nous à {email}."
+        ]
+      },
+      {
+        "title": "Propriété intellectuelle",
+        "paragraphs": [
+          "L'ensemble des éléments du Site (textes, graphismes, logo, logiciel, structure, bases de données) est protégé par le droit de la propriété intellectuelle. Toute reproduction, représentation ou exploitation non autorisée est interdite.",
+          "Les marques et logos de tiers restent la propriété de leurs titulaires respectifs."
+        ]
+      },
+      {
+        "title": "Limitation de responsabilité",
+        "paragraphs": [
+          "Autovia s'efforce d'assurer l'exactitude des informations publiées sur le Site. Toutefois, Autovia ne saurait garantir l'absence d'erreurs ou d'interruptions de service.",
+          "L'utilisation du Site se fait sous la responsabilité de l'utilisateur."
+        ]
+      },
+      {
+        "title": "Liens hypertextes",
+        "paragraphs": [
+          "Le Site peut contenir des liens vers des sites tiers. Autovia n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu."
+        ]
+      },
+      {
+        "title": "Droit applicable",
+        "paragraphs": [
+          "Les présentes mentions légales sont régies par le droit algérien. En cas de litige, et à défaut de résolution amiable, les tribunaux compétents seront saisis conformément à la réglementation en vigueur."
+        ]
+      }
+    ]
+  },
+  "confidentialite": {
+    "metaTitle": "Politique de confidentialité",
+    "metaDescription": "Comment Autovia collecte, utilise et protège vos données personnelles.",
+    "title": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour : juin 2026",
+    "sections": [
+      {
+        "id": "introduction",
+        "title": "Introduction",
+        "paragraphs": [
+          "Autovia accorde une importance particulière à la protection de vos données personnelles. La présente politique décrit les traitements effectués via le Site, l'application auto-école, le portail candidat et les formulaires associés.",
+          "Pour toute question : {email}"
+        ]
+      },
+      {
+        "id": "responsable",
+        "title": "Responsable du traitement",
+        "paragraphs": [
+          "Le responsable du traitement est Autovia, contactable à {email}."
+        ]
+      },
+      {
+        "id": "donnees",
+        "title": "Données collectées",
+        "paragraphs": [
+          "Selon votre usage, nous pouvons traiter : identité et coordonnées (nom, e-mail, téléphone), informations relatives à votre auto-école, données des candidats saisies par l'établissement (identité, progression, paiements, séances), données de connexion et journaux techniques, contenu des messages envoyés via le formulaire de contact.",
+          "Les candidats accédant au portail de suivi peuvent consulter les informations mises à disposition par leur auto-école via un code personnel."
+        ]
+      },
+      {
+        "id": "finalites",
+        "title": "Finalités des traitements",
+        "paragraphs": [
+          "Fourniture et amélioration du service Autovia ; gestion des comptes auto-école ; support client ; sécurité et prévention de la fraude ; envoi de réponses aux demandes de contact ; respect des obligations légales."
+        ]
+      },
+      {
+        "id": "base-legale",
+        "title": "Base légale",
+        "paragraphs": [
+          "Les traitements reposent sur l'exécution du contrat (abonnement Autovia), l'intérêt légitime (sécurité, amélioration du service), le consentement lorsque requis (par ex. certaines communications), et le respect d'obligations légales."
+        ]
+      },
+      {
+        "id": "conservation",
+        "title": "Durée de conservation",
+        "paragraphs": [
+          "Les données sont conservées pendant la durée de la relation contractuelle, puis archivées ou supprimées conformément aux obligations légales et aux besoins opérationnels. Les journaux techniques sont conservés pour une durée limitée."
+        ]
+      },
+      {
+        "id": "destinataires",
+        "title": "Destinataires et sous-traitants",
+        "paragraphs": [
+          "Les données sont accessibles aux équipes Autovia habilitées et, le cas échéant, à des sous-traitants techniques (hébergement, e-mail) strictement nécessaires au fonctionnement du service, soumis à des obligations de confidentialité.",
+          "Chaque auto-école accède uniquement aux données de ses propres candidats et activités."
+        ]
+      },
+      {
+        "id": "securite",
+        "title": "Sécurité",
+        "paragraphs": [
+          "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées : authentification sécurisée, isolation des données par établissement, chiffrement des échanges (HTTPS), contrôle des accès."
+        ]
+      },
+      {
+        "id": "droits",
+        "title": "Vos droits",
+        "paragraphs": [
+          "Vous disposez, dans les limites prévues par la réglementation applicable, d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité concernant vos données.",
+          "Pour exercer vos droits, écrivez à {email}. Les candidats doivent, le cas échéant, contacter directement leur auto-école pour les données gérées par celle-ci."
+        ]
+      },
+      {
+        "id": "cookies",
+        "title": "Cookies et traceurs",
+        "paragraphs": [
+          "Le Site peut utiliser des cookies strictement nécessaires au fonctionnement (session, préférences de langue, sécurité). Des cookies de mesure d'audience peuvent être déployés ultérieurement ; vous en serez informés et pourrez gérer votre consentement.",
+          "Vous pouvez configurer votre navigateur pour refuser les cookies non essentiels."
+        ]
+      },
+      {
+        "id": "modifications",
+        "title": "Modifications",
+        "paragraphs": [
+          "Cette politique peut être mise à jour. La date de dernière mise à jour est indiquée en tête de page. Nous vous invitons à la consulter régulièrement."
+        ]
+      }
+    ]
+  },
+  "cgu": {
+    "metaTitle": "Conditions générales d'utilisation",
+    "metaDescription": "Conditions d'accès et d'utilisation de la plateforme Autovia.",
+    "title": "Conditions générales d'utilisation",
+    "lastUpdated": "Dernière mise à jour : juin 2026",
+    "sections": [
+      {
+        "title": "Objet",
+        "paragraphs": [
+          "Les présentes Conditions générales d'utilisation (CGU) régissent l'accès au Site vitrine autovia.space et, le cas échéant, l'inscription à l'essai ou à l'abonnement Autovia.",
+          "L'utilisation du service implique l'acceptation des présentes CGU."
+        ]
+      },
+      {
+        "title": "Description du service",
+        "paragraphs": [
+          "Autovia est une solution en ligne permettant aux auto-écoles de gérer candidats, plannings, paiements, listes d'examen et suivi candidat. Les fonctionnalités peuvent évoluer sans préavis, dans le respect des abonnements souscrits."
+        ]
+      },
+      {
+        "title": "Accès et inscription",
+        "paragraphs": [
+          "L'accès au tableau de bord auto-école nécessite la création d'un compte. Vous vous engagez à fournir des informations exactes et à maintenir la confidentialité de vos identifiants.",
+          "Autovia se réserve le droit de suspendre ou clôturer un compte en cas de violation des CGU ou d'usage frauduleux."
+        ]
+      },
+      {
+        "title": "Essai gratuit et abonnements",
+        "paragraphs": [
+          "Un essai gratuit peut être proposé avec des limites (durée, nombre de candidats). Au-delà, un abonnement payant peut être requis. Les tarifs en vigueur sont présentés sur le Site et peuvent être modifiés avec information préalable."
+        ]
+      },
+      {
+        "title": "Obligations de l'auto-école",
+        "paragraphs": [
+          "L'auto-école est responsable des données qu'elle saisit concernant ses candidats et s'engage à disposer des autorisations nécessaires. Elle doit utiliser Autovia conformément à la réglementation applicable et ne pas porter atteinte aux droits des tiers.",
+          "L'auto-école reste responsable de ses obligations vis-à-vis de ses élèves et des autorités compétentes."
+        ]
+      },
+      {
+        "title": "Propriété intellectuelle",
+        "paragraphs": [
+          "Autovia concède un droit d'utilisation non exclusif, non transférable, limité à la durée de l'abonnement. Aucune cession de propriété intellectuelle n'est effectuée.",
+          "Les contenus importés par l'auto-école restent sa propriété."
+        ]
+      },
+      {
+        "title": "Disponibilité et maintenance",
+        "paragraphs": [
+          "Autovia vise une haute disponibilité du service. Des interruptions peuvent survenir pour maintenance, mises à jour ou cas de force majeure. Autovia s'efforcera d'en limiter l'impact."
+        ]
+      },
+      {
+        "title": "Responsabilité",
+        "paragraphs": [
+          "Autovia est soumis à une obligation de moyens. Sa responsabilité ne saurait être engagée pour les dommages indirects, pertes de données imputables à l'utilisateur, ou contenus saisis par les auto-écoles.",
+          "En cas de manquement d'Autovia, la responsabilité est limitée, sauf disposition légale impérative contraire, au montant des sommes versées par l'auto-école sur les douze derniers mois."
+        ]
+      },
+      {
+        "title": "Résiliation",
+        "paragraphs": [
+          "L'auto-école peut cesser d'utiliser le service selon les modalités prévues à l'abonnement. Autovia peut résilier en cas de manquement grave non corrigé après mise en demeure.",
+          "Les données pourront être exportées ou supprimées selon les procédures communiquées à la résiliation."
+        ]
+      },
+      {
+        "title": "Données personnelles",
+        "paragraphs": [
+          "Le traitement des données est décrit dans la Politique de confidentialité. En utilisant Autovia, l'auto-école agit comme responsable de traitement pour les données de ses candidats."
+        ]
+      },
+      {
+        "title": "Contact et litiges",
+        "paragraphs": [
+          "Pour toute question relative aux CGU : {email}.",
+          "Les présentes CGU sont soumises au droit algérien. Les parties rechercheront une solution amiable avant toute action judiciaire."
+        ]
+      }
+    ]
+  }
+}
