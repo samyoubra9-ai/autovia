@@ -14,7 +14,10 @@ import {
 import { parseListeExamenHeaderCreate } from "@/lib/api/liste-examen-header"
 import { toListeExamenSettings } from "@/lib/api/liste-examen-settings"
 import { parseMessagesCategorieInput } from "@/lib/api/liste-examen-messages"
-import { assignOrdreOnBuiltCandidatRows } from "@/lib/api/liste-examen-candidat-order"
+import {
+  assignOrdreOnBuiltCandidatRows,
+  type BuiltCandidatRow,
+} from "@/lib/api/liste-examen-candidat-order"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { assertSetupCanCreateListeExamen } from "@/lib/api/setup-guards"
@@ -198,13 +201,7 @@ export async function POST(request: Request) {
       })),
     )
     const ordreByCat = new Map<string, number>()
-    const built: {
-      eleveId: string
-      categoriePermisId: string
-      ordre: number
-      natureExamen: NatureExamenListe
-      dateDernierExamen: Date | null
-    }[] = []
+    const built: BuiltCandidatRow[] = []
 
     for (const input of candidatInputs) {
       const eleve = eleveMap.get(input.eleveId)
@@ -263,6 +260,14 @@ export async function POST(request: Request) {
 
     const dossierByEleve = new Map(eleves.map((e) => [e.id, e.numeroDossier]))
     const builtOrdered = assignOrdreOnBuiltCandidatRows(built, dossierByEleve)
+    const candidatCreateRows: Prisma.ListeExamenCandidatUncheckedCreateWithoutListeExamenInput[] =
+      builtOrdered.map((row) => ({
+        eleveId: row.eleveId,
+        categoriePermisId: row.categoriePermisId,
+        ordre: row.ordre,
+        natureExamen: row.natureExamen,
+        dateDernierExamen: row.dateDernierExamen,
+      }))
 
     const messageRows = parseMessagesCategorieInput(body.messagesCategorie, categories)
 
@@ -277,7 +282,7 @@ export async function POST(request: Request) {
             autoEcoleId: tenant.autoEcoleId,
             ...header,
             referenceEnvoi,
-            candidats: { create: builtOrdered },
+            candidats: { create: candidatCreateRows },
             ...(messageRows.length > 0 && {
               messagesCategorie: {
                 create: messageRows.map((r) => ({

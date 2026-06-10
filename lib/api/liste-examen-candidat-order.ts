@@ -2,6 +2,7 @@ import {
   listeExamenGroupKey,
   listeExamenGroupSortRank,
 } from "@/lib/api/liste-examen-groups"
+import type { NatureExamenListe } from "@prisma/client"
 
 export type ListeExamenCandidatOrderFields = {
   natureExamen: string
@@ -76,11 +77,12 @@ export function sortCandidatsForListeDisplay<T extends ListeExamenCandidatDispla
   return [...items].sort(compareListeExamenCandidatsForDisplay)
 }
 
-type BuiltCandidatRow = {
+export type BuiltCandidatRow = {
   eleveId: string
   categoriePermisId: string
   ordre: number
-  natureExamen: string
+  natureExamen: NatureExamenListe
+  dateDernierExamen: Date | null
 }
 
 /** Réassigne `ordre` 1…n par catégorie selon les règles d'affichage (création liste). */
