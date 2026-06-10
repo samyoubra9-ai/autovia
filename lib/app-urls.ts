@@ -45,6 +45,35 @@ export function getAppUrl(): string {
   return getAppUrls().app
 }
 
+/**
+ * Origine sûre pour les redirections auth (évite http://0.0.0.0:3000 en dev).
+ * Utilise l'en-tête Host du navigateur, sinon localhost, sinon NEXT_PUBLIC_APP_URL.
+ */
+export function resolveAppRedirectOrigin(request: Request): string {
+  const url = new URL(request.url)
+  const forwardedHost = request.headers.get("x-forwarded-host")
+  const hostHeader = forwardedHost ?? request.headers.get("host")
+
+  if (hostHeader && !hostHeader.startsWith("0.0.0.0")) {
+    return `${url.protocol}//${hostHeader}`
+  }
+
+  if (url.hostname === "0.0.0.0" || url.hostname === "[::]") {
+    const port = url.port
+    const portSuffix =
+      port && port !== "80" && port !== "443" ? `:${port}` : ""
+    return `${url.protocol}//localhost${portSuffix}`
+  }
+
+  return url.origin
+}
+
+export function appRedirectPath(request: Request, path: string): string {
+  const base = resolveAppRedirectOrigin(request)
+  const normalized = path.startsWith("/") ? path : `/${path}`
+  return `${base}${normalized}`
+}
+
 export function getBackdashUrl(): string {
   return getAppUrls().backdash
 }

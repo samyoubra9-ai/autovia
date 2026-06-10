@@ -101,7 +101,8 @@ export function SetupAdminForm({ finishOnly = false, email }: Props) {
     <>
       <h1 className="auth-title">Créer l&apos;administrateur</h1>
       <p className="auth-subtitle">
-        Compte propriétaire de la plateforme. Supprimez cette page après création.
+        Compte éditeur du parcours apprentissage (leçons code de la route). Supprimez{" "}
+        <code>/setup-admin</code> après la première création.
       </p>
 
       <form onSubmit={handleSubmit} className="auth-form">

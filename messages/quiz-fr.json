@@ -1,0 +1,152 @@
+{
+  "modules": {
+    "fondamentaux": {
+      "questions": [
+        {
+          "id": "fond-01",
+          "prompt": "Un panneau triangulaire à bord rouge indique généralement :",
+          "options": [
+            { "id": "a", "label": "Une interdiction" },
+            { "id": "b", "label": "Un danger" },
+            { "id": "c", "label": "Une obligation" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Le triangle à bord rouge est le panneau de danger. Il annonce un risque à l'approche."
+        },
+        {
+          "id": "fond-02",
+          "prompt": "Une ligne continue au sol signifie que :",
+          "options": [
+            { "id": "a", "label": "Le dépassement est autorisé" },
+            { "id": "b", "label": "Le franchissement et le dépassement sont interdits" },
+            { "id": "c", "label": "Cédez le passage aux piétons uniquement" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "La ligne continue ne doit pas être franchie ni utilisée pour dépasser."
+        },
+        {
+          "id": "fond-03",
+          "prompt": "Au feu rouge, le conducteur doit :",
+          "options": [
+            { "id": "a", "label": "Ralentir et passer si la voie est libre" },
+            { "id": "b", "label": "S'arrêter avant la ligne d'arrêt ou le feu" },
+            { "id": "c", "label": "Klaxonner pour avertir" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Le feu rouge impose un arrêt complet avant de repartir au vert."
+        }
+      ]
+    },
+    "circulation": {
+      "questions": [
+        {
+          "id": "circ-01",
+          "prompt": "À une intersection sans signalisation, la règle de base est :",
+          "options": [
+            { "id": "a", "label": "Priorité à gauche" },
+            { "id": "b", "label": "Priorité à droite" },
+            { "id": "c", "label": "Priorité au plus rapide" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "En l'absence de panneau ou de feu, on cède le passage à droite."
+        },
+        {
+          "id": "circ-02",
+          "prompt": "Dans un rond-point, en général :",
+          "options": [
+            { "id": "a", "label": "Les véhicules engagés ont la priorité" },
+            { "id": "b", "label": "Les véhicules qui entrent ont toujours la priorité" },
+            { "id": "c", "label": "On s'arrête au centre du rond-point" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Les usagers déjà dans le giratoire sont prioritaires sauf signalisation contraire."
+        },
+        {
+          "id": "circ-03",
+          "prompt": "Le dépassement est interdit :",
+          "options": [
+            { "id": "a", "label": "Sur ligne continue" },
+            { "id": "b", "label": "Sur route à double sens" },
+            { "id": "c", "label": "Devant un camion lent" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "La ligne continue interdit de franchir l'axe pour doubler."
+        }
+      ]
+    },
+    "conducteur": {
+      "questions": [
+        {
+          "id": "cond-01",
+          "prompt": "La distance de sécurité permet surtout de :",
+          "options": [
+            { "id": "a", "label": "Économiser du carburant" },
+            { "id": "b", "label": "Réagir si le véhicule devant freine" },
+            { "id": "c", "label": "Dépasser plus facilement" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Elle laisse le temps et l'espace pour freiner sans collision."
+        },
+        {
+          "id": "cond-02",
+          "prompt": "Par visibilité réduite (pluie, brouillard), il faut :",
+          "options": [
+            { "id": "a", "label": "Allumer les feux et adapter la vitesse" },
+            { "id": "b", "label": "Maintenir la vitesse maximale autorisée" },
+            { "id": "c", "label": "Éteindre les feux pour ne pas éblouir" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Être vu et ralentir améliore la sécurité quand la route est mal visible."
+        },
+        {
+          "id": "cond-03",
+          "prompt": "L'éco-conduite consiste notamment à :",
+          "options": [
+            { "id": "a", "label": "Accélérer fortement à chaque reprise" },
+            { "id": "b", "label": "Anticiper et conduire souplement" },
+            { "id": "c", "label": "Laisser le moteur tourner au point mort longtemps" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Anticiper limite les freinages brusques et réduit la consommation."
+        }
+      ]
+    },
+    "situations": {
+      "questions": [
+        {
+          "id": "sit-01",
+          "prompt": "Sur autoroute, pour rejoindre la voie rapide :",
+          "options": [
+            { "id": "a", "label": "On s'insère en adaptant sa vitesse au flux" },
+            { "id": "b", "label": "On s'arrête sur la bande d'accélération" },
+            { "id": "c", "label": "On passe toujours en premier" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "La bande d'accélération sert à s'insérer en regardant et en adaptant sa vitesse."
+        },
+        {
+          "id": "sit-02",
+          "prompt": "Face à un piéton sur un passage protégé :",
+          "options": [
+            { "id": "a", "label": "On accélère pour passer avant lui" },
+            { "id": "b", "label": "On cède le passage et on s'arrête si nécessaire" },
+            { "id": "c", "label": "On klaxonne pour le prévenir" }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Les piétons engagés sur un passage protégé sont prioritaires."
+        },
+        {
+          "id": "sit-03",
+          "prompt": "En cas d'accident, la conduite à tenir commence par :",
+          "options": [
+            { "id": "a", "label": "Protéger — Alerter — Secourir" },
+            { "id": "b", "label": "Déplacer les blessés immédiatement" },
+            { "id": "c", "label": "Quitter les lieux rapidement" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "PAS : sécuriser la zone, alerter les secours, puis secourir sans mettre en danger."
+        }
+      ]
+    }
+  }
+}

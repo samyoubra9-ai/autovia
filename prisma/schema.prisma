@@ -292,6 +292,8 @@ model Eleve {
   nin                      String
   dateNaissance            DateTime                 @map("date_naissance")
   lieuNaissance            String                   @map("lieu_naissance")
+  /// Adresse de domicile du candidat
+  domicile                 String?
   sexe                     Sexe
   groupeSanguin            GroupeSanguin            @map("groupe_sanguin")
   categoriePermisId        String                   @map("categorie_permis_id")
@@ -574,4 +576,50 @@ model CandidatEngagement {
   @@index([eleveId])
   @@index([autoEcoleId])
   @@map("candidat_engagements")
+}
+
+// ——— Apprentissage (contenu public — texte en BDD, images dans public/) ———
+
+model LearningModule {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  step            Int
+  titleFr         String   @map("title_fr")
+  titleKab        String?  @map("title_kab")
+  subtitleFr      String?  @map("subtitle_fr")
+  subtitleKab     String?  @map("subtitle_kab")
+  descriptionFr   String?  @map("description_fr") @db.Text
+  descriptionKab  String?  @map("description_kab") @db.Text
+  unlockAfterSlug String?  @map("unlock_after_slug")
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  chapters LearningChapter[]
+
+  @@map("learning_modules")
+}
+
+model LearningChapter {
+  id         String   @id @default(cuid())
+  moduleId   String   @map("module_id")
+  slug       String
+  sortOrder  Int      @map("sort_order")
+  titleFr    String   @map("title_fr")
+  titleKab   String?  @map("title_kab")
+  summaryFr  String?  @map("summary_fr") @db.Text
+  summaryKab String?  @map("summary_kab") @db.Text
+  bodyFr     String?  @map("body_fr") @db.Text
+  bodyKab    String?  @map("body_kab") @db.Text
+  /// [{ src, altFr, altKab?, captionFr?, captionKab?, sortOrder }]
+  imagesJson Json     @default("[]") @map("images_json")
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  module LearningModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, slug])
+  @@index([moduleId, sortOrder])
+  @@map("learning_chapters")
 }

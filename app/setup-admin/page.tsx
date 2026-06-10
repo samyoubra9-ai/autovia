@@ -26,14 +26,14 @@ export default async function SetupAdminPage() {
   if (existingProfile) {
     return (
       <main className="auth-page">
-        <div className="auth-card">
-          <h1 className="auth-title">Compte admin prêt</h1>
+        <div className="auth-card auth-card-wide">
+          <h1 className="auth-title">Compte administrateur prêt</h1>
           <p className="auth-subtitle">
-            Votre profil est en base (<code>site_admins</code>). Vous pouvez supprimer{" "}
-            <code>app/setup-admin</code>.
+            Votre profil est enregistré. Gérez les modules et leçons du parcours code de la
+            route.
           </p>
           <p className="auth-footer">
-            <Link href="/admin">Aller à l&apos;administration</Link>
+            <Link href="/admin/apprentissage">Ouvrir l&apos;admin apprentissage</Link>
           </p>
         </div>
       </main>

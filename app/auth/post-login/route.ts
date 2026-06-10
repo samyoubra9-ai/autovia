@@ -2,11 +2,11 @@ import { NextResponse } from "next/server"
 
 import { getBackdashUrl } from "@/lib/auth-utils"
 import { hasAutoEcoleAccess } from "@/lib/access"
+import { appRedirectPath } from "@/lib/app-urls"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
 
 export async function GET(request: Request) {
-  const { origin } = new URL(request.url)
   const supabase = await createClient()
 
   const {
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return NextResponse.redirect(`${origin}/signin`)
+    return NextResponse.redirect(appRedirectPath(request, "/signin"))
   }
 
   const siteAdmin = await prisma.siteAdmin.findUnique({
@@ -22,12 +22,12 @@ export async function GET(request: Request) {
   })
 
   if (siteAdmin) {
-    return NextResponse.redirect(`${origin}/admin`)
+    return NextResponse.redirect(appRedirectPath(request, "/admin/apprentissage"))
   }
 
   const adminCount = await prisma.siteAdmin.count()
   if (adminCount === 0) {
-    return NextResponse.redirect(`${origin}/setup-admin`)
+    return NextResponse.redirect(appRedirectPath(request, "/setup-admin"))
   }
 
   const tenantUser = await prisma.user.findUnique({

@@ -1,0 +1,164 @@
+{
+  "meta": {
+    "title": "Apprendre le code de la route",
+    "description": "Parcours progressif : signalisation, priorités, conduite et sécurité. Quiz d'entraînement et d'examen, progression sauvegardée sur votre appareil."
+  },
+  "shell": {
+    "brandSubtitle": "Code de la route",
+    "platformLabel": "Plateforme d'apprentissage",
+    "backHome": "Accueil",
+    "sidebarTitle": "Parcours",
+    "menuLabel": "Curriculum",
+    "sidebarProgress": "Progression globale",
+    "modulesCompleted": "{done} / {total} validés",
+    "storageHint": "Progression enregistrée sur cet appareil uniquement",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "locked": "Verrouillé",
+    "completed": "Terminé",
+    "inProgress": "En cours",
+    "quizLabel": "Quiz de validation",
+    "passScore": "Score minimum : {score} %"
+  },
+  "dashboard": {
+    "title": "Votre parcours d'apprentissage",
+    "subtitle": "Quatre étapes thématiques, chacune avec des leçons puis un quiz de validation. Progressez à votre rythme — sans compte, sur cet appareil.",
+    "globalProgress": "Progression globale",
+    "statsProgress": "Progression",
+    "statsModules": "Modules validés",
+    "statsNext": "Prochaine étape",
+    "allComplete": "Parcours terminé — bravo !",
+    "roadmapTitle": "Feuille de route",
+    "roadmapSubtitle": "Quatre étapes à valider dans l'ordre — leçons puis quiz.",
+    "chaptersRead": "{done} / {total} leçons lues",
+    "quizInfoTitle": "Validation par quiz",
+    "quizInfoText": "Chaque module se termine par un quiz. Répondez aux questions, puis consultez la correction automatique et votre score (minimum 80 % pour débloquer l'étape suivante).",
+    "startModule": "Commencer",
+    "continueModule": "Continuer",
+    "reviewModule": "Revoir",
+    "lockedModule": "Terminez le quiz précédent ({score} % min.)",
+    "chaptersCount": "{count} leçons + quiz"
+  },
+  "modules": {
+    "fondamentaux": {
+      "title": "Les fondamentaux",
+      "subtitle": "Signalisation",
+      "description": "La base visuelle : lire la route grâce aux panneaux, au marquage au sol et aux feux.",
+      "chapters": {
+        "panneaux": {
+          "title": "Les panneaux",
+          "summary": "Danger, interdiction, obligation et indication."
+        },
+        "marquage": {
+          "title": "Le marquage au sol",
+          "summary": "Lignes, flèches de sélection et passages piétons."
+        },
+        "feux": {
+          "title": "Les signaux lumineux",
+          "summary": "Feux tricolores et signaux spécifiques."
+        }
+      }
+    },
+    "circulation": {
+      "title": "Règles de circulation",
+      "subtitle": "Priorités",
+      "description": "Interagir avec les autres usagers : intersections, ronds-points et dépassements.",
+      "chapters": {
+        "intersections": {
+          "title": "Les intersections",
+          "summary": "Priorité à droite, cédez le passage et stops."
+        },
+        "ronds-points": {
+          "title": "Ronds-points",
+          "summary": "Placement, priorité et clignotants."
+        },
+        "depassement": {
+          "title": "Croisement et dépassement",
+          "summary": "Quand et comment doubler en sécurité."
+        }
+      }
+    },
+    "conducteur": {
+      "title": "Conducteur et environnement",
+      "subtitle": "Analyse de situation",
+      "description": "Vitesse, visibilité et responsabilité du conducteur au quotidien.",
+      "chapters": {
+        "vitesse": {
+          "title": "Vitesse et distances",
+          "summary": "Distances de sécurité et temps de réaction."
+        },
+        "visibilite": {
+          "title": "Visibilité et éclairage",
+          "summary": "Feux de route, brouillard, pluie et nuit."
+        },
+        "eco-conduite": {
+          "title": "Éco-conduite et entretien",
+          "summary": "Mécanique de base et respect de l'environnement."
+        }
+      }
+    },
+    "situations": {
+      "title": "Situations particulières",
+      "subtitle": "Sécurité",
+      "description": "Autoroutes, usagers vulnérables et gestes de secourisme.",
+      "chapters": {
+        "autoroutes": {
+          "title": "Autoroutes et voies rapides",
+          "summary": "Entrées, sorties et règles spécifiques."
+        },
+        "partage-route": {
+          "title": "Partage de la route",
+          "summary": "Piétons, vélos, motos et zones sensibles."
+        },
+        "secourisme": {
+          "title": "Secourisme et accidents",
+          "summary": "Protéger, alerter, secourir — les réflexes essentiels."
+        }
+      }
+    }
+  },
+  "module": {
+    "stepLabel": "Étape {step}",
+    "chaptersTitle": "Leçons du module",
+    "quizCardTitle": "Quiz de validation",
+    "quizCardText": "Validez vos acquis avant de débloquer l'étape suivante.",
+    "quizCta": "Lancer le quiz",
+    "quizLocked": "Consultez d'abord les leçons du module.",
+    "chapterCta": "Ouvrir la leçon",
+    "chapterPlaceholder": "Contenu de la leçon à intégrer (texte, schémas, panneaux)."
+  },
+  "chapter": {
+    "markComplete": "Marquer comme lu",
+    "markedComplete": "Leçon terminée",
+    "nextChapter": "Leçon suivante",
+    "goToQuiz": "Aller au quiz",
+    "backToModule": "Retour au module"
+  },
+  "quiz": {
+    "title": "Quiz — {module}",
+    "subtitle": "Répondez aux questions puis consultez la correction automatique et votre score.",
+    "intro": "Ce quiz valide le module. Répondez à toutes les questions — la correction s'affiche à la fin.",
+    "questionCount": "{count} questions",
+    "questionOf": "Question {current} / {total}",
+    "passRequirement": "Score minimum pour valider : {score} %",
+    "correctionAtEnd": "Correction automatique et explications à la fin",
+    "start": "Commencer le quiz",
+    "selectAnswer": "Sélectionnez une réponse pour continuer",
+    "next": "Question suivante",
+    "finish": "Terminer et corriger",
+    "resultsTitle": "Votre score",
+    "passed": "Module validé — bravo !",
+    "failed": "Score insuffisant — réessayez après révision",
+    "correctCount": "{correct} / {total} bonnes réponses",
+    "reviewTitle": "Correction détaillée",
+    "correct": "Bonne réponse",
+    "incorrect": "Mauvaise réponse",
+    "yourAnswer": "Votre réponse :",
+    "rightAnswer": "Bonne réponse :",
+    "retry": "Refaire le quiz",
+    "continuePath": "Continuer le parcours",
+    "bestScore": "Meilleur score : {score} %",
+    "noQuestions": "Aucune question pour ce module pour l'instant.",
+    "backToModule": "Retour au module"
+  }
+}

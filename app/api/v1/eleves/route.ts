@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const input = parseEleveInput(body)
 
-    if (!input.nom || !input.prenom || !input.nin) {
+    if (!input.nom || !input.prenom || !input.nin || !input.domicile) {
       throw new ApiError(400, "Champs obligatoires manquants.")
     }
 

@@ -42,6 +42,7 @@ export type EleveDto = {
   nin: string
   dateNaissance: string
   lieuNaissance: string
+  domicile: string | null
   sexe: Sexe
   groupeSanguin: string
   categoriePermisId: string
@@ -161,6 +162,7 @@ export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
     nin: eleve.nin,
     dateNaissance: dateNaissance.toISOString(),
     lieuNaissance: eleve.lieuNaissance,
+    domicile: eleve.domicile ?? null,
     sexe: eleve.sexe,
     groupeSanguin: GROUPE_TO_CLIENT[eleve.groupeSanguin] ?? String(eleve.groupeSanguin ?? ""),
     categoriePermisId: eleve.categoriePermisId,
@@ -251,6 +253,7 @@ export type EleveInput = {
   nin: string
   dateNaissance: string
   lieuNaissance: string
+  domicile: string
   sexe: Sexe
   groupeSanguin: string
   categoriePermisId: string
@@ -315,6 +318,7 @@ export function parseEleveInput(body: unknown): EleveInput {
     nin: ninRaw,
     dateNaissance: String(b.dateNaissance ?? ""),
     lieuNaissance: String(b.lieuNaissance ?? "").trim(),
+    domicile: String(b.domicile ?? "").trim(),
     sexe: b.sexe as Sexe,
     groupeSanguin: gs,
     categoriePermisId: String(b.categoriePermisId ?? b.categoriePermis ?? "").trim(),
@@ -370,6 +374,7 @@ export function toPrismaEleveData(
     nin: input.nin,
     dateNaissance: new Date(input.dateNaissance),
     lieuNaissance: input.lieuNaissance,
+    domicile: input.domicile,
     sexe: input.sexe,
     groupeSanguin: groupe,
     statutFormation: input.statutFormation,

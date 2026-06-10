@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "title": "Actualités — Circulation & réglementation",
+    "description": "Nouvelles lois, procédures, amendes et évolutions de la circulation en Algérie. Pour conducteurs, candidats au permis et auto-écoles."
+  },
+  "hero": {
+    "eyebrow": "Circulation & réglementation",
+    "title": "Actualités réglementaires",
+    "subtitle": "Lois, procédures, amendes et nouveautés — pour tous les usagers de la route.",
+    "lead": "Conducteurs, futurs permis ou professionnels de l'auto-école : retrouvez ici les changements importants à connaître — textes de circulation, sanctions, démarches et points de vigilance sur la route."
+  },
+  "section": {
+    "title": "Dernières actualités",
+    "subtitle": "Fiches claires sur la circulation, la police routière et les procédures administratives."
+  },
+  "categories": [
+    { "id": "all", "label": "Tout" },
+    { "id": "circulation", "label": "Circulation & lois" },
+    { "id": "police-amendes", "label": "Police & amendes" },
+    { "id": "procedures", "label": "Procédures & démarches" }
+  ],
+  "updates": [
+    {
+      "id": "vitesse-agglos-2026",
+      "category": "circulation",
+      "date": "2026-05-12",
+      "importance": "high",
+      "title": "Vitesses en agglomération — ce qu'il faut retenir",
+      "summary": "Rappel sur les limitations en ville, zones sensibles (écoles, hôpitaux) et panneaux spécifiques. Utile pour tout conducteur et pour la préparation à l'examen.",
+      "tags": ["vitesse", "agglomération", "sécurité"],
+      "paragraphs": [
+        "En agglomération, la règle de base s'applique sauf panneau contraire. Attention aux zones 30, aux abords d'établissements scolaires et aux limitations temporaires (travaux, événements).",
+        "Avant de démarrer : repérez les panneaux à l'entrée de la commune et adaptez votre vitesse en continu — une limitation peut changer d'un quartier à l'autre."
+      ],
+      "sourceLabel": "Synthèse Autovia",
+      "sourceUrl": null
+    },
+    {
+      "id": "telephone-volant",
+      "category": "police-amendes",
+      "date": "2026-04-28",
+      "importance": "high",
+      "title": "Téléphone au volant — risques et sanctions",
+      "summary": "Tenir son téléphone en conduisant reste une infraction fréquente et dangereuse. Bonnes pratiques : kit mains-libres, arrêt sur une aire, ou passager désigné.",
+      "tags": ["amendes", "téléphone", "sécurité"],
+      "paragraphs": [
+        "Le téléphone détourne le regard et allonge le temps de réaction — à 50 km/h, quelques secondes représentent des dizaines de mètres parcourus sans contrôle.",
+        "Conseil pratique : rangez l'appareil avant de démarrer. Si vous devez répondre, arrêtez-vous en sécurité. Les auto-écoles rappellent cette règle dès la première leçon."
+      ],
+      "sourceLabel": "Synthèse Autovia",
+      "sourceUrl": null
+    },
+    {
+      "id": "priorite-intersections",
+      "category": "circulation",
+      "date": "2026-03-15",
+      "importance": "medium",
+      "title": "Intersections : priorité à droite, STOP et cédez le passage",
+      "summary": "Les trois situations les plus courantes à l'examen et sur la route : priorité à droite, arrêt au STOP, cédez le passage sans confondre les règles.",
+      "tags": ["priorités", "intersections", "examen"],
+      "paragraphs": [
+        "Priorité à droite : à une intersection non signalée, vérifiez systématiquement votre droite avant de franchir.",
+        "STOP : arrêt complet obligatoire, même si la voie semble libre. Cédez le passage : ralentissez et cédez si nécessaire ; l'arrêt n'est requis que si des usagers ont la priorité."
+      ],
+      "sourceLabel": "Synthèse Autovia",
+      "sourceUrl": null
+    },
+    {
+      "id": "ceinture-passagers",
+      "category": "circulation",
+      "date": "2026-02-20",
+      "importance": "medium",
+      "title": "Ceinture de sécurité — conducteur et passagers",
+      "summary": "Obligation pour tous les occupants du véhicule. Le conducteur est responsable du port de la ceinture pour les passagers mineurs.",
+      "tags": ["équipements", "sécurité", "passagers"],
+      "paragraphs": [
+        "Avant de démarrer : ceinture conducteur, réglage des rétroviseurs, vérification des ceintures à l'arrière.",
+        "En cas de contrôle routier, l'absence de ceinture peut entraîner une amende — pour vous et, selon les cas, pour les passagers non attachés."
+      ],
+      "sourceLabel": "Synthèse Autovia",
+      "sourceUrl": null
+    },
+    {
+      "id": "demarches-permis-2026",
+      "category": "procedures",
+      "date": "2026-01-10",
+      "importance": "low",
+      "title": "Démarches permis et examen — points de vigilance",
+      "summary": "Rappels sur les étapes du parcours candidat : inscription, examen théorique, pratique, et documents à prévoir. Utile pour les candidats et les auto-écoles.",
+      "tags": ["permis", "examen", "démarches"],
+      "paragraphs": [
+        "Vérifiez que votre dossier est complet avant toute présentation à l'examen (pièces d'identité, formulaires, suivi des heures de conduite selon votre parcours).",
+        "Les auto-écoles et candidats libres doivent se tenir informés des éventuelles modifications de procédure auprès des services compétents de leur wilaya."
+      ],
+      "sourceLabel": "Synthèse Autovia",
+      "sourceUrl": null
+    }
+  ],
+  "guide": {
+    "title": "Comment lire cette page",
+    "steps": [
+      {
+        "title": "Consultez les fiches récentes",
+        "text": "Les articles sont datés et classés par thème — lois, circulation, amendes ou procédures."
+      },
+      {
+        "title": "Filtrez selon votre besoin",
+        "text": "Conducteur au quotidien, candidat au permis ou professionnel : choisissez la catégorie qui vous concerne."
+      },
+      {
+        "title": "Vérifiez les sources officielles",
+        "text": "Nos synthèses facilitent la compréhension ; les textes officiels et services administratifs font foi en cas de doute."
+      }
+    ]
+  },
+  "disclaimer": "Ces articles sont des synthèses d'information à vocation pédagogique. Ils s'adressent à tous les usagers de la route et ne remplacent pas les textes officiels, les publications administratives ni un conseil juridique.",
+  "cta": {
+    "title": "Une évolution à signaler ou une question ?",
+    "text": "Conducteurs, candidats ou auto-écoles — écrivez-nous pour proposer un sujet ou obtenir de l'aide sur Autovia.",
+    "button": "Nous contacter",
+    "href": "/#contact"
+  }
+}

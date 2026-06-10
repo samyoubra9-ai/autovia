@@ -46,6 +46,9 @@ export function LandingFooter() {
             <h3 className="ds-footer-col-title">{m.footer.productTitle}</h3>
             <nav className="ds-footer-nav" aria-label={m.footer.productTitle}>
               <FooterLink href="/apprendre">{m.footer.linkLearn}</FooterLink>
+              <FooterLink href="/veille-reglementaire">
+                {m.footer.linkRegulationWatch}
+              </FooterLink>
               <FooterLink href="/#features">{m.footer.linkFeatures}</FooterLink>
               <FooterLink href="/#pricing">{m.footer.linkPricing}</FooterLink>
               <FooterLink href="/#faq">{m.footer.linkFaq}</FooterLink>

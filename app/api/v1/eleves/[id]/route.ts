@@ -207,6 +207,7 @@ export async function PATCH(request: Request, { params }: Params) {
         nin: input.nin,
         dateNaissance: new Date(input.dateNaissance),
         lieuNaissance: input.lieuNaissance,
+        domicile: input.domicile,
         sexe: input.sexe,
         groupeSanguin,
         categoriePermis: { connect: { id: input.categoriePermisId } },

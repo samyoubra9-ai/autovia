@@ -28,7 +28,7 @@ export async function createSiteAdminProfile(): Promise<AuthResult> {
     where: { supabaseUserId: user.id },
   })
   if (existing) {
-    redirect("/admin")
+    redirect("/admin/apprentissage")
   }
 
   await prisma.siteAdmin.create({
@@ -38,7 +38,7 @@ export async function createSiteAdminProfile(): Promise<AuthResult> {
     },
   })
 
-  redirect("/admin")
+  redirect("/admin/apprentissage")
 }
 
 /** Réservé à la création d'auto-écoles par l'admin plateforme (à venir). */

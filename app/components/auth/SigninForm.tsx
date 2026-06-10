@@ -67,14 +67,13 @@ export function SigninForm() {
   return (
     <PublicAppShell backHref="/" backLabel="Accueil" maxWidth="sm">
       <div className="flex flex-col items-center gap-6">
-        <AppBrand subtitle="Espace administrateur" />
+        <AppBrand subtitle="Connexion Autovia" />
 
         <Card className="w-full border-border/80 shadow-md">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle>Connexion</CardTitle>
             <CardDescription>
-              Accédez à votre tableau de bord auto-école ou à l&apos;administration
-              Autovia.
+              Auto-école (backdash) ou édition du contenu apprentissage (admin site).
             </CardDescription>
           </CardHeader>
           <CardContent>
