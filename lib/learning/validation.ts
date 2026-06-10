@@ -40,25 +40,28 @@ export function isValidPublicImagePath(src: string): boolean {
 export function parseImagesJson(raw: unknown): LearningChapterImage[] {
   if (!Array.isArray(raw)) return []
 
-  return raw
-    .map((item, index) => {
-      if (!item || typeof item !== "object") return null
-      const row = item as Record<string, unknown>
-      const src = String(row.src ?? "").trim()
-      const altFr = String(row.altFr ?? "").trim()
-      if (!src || !altFr) return null
-      if (!isValidPublicImagePath(src)) return null
+  const images: LearningChapterImage[] = []
 
-      return {
-        src,
-        altFr,
-        altKab: row.altKab ? String(row.altKab).trim() : undefined,
-        captionFr: row.captionFr ? String(row.captionFr).trim() : undefined,
-        captionKab: row.captionKab ? String(row.captionKab).trim() : undefined,
-        sortOrder:
-          typeof row.sortOrder === "number" ? row.sortOrder : index + 1,
-      } satisfies LearningChapterImage
-    })
-    .filter((item): item is LearningChapterImage => item !== null)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
+  for (let index = 0; index < raw.length; index++) {
+    const item = raw[index]
+    if (!item || typeof item !== "object") continue
+    const row = item as Record<string, unknown>
+    const src = String(row.src ?? "").trim()
+    const altFr = String(row.altFr ?? "").trim()
+    if (!src || !altFr) continue
+    if (!isValidPublicImagePath(src)) continue
+
+    const image: LearningChapterImage = {
+      src,
+      altFr,
+      sortOrder:
+        typeof row.sortOrder === "number" ? row.sortOrder : index + 1,
+    }
+    if (row.altKab) image.altKab = String(row.altKab).trim()
+    if (row.captionFr) image.captionFr = String(row.captionFr).trim()
+    if (row.captionKab) image.captionKab = String(row.captionKab).trim()
+    images.push(image)
+  }
+
+  return images.sort((a, b) => a.sortOrder - b.sortOrder)
 }
