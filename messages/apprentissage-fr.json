@@ -12,6 +12,8 @@
     "sidebarProgress": "Progression globale",
     "modulesCompleted": "{done} / {total} validés",
     "storageHint": "Progression enregistrée sur cet appareil uniquement",
+    "storageDisabled": "La sauvegarde de votre progression est désactivée. Acceptez les cookies d'apprentissage pour enregistrer vos leçons et quiz.",
+    "enableStorage": "Activer la sauvegarde",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "locked": "Verrouillé",

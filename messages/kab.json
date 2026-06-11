@@ -261,6 +261,16 @@
     "tooltip": "",
     "defaultMessage": ""
   },
+  "cookieConsent": {
+    "title": "",
+    "description": "",
+    "necessary": "",
+    "learning": "",
+    "analytics": "",
+    "learnMore": "",
+    "acceptAll": "",
+    "rejectOptional": ""
+  },
   "cta": {
     "title": "",
     "subtitle": "",

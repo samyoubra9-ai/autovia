@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from "react"
 
+import { useCookieConsent } from "@/app/components/vitrine/CookieConsentProvider"
+import { createEmptyProgress } from "@/lib/apprentissage/access"
 import {
   markChapterComplete,
   readProgress,
@@ -26,6 +28,7 @@ import type {
 type ApprentissageProgressContextValue = {
   progress: ApprentissageProgress
   hydrated: boolean
+  learningEnabled: boolean
   completeChapter: (moduleSlug: ModuleSlug, chapterSlug: ChapterSlug) => void
   saveQuizScore: (moduleSlug: ModuleSlug, scorePercent: number) => void
   resetAll: () => void
@@ -39,52 +42,60 @@ export function ApprentissageProgressProvider({
 }: {
   children: ReactNode
 }) {
+  const { learning } = useCookieConsent()
   const [progress, setProgress] = useState<ApprentissageProgress>(() =>
-    readProgress(),
+    createEmptyProgress(),
   )
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    setProgress(readProgress())
+    setProgress(learning ? readProgress() : createEmptyProgress())
     setHydrated(true)
-  }, [])
+  }, [learning])
 
   const completeChapter = useCallback(
     (moduleSlug: ModuleSlug, chapterSlug: ChapterSlug) => {
+      if (!learning) return
       setProgress((current) => {
         const next = markChapterComplete(current, moduleSlug, chapterSlug)
         writeProgress(next)
         return next
       })
     },
-    [],
+    [learning],
   )
 
   const saveQuizScore = useCallback(
     (moduleSlug: ModuleSlug, scorePercent: number) => {
+      if (!learning) return
       setProgress((current) => {
         const next = recordQuizScore(current, moduleSlug, scorePercent)
         writeProgress(next)
         return next
       })
     },
-    [],
+    [learning],
   )
 
   const resetAll = useCallback(() => {
+    if (!learning) {
+      setProgress(createEmptyProgress())
+      return
+    }
     const empty = resetProgress()
     setProgress(empty)
-  }, [])
+  }, [learning])
 
   const value = useMemo(
     () => ({
       progress,
       hydrated,
+      learningEnabled: learning,
       completeChapter,
       saveQuizScore,
       resetAll,
     }),
-    [progress, hydrated, completeChapter, saveQuizScore, resetAll],
+    [progress, hydrated, learning, completeChapter, saveQuizScore, resetAll],
   )
 
   return (

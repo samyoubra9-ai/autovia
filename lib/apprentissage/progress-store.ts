@@ -3,7 +3,7 @@
 import { createEmptyProgress, QUIZ_PASS_THRESHOLD_PERCENT } from "./access"
 import type { ApprentissageProgress, ChapterSlug, ModuleSlug } from "./types"
 
-const STORAGE_KEY = "autovia-apprentissage-progress-v1"
+export const STORAGE_KEY = "autovia-apprentissage-progress-v1"
 
 function isBrowser(): boolean {
   return typeof window !== "undefined"
@@ -83,4 +83,9 @@ export function resetProgress(): ApprentissageProgress {
   const empty = createEmptyProgress()
   writeProgress(empty)
   return empty
+}
+
+export function clearProgressStorage(): void {
+  if (!isBrowser()) return
+  window.localStorage.removeItem(STORAGE_KEY)
 }

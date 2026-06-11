@@ -370,6 +370,29 @@
   color: var(--ap-text-muted);
 }
 
+.ap-storage-hint--disabled {
+  flex-wrap: wrap;
+  background: #fffbeb;
+  color: #92400e;
+  border-top-color: #fde68a;
+}
+
+.ap-storage-hint__btn {
+  margin-left: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #fbbf24;
+  background: #ffffff;
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ap-storage-hint__btn:hover {
+  background: #fff7ed;
+}
+
 @media (min-width: 1024px) {
   .ap-storage-hint {
     padding-left: calc(var(--ap-sidebar-w) + 16px);

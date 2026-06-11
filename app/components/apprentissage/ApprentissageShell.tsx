@@ -18,6 +18,8 @@ import { getChapterContent } from "@/lib/i18n/apprentissage-content"
 import type { ModuleSlug } from "@/lib/apprentissage/types"
 import { cn } from "@/lib/utils"
 
+import { useCookieConsent } from "@/app/components/vitrine/CookieConsentProvider"
+
 import { ApprentissageProgressProvider, useApprentissageProgress } from "./ApprentissageProgressProvider"
 import { ApprentissageSidebar } from "./ApprentissageSidebar"
 
@@ -25,7 +27,8 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
-  const { progress, hydrated } = useApprentissageProgress()
+  const { progress, hydrated, learningEnabled } = useApprentissageProgress()
+  const { reopenBanner } = useCookieConsent()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const globalPercent = hydrated ? getGlobalCompletionPercent(progress) : 0
@@ -175,10 +178,24 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      <div className="ap-storage-hint">
-        <Smartphone className="size-3.5 shrink-0" aria-hidden />
-        <span>{m.shell.storageHint}</span>
-      </div>
+      {learningEnabled ? (
+        <div className="ap-storage-hint">
+          <Smartphone className="size-3.5 shrink-0" aria-hidden />
+          <span>{m.shell.storageHint}</span>
+        </div>
+      ) : (
+        <div className="ap-storage-hint ap-storage-hint--disabled">
+          <Smartphone className="size-3.5 shrink-0" aria-hidden />
+          <span>{m.shell.storageDisabled}</span>
+          <button
+            type="button"
+            className="ap-storage-hint__btn"
+            onClick={reopenBanner}
+          >
+            {m.shell.enableStorage}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

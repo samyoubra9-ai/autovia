@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-
+import { AnalyticsWithConsent } from "./components/vitrine/AnalyticsWithConsent"
+import { CookieConsentBanner } from "./components/vitrine/CookieConsentBanner"
+import { CookieConsentProvider } from "./components/vitrine/CookieConsentProvider"
 import { WhatsAppFloatingButton } from "./components/vitrine/WhatsAppFloatingButton"
 import "./globals.css"
 
@@ -58,10 +58,12 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full">
-        {children}
-        <WhatsAppFloatingButton />
-        <Analytics />
-        <SpeedInsights />
+        <CookieConsentProvider>
+          {children}
+          <CookieConsentBanner />
+          <WhatsAppFloatingButton />
+          <AnalyticsWithConsent />
+        </CookieConsentProvider>
       </body>
     </html>
   )

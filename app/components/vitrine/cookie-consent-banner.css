@@ -1,0 +1,138 @@
+.cookie-consent {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 10050;
+  padding: 16px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.cookie-consent--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cookie-consent__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow:
+    0 12px 40px -12px rgb(15 23 42 / 0.22),
+    0 0 0 1px rgb(15 23 42 / 0.04);
+}
+
+.cookie-consent__content {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.cookie-consent__title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.cookie-consent__text {
+  margin: 0 0 10px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.cookie-consent__list {
+  margin: 0 0 10px;
+  padding-left: 1.15rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.cookie-consent__list li + li {
+  margin-top: 4px;
+}
+
+.cookie-consent__link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookie-consent__link:hover {
+  color: #1d4ed8;
+}
+
+.cookie-consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cookie-consent__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.cookie-consent__btn--primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.cookie-consent__btn--primary:hover {
+  background: #1d4ed8;
+}
+
+.cookie-consent__btn--secondary {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.cookie-consent__btn--secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .cookie-consent {
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .cookie-consent__actions {
+    width: 100%;
+  }
+
+  .cookie-consent__btn {
+    flex: 1 1 auto;
+  }
+}

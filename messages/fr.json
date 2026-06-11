@@ -261,6 +261,16 @@
     "tooltip": "WhatsApp",
     "defaultMessage": "Bonjour, je souhaite en savoir plus sur Autovia."
   },
+  "cookieConsent": {
+    "title": "Cookies et stockage local",
+    "description": "Nous utilisons des cookies et le stockage de votre navigateur pour faire fonctionner le site et, avec votre accord, mesurer l'audience et enregistrer votre progression dans l'espace Apprendre.",
+    "necessary": "Essentiels : langue du site, session de connexion.",
+    "learning": "Apprentissage (optionnel) : progression des leçons et scores de quiz sur cet appareil.",
+    "analytics": "Mesure d'audience (optionnel) : statistiques anonymes de visite.",
+    "learnMore": "En savoir plus",
+    "acceptAll": "Tout accepter",
+    "rejectOptional": "Refuser les optionnels"
+  },
   "cta": {
     "title": "Prêt à moderniser votre auto-école ?",
     "subtitle": "Rejoignez Autovia et centralisez votre gestion dès aujourd'hui.",
@@ -284,7 +294,7 @@
     "linkCookies": "Cookies",
     "copyright": "Autovia — Auto-écoles en Algérie.",
     "creditsPrefix": "Site réalisé par",
-    "moniteurName": "Achat Athmane",
+    "moniteurName": "Achat Atmane",
     "moniteurRole": "moniteur de conduite",
     "creditsJoin": "et",
     "developerName": "Samy Oubraham",
