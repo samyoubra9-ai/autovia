@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { WhatsAppFloatingButton } from "./components/vitrine/WhatsAppFloatingButton"
 import "./globals.css"
@@ -58,6 +60,8 @@ export default function RootLayout({
       <body className="min-h-full">
         {children}
         <WhatsAppFloatingButton />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
