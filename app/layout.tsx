@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
+import { WhatsAppFloatingButton } from "./components/vitrine/WhatsAppFloatingButton"
 import "./globals.css"
 
 const inter = Inter({
@@ -54,7 +55,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <WhatsAppFloatingButton />
+      </body>
     </html>
   )
 }

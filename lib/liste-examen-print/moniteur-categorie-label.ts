@@ -35,12 +35,14 @@ export function listeExamenMoniteurSlotCategorieLabel(
 ): string {
   const stored = storedCategorie?.trim()
   if (stored) {
-    if (!stored.includes("/")) return stored
-    const first = stored
-      .split("/")
-      .map((s) => s.trim())
-      .find(Boolean)
-    if (first) return first
+    if (stored.includes("/")) {
+      return stored
+        .split("/")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(" / ")
+    }
+    return stored
   }
   return listeExamenMoniteurCategorieLabel(sections, schoolCategories)
 }

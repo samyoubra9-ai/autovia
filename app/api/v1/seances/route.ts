@@ -100,7 +100,7 @@ export async function POST(request: Request) {
       if (!v) throw new ApiError(404, "Véhicule introuvable.")
     }
 
-    await assertSeanceHorizonLibre(tenant.autoEcoleId, dateHeure)
+    await assertSeanceHorizonLibre(tenant.autoEcoleId, dateHeure, { type, eleveId })
     if (vehiculeId) await assertVehiculeLibre(tenant.autoEcoleId, vehiculeId, dateHeure)
 
     const trimMsg = (v: unknown) => {

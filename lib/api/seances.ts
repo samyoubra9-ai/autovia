@@ -7,11 +7,75 @@ const GAP_MS = SEANCE_MIN_GAP_MINUTES * 60 * 1000
 const DAY_START_HOUR = 7
 const DAY_END_HOUR = 19
 
-export async function assertSeanceHorizonLibre(
+const TIMED_SEANCE_TYPES = ["creneau", "circulation", "examen"] as const
+
+export type SeanceConflictOptions = {
+  excludeId?: string
+  type?: SeanceType
+  eleveId?: string
+}
+
+function requiresTimedGap(type: SeanceType): boolean {
+  return (TIMED_SEANCE_TYPES as readonly string[]).includes(type)
+}
+
+/** Code : plusieurs candidats à la même heure. Créneau / circulation : écart de 20 min. */
+export function scheduleSeancesForCandidates(
+  type: SeanceType,
+  startDateHeure: Date,
+  count: number,
+): Date[] {
+  if (count <= 0) return []
+  if (type === "code") {
+    return Array.from({ length: count }, () => new Date(startDateHeure.getTime()))
+  }
+  return Array.from(
+    { length: count },
+    (_, index) => new Date(startDateHeure.getTime() + index * GAP_MS),
+  )
+}
+
+async function assertEleveSansDoublonHoraire(
   autoEcoleId: string,
+  eleveId: string,
   dateHeure: Date,
   excludeId?: string,
 ) {
+  const conflict = await prisma.seanceExamen.findFirst({
+    where: {
+      autoEcoleId,
+      eleveId,
+      ...(excludeId ? { id: { not: excludeId } } : {}),
+      statut: { notIn: ["annule", "absent"] },
+      dateHeure,
+    },
+    include: { eleve: { select: { prenom: true, nom: true } } },
+  })
+  if (conflict) {
+    const label = `${conflict.eleve.prenom} ${conflict.eleve.nom}`
+    throw new ApiError(
+      409,
+      `${label} a déjà une séance planifiée à cette date et heure.`,
+    )
+  }
+}
+
+export async function assertSeanceHorizonLibre(
+  autoEcoleId: string,
+  dateHeure: Date,
+  options?: string | SeanceConflictOptions,
+) {
+  const opts: SeanceConflictOptions =
+    typeof options === "string" ? { excludeId: options } : (options ?? {})
+  const type = opts.type ?? "creneau"
+  const excludeId = opts.excludeId
+
+  if (opts.eleveId) {
+    await assertEleveSansDoublonHoraire(autoEcoleId, opts.eleveId, dateHeure, excludeId)
+  }
+
+  if (!requiresTimedGap(type)) return
+
   const timeWindow = {
     gt: new Date(dateHeure.getTime() - GAP_MS),
     lt: new Date(dateHeure.getTime() + GAP_MS),
@@ -20,6 +84,7 @@ export async function assertSeanceHorizonLibre(
     autoEcoleId,
     ...(excludeId ? { id: { not: excludeId } } : {}),
     dateHeure: timeWindow,
+    type: { in: [...TIMED_SEANCE_TYPES] },
   }
 
   let conflict = await prisma.seanceExamen.findFirst({
@@ -38,7 +103,7 @@ export async function assertSeanceHorizonLibre(
     const label = `${conflict.eleve.prenom} ${conflict.eleve.nom}`
     throw new ApiError(
       409,
-      `Créneau indisponible : une séance est déjà planifiée pour ${label}. Laissez au moins ${SEANCE_MIN_GAP_MINUTES} minutes entre deux examens.`,
+      `Créneau indisponible : une séance est déjà planifiée pour ${label}. Laissez au moins ${SEANCE_MIN_GAP_MINUTES} minutes entre deux séances (créneau / circulation).`,
     )
   }
 }
@@ -330,6 +395,60 @@ export async function listSeancesForTenant(
   }
 
   throw lastError
+}
+
+export async function createSeancesBulkForTenant(
+  data: {
+    autoEcoleId: string
+    eleveIds: string[]
+    type: SeanceType
+    startDateHeure: Date
+    notes: string | null
+    messageCandidat?: string | null
+    moniteurId?: string | null
+    vehiculeId?: string | null
+    statut?: SeanceStatut
+  },
+) {
+  const uniqueIds = [...new Set(data.eleveIds)]
+  if (uniqueIds.length === 0) {
+    throw new ApiError(400, "Sélectionnez au moins un candidat.")
+  }
+
+  const slots = scheduleSeancesForCandidates(
+    data.type,
+    data.startDateHeure,
+    uniqueIds.length,
+  )
+
+  for (let i = 0; i < uniqueIds.length; i++) {
+    const eleveId = uniqueIds[i]!
+    const dateHeure = slots[i]!
+    await assertSeanceHorizonLibre(data.autoEcoleId, dateHeure, {
+      type: data.type,
+      eleveId,
+    })
+    if (data.vehiculeId) {
+      await assertVehiculeLibre(data.autoEcoleId, data.vehiculeId, dateHeure)
+    }
+  }
+
+  const created: Awaited<ReturnType<typeof createSeanceForTenant>>[] = []
+  for (let i = 0; i < uniqueIds.length; i++) {
+    const seance = await createSeanceForTenant({
+      autoEcoleId: data.autoEcoleId,
+      eleveId: uniqueIds[i]!,
+      type: data.type,
+      dateHeure: slots[i]!,
+      notes: data.notes,
+      messageCandidat: data.messageCandidat,
+      moniteurId: data.moniteurId,
+      vehiculeId: data.vehiculeId,
+      statut: data.statut,
+    })
+    created.push(seance)
+  }
+  return created
 }
 
 export async function createSeanceForTenant(

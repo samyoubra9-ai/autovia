@@ -93,7 +93,11 @@ export async function PATCH(request: Request, { params }: Params) {
       statut = body.statut as SeanceStatut
     }
 
-    await assertSeanceHorizonLibre(tenant.autoEcoleId, dateHeure, id)
+    await assertSeanceHorizonLibre(tenant.autoEcoleId, dateHeure, {
+      excludeId: id,
+      type,
+      eleveId,
+    })
     if (vehiculeId) await assertVehiculeLibre(tenant.autoEcoleId, vehiculeId, dateHeure, id)
 
     const trimOptional = (v: unknown) => {

@@ -256,6 +256,11 @@
     "errorGeneric": "",
     "errorNetwork": ""
   },
+  "whatsapp": {
+    "ariaLabel": "",
+    "tooltip": "",
+    "defaultMessage": ""
+  },
   "cta": {
     "title": "",
     "subtitle": "",

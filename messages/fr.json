@@ -256,6 +256,11 @@
     "errorGeneric": "Une erreur est survenue. Écrivez-nous à {email}.",
     "errorNetwork": "Connexion impossible. Écrivez-nous à {email}."
   },
+  "whatsapp": {
+    "ariaLabel": "Nous contacter sur WhatsApp",
+    "tooltip": "WhatsApp",
+    "defaultMessage": "Bonjour, je souhaite en savoir plus sur Autovia."
+  },
   "cta": {
     "title": "Prêt à moderniser votre auto-école ?",
     "subtitle": "Rejoignez Autovia et centralisez votre gestion dès aujourd'hui.",
