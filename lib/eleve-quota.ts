@@ -6,8 +6,11 @@ import { isTrialSubscription, TRIAL_MAX_ELEVES } from "@/lib/plan-limits"
 /** Catégories « semi-remorque » — bloc +60 dossiers chacune. */
 export const REMORQUE_PERMIS_CODES = new Set(["BE", "CE", "DE", "C1E"])
 
-export const ESSENTIEL_QUOTA_FLOOR = 90
-export const ESSENTIEL_QUOTA_CAP = 100
+export const ESSENTIEL_QUOTA = 100
+/** @deprecated Utiliser ESSENTIEL_QUOTA */
+export const ESSENTIEL_QUOTA_FLOOR = ESSENTIEL_QUOTA
+/** @deprecated Utiliser ESSENTIEL_QUOTA */
+export const ESSENTIEL_QUOTA_CAP = ESSENTIEL_QUOTA
 export const PRO_QUOTA = 300
 
 export function isRemorquePermisCode(code: string): boolean {
@@ -40,9 +43,8 @@ export function applySubscriptionPlanToQuota(
     return PRO_QUOTA
   }
 
-  // Essentiel ou ACTIVE sans plan explicite
-  if (formulaQuota <= 0) return ESSENTIEL_QUOTA_FLOOR
-  return Math.min(ESSENTIEL_QUOTA_CAP, Math.max(ESSENTIEL_QUOTA_FLOOR, formulaQuota))
+  // Essentiel (ou ACTIVE sans plan explicite) — plafond fixe
+  return ESSENTIEL_QUOTA
 }
 
 export type EleveQuotaInput = {

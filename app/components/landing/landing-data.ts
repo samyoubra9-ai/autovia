@@ -1,4 +1,4 @@
-/** Chemins des visuels — remplacez les fichiers dans /public/landing/ (même nom). */
+/** Chemins des visuels — déposez vos captures dans /public/landing/ (voir README.md). */
 export const LANDING_IMAGE_PATHS = {
   hero: {
     src: "/landing/headimage.png",
@@ -11,17 +11,17 @@ export const LANDING_IMAGE_PATHS = {
     height: 750,
   },
   planning: {
-    src: "/landing/planning2.png",
+    src: "/landing/planning.png",
     width: 1200,
     height: 750,
   },
   eleves: {
-    src: "/landing/tresorerie2.png",
+    src: "/landing/tresorerie.png",
     width: 1200,
     height: 750,
   },
   listeExamen: {
-    src: "/landing/impression2.png",
+    src: "/landing/impression.png",
     width: 1200,
     height: 750,
   },
@@ -36,6 +36,16 @@ export type LandingImageKey = keyof typeof LANDING_IMAGE_PATHS
 
 /** @deprecated Utiliser LANDING_IMAGE_PATHS + messages/images */
 export const LANDING_IMAGES = LANDING_IMAGE_PATHS
+
+/** Blocs « Fonctionnalités » — clé = id du bloc dans messages/fr.json */
+export const FEATURE_BLOCK_IMAGE_BY_ID: Record<
+  "planning" | "eleves" | "listeExamen",
+  LandingImageKey
+> = {
+  planning: "planning",
+  eleves: "eleves",
+  listeExamen: "listeExamen",
+}
 
 export const FEATURE_BLOCK_IMAGE_KEYS = [
   "planning",

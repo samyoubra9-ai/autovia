@@ -13,10 +13,6 @@ export type LandingLinks = {
   backdashSignUp: string
   /** NEXT_PUBLIC_CANDIDAT_URL — saisie du code candidat */
   candidatUrl: string
-  /** Installateur Windows (.exe) sur le site ou URL externe */
-  backdashDesktopDownload: string
-  /** true si le fichier est réellement téléchargeable */
-  backdashDesktopDownloadReady: boolean
 }
 
 const PRODUCT_HREFS: Record<

@@ -9,6 +9,7 @@ import type { ListeExamenPrintVariant } from "@/lib/api/liste-examen-groups"
 import { generateListeExamenPdf } from "@/lib/liste-examen-print/generate-pdf"
 import { renderListeExamenPrintHtml } from "@/lib/liste-examen-print/render-html"
 import { assertCanPrintOnPlan } from "@/lib/api/trial-plan-context"
+import { isTrialPrintBlocked } from "@/lib/plan-limits"
 import { prisma } from "@/lib/prisma"
 
 export const maxDuration = 60
@@ -58,7 +59,7 @@ export async function GET(request: Request, { params }: Params) {
     if (!liste) throw new ApiError(404, "Liste introuvable.")
     if (!autoEcole) throw new ApiError(404, "Auto-école introuvable.")
 
-    assertCanPrintOnPlan(autoEcole.subscriptionStatus)
+    const printBlocked = isTrialPrintBlocked(autoEcole.subscriptionStatus)
 
     await fillMissingDatesDernierExamenOnListe(liste)
 
@@ -85,7 +86,7 @@ export async function GET(request: Request, { params }: Params) {
         : `liste-examen-${safeDate}.pdf`
 
     if (format === "html") {
-      const html = renderListeExamenPrintHtml(dto, ecoleNomPrint)
+      const html = renderListeExamenPrintHtml(dto, ecoleNomPrint, { printBlocked })
       return new Response(html, {
         status: 200,
         headers: {
@@ -94,6 +95,8 @@ export async function GET(request: Request, { params }: Params) {
         },
       })
     }
+
+    assertCanPrintOnPlan(autoEcole.subscriptionStatus)
 
     const pdf = await generateListeExamenPdf(dto, ecoleNomPrint)
 

@@ -1,5 +1,6 @@
 import apprentissageFr from "@/messages/apprentissage-fr.json"
 import apprentissageKab from "@/messages/apprentissage-kab.json"
+import apprentissageAr from "@/messages/apprentissage-ar.json"
 
 import type { VitrineLocale } from "./vitrine-locale"
 import { formatVitrineMessage } from "./vitrine-messages"
@@ -9,6 +10,7 @@ export type ApprentissageMessages = typeof apprentissageFr
 const catalogs: Record<VitrineLocale, ApprentissageMessages> = {
   fr: apprentissageFr,
   kab: apprentissageKab as ApprentissageMessages,
+  ar: apprentissageAr as ApprentissageMessages,
 }
 
 function isEmptyString(value: unknown): value is "" {
@@ -57,7 +59,7 @@ export function getApprentissageMessages(
   locale: VitrineLocale,
 ): ApprentissageMessages {
   if (locale === "fr") return catalogs.fr
-  return mergeWithFallback(catalogs.kab, catalogs.fr) as ApprentissageMessages
+  return mergeWithFallback(catalogs[locale], catalogs.fr) as ApprentissageMessages
 }
 
 export function formatApprentissageMessage(

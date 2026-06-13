@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "title": "",
+    "description": ""
+  },
+  "shell": {
+    "brandSubtitle": "",
+    "platformLabel": "",
+    "backHome": "",
+    "sidebarTitle": "",
+    "menuLabel": "",
+    "sidebarProgress": "",
+    "modulesCompleted": "",
+    "storageHint": "",
+    "storageDisabled": "",
+    "enableStorage": "",
+    "openMenu": "",
+    "closeMenu": "",
+    "locked": "",
+    "completed": "",
+    "inProgress": "",
+    "quizLabel": "",
+    "passScore": ""
+  },
+  "dashboard": {
+    "title": "",
+    "subtitle": "",
+    "globalProgress": "",
+    "statsProgress": "",
+    "statsModules": "",
+    "statsNext": "",
+    "allComplete": "",
+    "roadmapTitle": "",
+    "roadmapSubtitle": "",
+    "chaptersRead": "",
+    "quizInfoTitle": "",
+    "quizInfoText": "",
+    "startModule": "",
+    "continueModule": "",
+    "reviewModule": "",
+    "lockedModule": "",
+    "chaptersCount": ""
+  },
+  "modules": {
+    "fondamentaux": {
+      "title": "",
+      "subtitle": "",
+      "description": "",
+      "chapters": {
+        "panneaux": {
+          "title": "",
+          "summary": ""
+        },
+        "marquage": {
+          "title": "",
+          "summary": ""
+        },
+        "feux": {
+          "title": "",
+          "summary": ""
+        }
+      }
+    },
+    "circulation": {
+      "title": "",
+      "subtitle": "",
+      "description": "",
+      "chapters": {
+        "intersections": {
+          "title": "",
+          "summary": ""
+        },
+        "ronds-points": {
+          "title": "",
+          "summary": ""
+        },
+        "depassement": {
+          "title": "",
+          "summary": ""
+        }
+      }
+    },
+    "conducteur": {
+      "title": "",
+      "subtitle": "",
+      "description": "",
+      "chapters": {
+        "vitesse": {
+          "title": "",
+          "summary": ""
+        },
+        "visibilite": {
+          "title": "",
+          "summary": ""
+        },
+        "eco-conduite": {
+          "title": "",
+          "summary": ""
+        }
+      }
+    },
+    "situations": {
+      "title": "",
+      "subtitle": "",
+      "description": "",
+      "chapters": {
+        "autoroutes": {
+          "title": "",
+          "summary": ""
+        },
+        "partage-route": {
+          "title": "",
+          "summary": ""
+        },
+        "secourisme": {
+          "title": "",
+          "summary": ""
+        }
+      }
+    }
+  },
+  "module": {
+    "stepLabel": "",
+    "chaptersTitle": "",
+    "quizCardTitle": "",
+    "quizCardText": "",
+    "quizCta": "",
+    "quizLocked": "",
+    "chapterCta": "",
+    "chapterPlaceholder": ""
+  },
+  "chapter": {
+    "markComplete": "",
+    "markedComplete": "",
+    "nextChapter": "",
+    "goToQuiz": "",
+    "backToModule": ""
+  },
+  "quiz": {
+    "title": "",
+    "subtitle": "",
+    "intro": "",
+    "questionCount": "",
+    "questionOf": "",
+    "passRequirement": "",
+    "correctionAtEnd": "",
+    "start": "",
+    "selectAnswer": "",
+    "next": "",
+    "finish": "",
+    "resultsTitle": "",
+    "passed": "",
+    "failed": "",
+    "correctCount": "",
+    "reviewTitle": "",
+    "correct": "",
+    "incorrect": "",
+    "yourAnswer": "",
+    "rightAnswer": "",
+    "retry": "",
+    "continuePath": "",
+    "bestScore": "",
+    "noQuestions": "",
+    "backToModule": ""
+  }
+}

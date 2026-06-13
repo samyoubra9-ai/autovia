@@ -28,9 +28,10 @@ export function LandingImage({
       alt={alt}
       width={img.width}
       height={img.height}
-      className={className}
+      className={className ?? "ds-landing-shot"}
       priority={priority}
       sizes={sizes}
+      unoptimized
     />
   )
 }

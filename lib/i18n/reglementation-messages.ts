@@ -1,5 +1,6 @@
 import reglementationFr from "@/messages/reglementation-fr.json"
 import reglementationKab from "@/messages/reglementation-kab.json"
+import reglementationAr from "@/messages/reglementation-ar.json"
 
 import type { VitrineLocale } from "./vitrine-locale"
 
@@ -8,6 +9,7 @@ export type ReglementationMessages = typeof reglementationFr
 const catalogs: Record<VitrineLocale, ReglementationMessages> = {
   fr: reglementationFr,
   kab: reglementationKab as ReglementationMessages,
+  ar: reglementationAr as ReglementationMessages,
 }
 
 function isEmptyString(value: unknown): value is "" {
@@ -59,7 +61,7 @@ export function getReglementationMessages(
   locale: VitrineLocale,
 ): ReglementationMessages {
   if (locale === "fr") return catalogs.fr
-  return mergeWithFallback(catalogs.kab, catalogs.fr) as ReglementationMessages
+  return mergeWithFallback(catalogs[locale], catalogs.fr) as ReglementationMessages
 }
 
 export function formatReglementationDate(

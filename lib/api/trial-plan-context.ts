@@ -4,6 +4,7 @@ import { ApiError } from "@/lib/api/errors"
 import {
   isTrialPrintBlocked,
   isTrialSubscription,
+  TRIAL_MAX_ELEVES,
   TRIAL_MAX_LISTES_EXAMEN,
   TRIAL_MAX_MONITEURS,
   TRIAL_MAX_PAIEMENTS,
@@ -13,6 +14,7 @@ import type { PrismaDb } from "@/lib/prisma"
 export type TrialPlanSnapshot = {
   isTrial: boolean
   printBlocked: boolean
+  maxEleves: number | null
   maxMoniteurs: number | null
   maxPaiements: number | null
   maxListesExamen: number | null
@@ -38,6 +40,7 @@ export async function loadTrialPlanSnapshot(
   return {
     isTrial,
     printBlocked: isTrialPrintBlocked(subscriptionStatus),
+    maxEleves: isTrial ? TRIAL_MAX_ELEVES : null,
     maxMoniteurs: isTrial ? TRIAL_MAX_MONITEURS : null,
     maxPaiements: isTrial ? TRIAL_MAX_PAIEMENTS : null,
     maxListesExamen: isTrial ? TRIAL_MAX_LISTES_EXAMEN : null,

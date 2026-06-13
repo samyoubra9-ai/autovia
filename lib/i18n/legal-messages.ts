@@ -1,5 +1,6 @@
 import legalFr from "@/messages/legal-fr.json"
 import legalKab from "@/messages/legal-kab.json"
+import legalAr from "@/messages/legal-ar.json"
 
 import type { VitrineLocale } from "./vitrine-locale"
 
@@ -9,6 +10,7 @@ export type LegalDocumentKey = keyof LegalMessages
 const catalogs: Record<VitrineLocale, LegalMessages> = {
   fr: legalFr,
   kab: legalKab as LegalMessages,
+  ar: legalAr as LegalMessages,
 }
 
 function isEmptyString(value: unknown): value is "" {
@@ -55,7 +57,7 @@ function mergeWithFallback(
 
 export function getLegalMessages(locale: VitrineLocale): LegalMessages {
   if (locale === "fr") return catalogs.fr
-  return mergeWithFallback(catalogs.kab, catalogs.fr) as LegalMessages
+  return mergeWithFallback(catalogs[locale], catalogs.fr) as LegalMessages
 }
 
 export function interpolateLegalText(

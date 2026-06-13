@@ -50,14 +50,6 @@ function ChevronIcon() {
   )
 }
 
-function WindowsIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden fill="currentColor">
-      <path d="M3 5.5 10.5 4.2V12H3V5.5zm0 13V13.5h7.5V19.8L3 18.5zM11.25 4 21 2v9.75h-9.75V4zm0 10.5H21V22l-9.75-1.8V14.5z" />
-    </svg>
-  )
-}
-
 function NavMoreMenu({
   items,
   label,
@@ -178,7 +170,6 @@ export function LandingNav({ links }: { links: LandingLinks }) {
       items: [
         { href: "/apprendre", label: m.nav.learn },
         { href: "/veille-reglementaire", label: m.nav.regulationWatch },
-        { href: "/telecharger", label: m.nav.download },
       ],
     },
     {
@@ -269,18 +260,17 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               >
                 {m.nav.signIn}
               </NavAnchor>
-              <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-nav">
-                <WindowsIcon />
-                {m.nav.download}
-              </NavAnchor>
               <NavAnchor href={links.backdashSignUp} external className="ds-btn ds-btn-primary ds-btn-nav">
                 {m.nav.getStarted}
               </NavAnchor>
             </div>
             <div className="ds-nav-mobile-bar">
-              <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-sm ds-nav-mobile-download">
-                <WindowsIcon />
-                <span className="ds-nav-mobile-download-label">{m.nav.download}</span>
+              <NavAnchor
+                href={links.backdashSignUp}
+                external
+                className="ds-btn ds-btn-primary ds-btn-sm ds-nav-mobile-cta"
+              >
+                {m.nav.getStarted}
               </NavAnchor>
               <button
                 type="button"
@@ -341,10 +331,6 @@ export function LandingNav({ links }: { links: LandingLinks }) {
           </nav>
 
           <div className="ds-mobile-menu-cta">
-            <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-block" onClick={closeMenu}>
-              <WindowsIcon />
-              {m.nav.download}
-            </NavAnchor>
             <NavAnchor
               href={links.candidatUrl}
               external

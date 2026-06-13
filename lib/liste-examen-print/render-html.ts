@@ -4,6 +4,59 @@ import { listeExamenMoniteurSlotCategorieLabel } from "./moniteur-categorie-labe
 import { listeExamenPrintApplyFitScript } from "./apply-fit-script"
 import { listeExamenPrintStyles } from "./styles"
 
+export type ListeExamenPrintOptions = {
+  /** Essai gratuit : aperçu à l'écran, impression désactivée */
+  printBlocked?: boolean
+}
+
+function trialPrintBlockStyles(): string {
+  return `
+.trial-print-banner {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  max-width: min(640px, calc(100vw - 24px));
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #f8fafc;
+  font: 600 14px/1.4 system-ui, sans-serif;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.25);
+}
+@media print {
+  body * { visibility: hidden !important; }
+  .trial-print-banner,
+  .trial-print-notice {
+    visibility: visible !important;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #0f172a;
+    font-size: 18px;
+    text-align: center;
+    padding: 24px;
+  }
+}
+`
+}
+
+function trialPrintBlockScript(): string {
+  return `
+window.addEventListener("keydown", function (e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === "p") {
+    e.preventDefault();
+    alert("Impression désactivée pendant l'essai gratuit. Passez à un abonnement pour imprimer.");
+  }
+});
+`
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -92,6 +145,7 @@ function tableHead(): string {
 export function renderListeExamenPrintHtml(
   liste: ListeExamenDto,
   _autoEcoleNom?: string,
+  options: ListeExamenPrintOptions = {},
 ): string {
   const sections = liste.sections ?? []
   const pages = buildListeExamenPrintPages(sections)
@@ -182,16 +236,23 @@ export function renderListeExamenPrintHtml(
     })
     .join("")
 
+  const printBlocked = options.printBlocked === true
+  const trialBanner = printBlocked
+    ? `<div class="trial-print-banner" dir="ltr">Aperçu essai gratuit — impression désactivée. Passez à un abonnement pour imprimer.</div>
+       <div class="trial-print-notice" aria-hidden>L'impression est désactivée pendant l'essai gratuit.</div>`
+    : ""
+
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8"/>
   <title>Liste examen ${escapeHtml(liste.dateExamen)}</title>
-  <style>${listeExamenPrintStyles()}</style>
+  <style>${listeExamenPrintStyles()}${printBlocked ? trialPrintBlockStyles() : ""}</style>
 </head>
 <body>
+  ${trialBanner}
   <div class="doc">${pagesHtml}</div>
-  <script>${listeExamenPrintApplyFitScript()}</script>
+  <script>${listeExamenPrintApplyFitScript()}${printBlocked ? trialPrintBlockScript() : ""}</script>
 </body>
 </html>`
 }

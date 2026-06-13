@@ -5,7 +5,7 @@ export const SUBSCRIPTION_PRICING = {
   ESSENTIEL: {
     id: "ESSENTIEL" as const,
     label: "Essentiel",
-    description: "Petite auto-école — jusqu'à 100 dossiers selon catégories",
+    description: "Petite auto-école — jusqu'à 100 dossiers",
     annualDzd: 12_000,
     monthlyDzd: 1_200,
     /** Coût si facturé 12 mois au tarif mensuel */

@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "",
+    "description": ""
+  },
+  "hero": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "lead": ""
+  },
+  "section": {
+    "title": "",
+    "subtitle": ""
+  },
+  "categories": [],
+  "updates": [],
+  "guide": {
+    "title": "",
+    "steps": []
+  },
+  "disclaimer": "",
+  "cta": {
+    "title": "",
+    "text": "",
+    "button": "",
+    "href": "/#contact"
+  }
+}

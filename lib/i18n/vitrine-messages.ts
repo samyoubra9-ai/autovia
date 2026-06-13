@@ -1,5 +1,6 @@
 import fr from "@/messages/fr.json"
 import kab from "@/messages/kab.json"
+import ar from "@/messages/ar.json"
 
 import type { VitrineLocale } from "./vitrine-locale"
 
@@ -8,13 +9,14 @@ export type VitrineMessages = typeof fr
 const catalogs: Record<VitrineLocale, VitrineMessages> = {
   fr,
   kab: kab as VitrineMessages,
+  ar: ar as VitrineMessages,
 }
 
 function isEmptyString(value: unknown): value is "" {
   return typeof value === "string" && value.trim() === ""
 }
 
-/** Fusionne kabyle + français : texte kabyle vide → fallback FR. */
+/** Fusionne locale + français : texte vide → fallback FR. */
 function mergeWithFallback(
   localeMessages: unknown,
   fallbackMessages: unknown,
@@ -55,7 +57,7 @@ function mergeWithFallback(
 
 export function getVitrineMessages(locale: VitrineLocale): VitrineMessages {
   if (locale === "fr") return catalogs.fr
-  return mergeWithFallback(catalogs.kab, catalogs.fr) as VitrineMessages
+  return mergeWithFallback(catalogs[locale], catalogs.fr) as VitrineMessages
 }
 
 /** Remplace `{key}` dans un modèle de texte. */

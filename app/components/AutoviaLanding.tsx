@@ -6,8 +6,8 @@ import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvid
 import { formatVitrineMessage } from "@/lib/i18n/vitrine-messages"
 import { SUBSCRIPTION_PRICING, formatDzdAmount } from "@/lib/subscription-plans"
 
-import { LandingImage } from "./landing/LandingImage"
-import { FEATURE_BLOCK_IMAGE_KEYS } from "./landing/landing-data"
+import { LandingImageFrame } from "./landing/LandingImageFrame"
+import { FEATURE_BLOCK_IMAGE_BY_ID } from "./landing/landing-data"
 import { ContactForm } from "./landing/ContactForm"
 import { ContactEmail } from "./landing/ContactEmail"
 import { LandingFooter } from "./landing/LandingFooter"
@@ -81,11 +81,14 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
         annualTotal: formatDzdAmount(pro.annualFromMonthlyDzd),
       })
 
-  const featureBlocks = m.features.blocks.map((block, index) => ({
-    ...block,
-    imageKey: FEATURE_BLOCK_IMAGE_KEYS[index],
-    reverse: index === 1,
-  }))
+  const featureBlocks = m.features.blocks.map((block, index) => {
+    const id = block.id as keyof typeof FEATURE_BLOCK_IMAGE_BY_ID
+    return {
+      ...block,
+      imageKey: FEATURE_BLOCK_IMAGE_BY_ID[id],
+      reverse: index === 1,
+    }
+  })
 
   return (
     <div className="ds-landing-page">
@@ -119,9 +122,7 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
             </div>
           </div>
           <div className="ds-hero-visual">
-            <div className="ds-browser-frame ds-browser-frame--hero">
-              <LandingImage imageKey="hero" priority sizes="(max-width: 1024px) 100vw, 60vw" />
-            </div>
+            <LandingImageFrame imageKey="hero" variant="hero" priority sizes="(max-width: 1024px) 100vw, 60vw" />
           </div>
         </div>
       </section>
@@ -152,8 +153,10 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           {products.map((product) => (
             <article key={product.id} className="ds-product-card">
               <div className={`ds-product-visual ${product.imageKey === "candidat" ? "ds-product-visual--phone" : ""}`}>
-                <LandingImage
+                <LandingImageFrame
                   imageKey={product.imageKey}
+                  variant="product"
+                  zoomable={false}
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </div>
@@ -190,17 +193,11 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
                 <h3>{block.title}</h3>
                 <p>{block.description}</p>
               </div>
-              <div
-                className={`ds-browser-frame ds-browser-frame--flat${
-                  block.imageKey === "planning" ||
-                  block.imageKey === "eleves" ||
-                  block.imageKey === "listeExamen"
-                    ? " ds-browser-frame--clean"
-                    : ""
-                }`}
-              >
-                <LandingImage imageKey={block.imageKey} sizes="(max-width: 900px) 100vw, 50vw" />
-              </div>
+              <LandingImageFrame
+                imageKey={block.imageKey}
+                variant="feature"
+                sizes="(max-width: 900px) 100vw, 50vw"
+              />
             </article>
           ))}
         </div>

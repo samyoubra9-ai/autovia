@@ -1,5 +1,6 @@
 import quizFr from "@/messages/quiz-fr.json"
 import quizKab from "@/messages/quiz-kab.json"
+import quizAr from "@/messages/quiz-ar.json"
 
 import type { VitrineLocale } from "@/lib/i18n/vitrine-locale"
 
@@ -30,6 +31,7 @@ type QuizCatalog = {
 const catalogs: Record<VitrineLocale, QuizCatalog> = {
   fr: quizFr as QuizCatalog,
   kab: quizKab as QuizCatalog,
+  ar: quizAr as QuizCatalog,
 }
 
 function isEmptyString(value: unknown): value is "" {
@@ -69,7 +71,7 @@ export function getQuizQuestionsForModule(
   const frQuestions = catalogs.fr.modules[moduleSlug]?.questions ?? []
   if (locale === "fr") return frQuestions
 
-  const localeQuestions = catalogs.kab.modules[moduleSlug]?.questions ?? []
+  const localeQuestions = catalogs[locale].modules[moduleSlug]?.questions ?? []
   return frQuestions.map((frQ, index) =>
     mergeQuestion(localeQuestions[index], frQ),
   )

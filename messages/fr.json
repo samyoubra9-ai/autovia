@@ -31,7 +31,6 @@
     "alreadyHaveCode": "J'ai déjà mon code",
     "schoolSignIn": "Connexion auto-école",
     "freeTrial": "Essai gratuit",
-    "download": "Télécharger",
     "more": "Plus",
     "moreMenuAria": "Autres pages et liens",
     "groupDiscover": "Découvrir",
@@ -56,34 +55,6 @@
       "Conçu pour les professionnels de la conduite",
       "Interface en français",
       "Listes d'examen & suivi QR"
-    ]
-  },
-  "desktop": {
-    "eyebrow": "Application bureau",
-    "title": "Installez Autovia sur Windows",
-    "pageTitle": "Télécharger Autovia pour Windows",
-    "pageDescription": "Téléchargez l'application bureau Autovia pour Windows : installateur officiel, connexion à votre auto-école et utilisation sans navigateur.",
-    "pageLead": "Application dédiée pour les auto-écoles — planning, élèves, paiements et listes d'examen, directement sur votre PC.",
-    "subtitle": "Comme les logiciels professionnels : téléchargez l'installateur, lancez-le et connectez-vous à votre auto-école. Aucun navigateur requis au quotidien.",
-    "download": "Télécharger pour Windows",
-    "hint": "Windows 10 ou 11 · 64 bits · Connexion Internet requise",
-    "orWeb": "Utiliser la version web",
-    "unavailable": "L'installateur Windows sera disponible très prochainement. En attendant, utilisez la version web.",
-    "unavailableDev": "En local, le fichier public/downloads/autovia-setup.exe n'existe pas encore. Générez-le via GitHub Actions (voir public/downloads/README.md), puis relancez npm run dev.",
-    "stepsTitle": "Installation en 3 étapes",
-    "steps": [
-      {
-        "title": "Téléchargez l'installateur",
-        "text": "Cliquez sur le bouton ci-dessus pour récupérer autovia-setup.exe sur votre PC."
-      },
-      {
-        "title": "Lancez l'installation",
-        "text": "Double-cliquez sur le fichier, suivez l'assistant et choisissez le dossier d'installation."
-      },
-      {
-        "title": "Connectez-vous",
-        "text": "Ouvrez Autovia depuis le bureau ou le menu Démarrer et connectez-vous avec votre compte auto-école."
-      }
     ]
   },
   "products": {
@@ -129,8 +100,8 @@
       },
       {
         "id": "listeExamen",
-        "title": "Listes d'examen prêtes à imprimer",
-        "description": "Génération des listes avec pagination A4, texte arabe et signature. Conçu pour les pratiques des auto-écoles en Algérie."
+        "title": "Listes d'examen en arabe, format officiel",
+        "description": "Sélectionnez vos candidats : Autovia génère automatiquement la liste d'examen et le bordereau en arabe, avec statistiques (hommes/femmes, permis, catégories) et pagination A4 prête à imprimer — le modèle officiel attendu par les auto-écoles en Algérie."
       }
     ],
     "bento": [
@@ -189,12 +160,13 @@
       "tag": "Essai gratuit",
       "title": "Découverte",
       "price": "0",
-      "calc": "15 jours · jusqu'à 10 élèves · sans carte bancaire",
+      "calc": "15 jours · 10 élèves max · aperçu sans impression",
       "features": [
         "Jusqu'à 10 élèves",
-        "Tableau de bord complet",
-        "Paiements & plannings",
-        "Listes d'examen"
+        "1 liste d'examen",
+        "1 paiement test",
+        "Aperçu impression (sans imprimer)",
+        "Tableau de bord complet"
       ],
       "cta": "Essai gratuit"
     },
@@ -202,7 +174,7 @@
       "tag": "Essentiel",
       "title": "Petite auto-école",
       "features": [
-        "Jusqu'à 120 dossiers (selon catégories)",
+        "Jusqu'à 100 dossiers",
         "Plannings & moniteurs",
         "Paiements & reçus",
         "Listes d'examen & impression",
@@ -255,7 +227,7 @@
       },
       {
         "q": "Combien de candidats puis-je gérer ?",
-        "a": "L'essai gratuit permet jusqu'à 10 élèves pendant 15 jours. Le plan Essentiel couvre jusqu'à 120 dossiers (selon vos catégories de permis), le plan Pro jusqu'à 300 dossiers, et l'offre Élite est illimitée sur devis."
+        "a": "L'essai gratuit permet jusqu'à 10 élèves, 1 liste d'examen et 1 paiement test pendant 15 jours (aperçu à l'écran sans impression). Le plan Essentiel couvre jusqu'à 100 dossiers, le plan Pro jusqu'à 300 dossiers, et l'offre Élite est illimitée sur devis."
       },
       {
         "q": "Les données sont-elles sécurisées ?",
@@ -341,8 +313,11 @@
     "backdash": "Interface Autovia — espace auto-école",
     "planning": "Planning des séances de conduite",
     "eleves": "Candidats et trésorerie — fiches élèves et paiements",
-    "listeExamen": "Listes d'examen et impression officielle",
-    "candidat": "Application candidat — suivi par code QR"
+    "listeExamen": "Liste d'examen et bordereau en arabe — modèle officiel avec statistiques",
+    "candidat": "Application candidat — suivi par code QR",
+    "zoomOpen": "Agrandir l'image",
+    "zoomClose": "Fermer l'aperçu",
+    "zoomHint": "Agrandir"
   },
   "apprendre": {
     "title": "Apprendre",
@@ -357,6 +332,7 @@
   },
   "locale": {
     "switchToFr": "Français",
-    "switchToKab": "Taqbaylit"
+    "switchToKab": "Taqbaylit",
+    "switchToAr": "العربية"
   }
 }
