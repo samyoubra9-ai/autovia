@@ -79,7 +79,7 @@ VITE_API_URL=https://www.autovia.space
 1. Ouvrir **https://candidat.autovia.space** (Chrome / Edge, de préférence app installée)
 2. Code de suivi → **Activer les notifications**
 3. Vérifier : `https://www.autovia.space/api/v1/public/suivi/push/vapid` → `{ "enabled": true, "publicKey": "..." }`
-4. Backdash : créer une séance pour cet élève → notification écran de verrouillage
+4. Backdash : créer une séance pour cet élève → notification sur l’écran de verrouillage (app Mon permis installée)
 
 ## Événements qui envoient une push
 

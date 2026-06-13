@@ -30,7 +30,8 @@
     "mobileSectionsAria": "",
     "alreadyHaveCode": "",
     "schoolSignIn": "",
-    "freeTrial": ""
+    "freeTrial": "",
+    "download": ""
   },
   "hero": {
     "badge": "",
@@ -50,6 +51,16 @@
       "",
       ""
     ]
+  },
+  "desktop": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "download": "",
+    "hint": "",
+    "orWeb": "",
+    "unavailable": "",
+    "unavailableDev": ""
   },
   "products": {
     "eyebrow": "",

@@ -30,7 +30,8 @@
     "mobileSectionsAria": "Sections",
     "alreadyHaveCode": "J'ai déjà mon code",
     "schoolSignIn": "Connexion auto-école",
-    "freeTrial": "Essai gratuit"
+    "freeTrial": "Essai gratuit",
+    "download": "Télécharger"
   },
   "hero": {
     "badge": "Auto-écoles en Algérie 🇩🇿",
@@ -50,6 +51,16 @@
       "Interface en français",
       "Listes d'examen & suivi QR"
     ]
+  },
+  "desktop": {
+    "eyebrow": "Application bureau",
+    "title": "Installez Autovia sur Windows",
+    "subtitle": "Comme les logiciels professionnels : téléchargez l'installateur, lancez-le et connectez-vous à votre auto-école. Aucun navigateur requis au quotidien.",
+    "download": "Télécharger pour Windows",
+    "hint": "Windows 10 ou 11 · 64 bits · Connexion Internet requise",
+    "orWeb": "Utiliser la version web",
+    "unavailable": "L'installateur Windows sera disponible très prochainement. En attendant, utilisez la version web.",
+    "unavailableDev": "En local, le fichier public/downloads/autovia-setup.exe n'existe pas encore. Générez-le via GitHub Actions (voir public/downloads/README.md), puis relancez npm run dev."
   },
   "products": {
     "eyebrow": "Écosystème",

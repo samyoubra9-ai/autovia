@@ -96,6 +96,14 @@ export function getBackdashSignUpUrl(): string {
   return `${base}${normalized}`
 }
 
+/** Installateur Windows (.exe) — hébergé sur le site ou URL externe (GitHub Releases, etc.). */
+export function getBackdashDesktopDownloadUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_BACKDASH_DESKTOP_URL?.trim()
+  if (raw) return raw
+  const app = getAppUrl().replace(/\/$/, "")
+  return `${app}/downloads/autovia-setup.exe`
+}
+
 export function getCandidatUrl(): string {
   return getAppUrls().candidat
 }

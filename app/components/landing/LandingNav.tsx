@@ -49,6 +49,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
   const navItems = [
     { href: "/apprendre", label: m.nav.learn, external: false },
     { href: "/veille-reglementaire", label: m.nav.regulationWatch, external: false },
+    { href: "#telecharger", label: m.nav.download, external: false },
     { href: "#produits", label: m.nav.products, external: false },
     { href: "#features", label: m.nav.features, external: false },
     { href: "#pricing", label: m.nav.pricing, external: false },

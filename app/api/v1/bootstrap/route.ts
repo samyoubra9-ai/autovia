@@ -1,5 +1,5 @@
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
-import { handleApiError } from "@/lib/api/errors"
+import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
 import { ensureDefaultCategoriesPermis, toCategoriePermisDto } from "@/lib/api/categories-permis"
 import { toAutoEcolePrintSettings } from "@/lib/api/auto-ecole-print"
@@ -8,6 +8,7 @@ import { toEleveDto, toPaiementDto } from "@/lib/api/mappers"
 import { moniteurCategoriesInclude } from "@/lib/api/moniteur"
 import { toMoniteurDto, toVehiculeDto } from "@/lib/api/mappers-vehicule"
 import { safeLoad, safeMapSync } from "@/lib/api/safe"
+import { loadTrialPlanSnapshot } from "@/lib/api/trial-plan-context"
 import { prisma } from "@/lib/prisma"
 
 export async function OPTIONS(request: Request) {
@@ -25,8 +26,18 @@ export async function GET(request: Request) {
     const autoEcoleRow = await prisma.autoEcole.findUnique({
       where: { id: autoEcoleId },
     })
+    if (!autoEcoleRow) {
+      throw new ApiError(404, "Auto-école introuvable.")
+    }
 
-    const [categoriesPermis, eleves, paiements, vehicules, moniteurs] = await Promise.all([
+    const trialLimitsPromise = loadTrialPlanSnapshot(
+      prisma,
+      autoEcoleId,
+      autoEcoleRow.subscriptionStatus,
+    )
+
+    const [categoriesPermis, eleves, paiements, vehicules, moniteurs, trialLimits] =
+      await Promise.all([
       safeLoad(
         "categoriesPermis",
         () => ensureDefaultCategoriesPermis(prisma, autoEcoleId),
@@ -65,6 +76,7 @@ export async function GET(request: Request) {
           }),
         [],
       ),
+      trialLimitsPromise,
     ])
 
     return jsonWithCors(
@@ -73,13 +85,11 @@ export async function GET(request: Request) {
           id: tenant.autoEcole.id,
           nom: tenant.autoEcole.nom,
           slug: tenant.autoEcole.slug,
-          printSettings: autoEcoleRow
-            ? toAutoEcolePrintSettings(autoEcoleRow)
-            : null,
-          listeSettings: autoEcoleRow
-            ? toListeExamenSettings(autoEcoleRow)
-            : null,
+          subscriptionStatus: autoEcoleRow.subscriptionStatus,
+          printSettings: toAutoEcolePrintSettings(autoEcoleRow),
+          listeSettings: toListeExamenSettings(autoEcoleRow),
         },
+        trialLimits,
         categoriesPermis: categoriesPermis.map(toCategoriePermisDto),
         eleves: safeMapSync(eleves, (e) => {
           try {

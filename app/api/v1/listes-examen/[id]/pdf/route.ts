@@ -8,6 +8,7 @@ import { fillMissingDatesDernierExamenOnListe } from "@/lib/api/liste-examen-dat
 import type { ListeExamenPrintVariant } from "@/lib/api/liste-examen-groups"
 import { generateListeExamenPdf } from "@/lib/liste-examen-print/generate-pdf"
 import { renderListeExamenPrintHtml } from "@/lib/liste-examen-print/render-html"
+import { assertCanPrintOnPlan } from "@/lib/api/trial-plan-context"
 import { prisma } from "@/lib/prisma"
 
 export const maxDuration = 60
@@ -56,6 +57,8 @@ export async function GET(request: Request, { params }: Params) {
 
     if (!liste) throw new ApiError(404, "Liste introuvable.")
     if (!autoEcole) throw new ApiError(404, "Auto-école introuvable.")
+
+    assertCanPrintOnPlan(autoEcole.subscriptionStatus)
 
     await fillMissingDatesDernierExamenOnListe(liste)
 

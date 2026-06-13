@@ -1,6 +1,5 @@
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
-import { getVapidConfig, isPushConfigured } from "@/lib/push/vapid"
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -10,11 +9,7 @@ export async function OPTIONS(request: Request) {
 export async function GET(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
   try {
-    const vapid = getVapidConfig()
-    return jsonWithCors(
-      { enabled: isPushConfigured(), publicKey: vapid?.publicKey ?? null },
-      origin,
-    )
+    return jsonWithCors({ enabled: false, publicKey: null }, origin)
   } catch (error) {
     return handleApiError(error, origin)
   }

@@ -8,13 +8,17 @@ import {
   getBackdashSignUpUrl,
   getCandidatUrl,
 } from "@/lib/app-urls"
+import { resolveBackdashDesktopDownload } from "@/lib/backdash-desktop-download"
 import { getReglementationMessages } from "@/lib/i18n/reglementation-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
 function getLandingLinks(): LandingLinks {
+  const desktop = resolveBackdashDesktopDownload()
   return {
     backdashSignIn: getBackdashSignInUrl(),
     backdashSignUp: getBackdashSignUpUrl(),
+    backdashDesktopDownload: desktop.url,
+    backdashDesktopDownloadReady: desktop.ready,
     candidatUrl: getCandidatUrl(),
   }
 }

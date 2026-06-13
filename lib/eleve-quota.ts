@@ -7,7 +7,7 @@ import { isTrialSubscription, TRIAL_MAX_ELEVES } from "@/lib/plan-limits"
 export const REMORQUE_PERMIS_CODES = new Set(["BE", "CE", "DE", "C1E"])
 
 export const ESSENTIEL_QUOTA_FLOOR = 90
-export const ESSENTIEL_QUOTA_CAP = 120
+export const ESSENTIEL_QUOTA_CAP = 100
 export const PRO_QUOTA = 300
 
 export function isRemorquePermisCode(code: string): boolean {

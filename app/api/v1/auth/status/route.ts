@@ -1,5 +1,6 @@
 import { getAccessDetail, hasAutoEcoleAccess } from "@/lib/access"
 import { loadEleveQuotaSnapshot } from "@/lib/api/eleve-quota-context"
+import { loadTrialPlanSnapshot } from "@/lib/api/trial-plan-context"
 import { requireAuthUser } from "@/lib/api/auth"
 import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
@@ -50,7 +51,10 @@ export async function GET(request: Request) {
 
     const ae = tenant.autoEcole
     const hasAccess = hasAutoEcoleAccess(ae)
-    const quota = await loadEleveQuotaSnapshot(prisma, ae.id)
+    const [quota, trialLimits] = await Promise.all([
+      loadEleveQuotaSnapshot(prisma, ae.id),
+      loadTrialPlanSnapshot(prisma, ae.id, ae.subscriptionStatus),
+    ])
 
     return jsonWithCors(
       {
@@ -84,6 +88,7 @@ export async function GET(request: Request) {
           formulaQuota: quota.formulaQuota,
           subscriptionPlan: quota.subscriptionPlan,
           subscriptionPlanLabel: subscriptionPlanLabel(quota.subscriptionPlan),
+          trialLimits,
         },
       },
       origin,

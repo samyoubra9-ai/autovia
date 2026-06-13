@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/moniteur"
 import { toMoniteurDto } from "@/lib/api/mappers-vehicule"
 import { safeMapSync } from "@/lib/api/safe"
+import { assertCanAddMoniteurOnPlan } from "@/lib/api/trial-plan-context"
 import { prisma } from "@/lib/prisma"
 
 export async function OPTIONS(request: Request) {
@@ -53,6 +54,16 @@ export async function POST(request: Request) {
     if (!nom || !prenom) {
       throw new ApiError(400, "Nom et prénom requis.")
     }
+
+    const autoEcole = await prisma.autoEcole.findUniqueOrThrow({
+      where: { id: tenant.autoEcoleId },
+      select: { subscriptionStatus: true },
+    })
+    await assertCanAddMoniteurOnPlan(
+      prisma,
+      tenant.autoEcoleId,
+      autoEcole.subscriptionStatus,
+    )
 
     const parsedIds = parseCategoriesPermisIds(body)
     if (!parsedIds?.length) {

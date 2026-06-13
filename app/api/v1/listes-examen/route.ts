@@ -21,6 +21,7 @@ import {
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { resolveMoniteurListeSlot } from "@/lib/api/moniteur"
 import { assertSetupCanCreateListeExamen } from "@/lib/api/setup-guards"
+import { assertCanCreateListeExamenOnPlan } from "@/lib/api/trial-plan-context"
 import { allocateReferenceEnvoi } from "@/lib/api/reference-envoi"
 import { notifyBackdashExamenListe } from "@/lib/push/backdash-events"
 import { syncExamenEngagement } from "@/lib/api/candidat-engagement"
@@ -149,6 +150,12 @@ export async function POST(request: Request) {
       where: { id: tenant.autoEcoleId },
     })
     if (!ae) throw new ApiError(404, "Auto-école introuvable.")
+
+    await assertCanCreateListeExamenOnPlan(
+      prisma,
+      tenant.autoEcoleId,
+      ae.subscriptionStatus,
+    )
 
     const listeSettings = toListeExamenSettings(ae)
     const categories = await ensureDefaultCategoriesPermis(prisma, tenant.autoEcoleId)

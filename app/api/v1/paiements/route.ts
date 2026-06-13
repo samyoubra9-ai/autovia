@@ -5,6 +5,7 @@ import { toPaiementDto } from "@/lib/api/mappers"
 import { safeMapSync } from "@/lib/api/safe"
 import { notifyBackdashPaiement } from "@/lib/push/backdash-events"
 import { notifyCandidatPaiement } from "@/lib/push/candidat-events"
+import { assertCanAddPaiementOnPlan } from "@/lib/api/trial-plan-context"
 import { prisma } from "@/lib/prisma"
 
 export async function OPTIONS(request: Request) {
@@ -43,6 +44,16 @@ export async function POST(request: Request) {
     if (!eleveId || !montant || !moniteurNom) {
       throw new ApiError(400, "Élève, montant et moniteur requis.")
     }
+
+    const autoEcole = await prisma.autoEcole.findUniqueOrThrow({
+      where: { id: tenant.autoEcoleId },
+      select: { subscriptionStatus: true },
+    })
+    await assertCanAddPaiementOnPlan(
+      prisma,
+      tenant.autoEcoleId,
+      autoEcole.subscriptionStatus,
+    )
 
     const eleve = await prisma.eleve.findFirst({
       where: { id: eleveId, autoEcoleId: tenant.autoEcoleId },
