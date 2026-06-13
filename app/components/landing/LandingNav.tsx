@@ -1,12 +1,18 @@
 "use client"
 
 import Image from "next/image"
-import { useCallback, useEffect, useId, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useId, useRef, useState, type AnchorHTMLAttributes, type ReactNode } from "react"
 
 import { LocaleSwitcher } from "@/app/components/vitrine/LocaleSwitcher"
 import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvider"
 
 import type { LandingLinks } from "./landing-links"
+
+type NavItem = {
+  href: string
+  label: string
+  external?: boolean
+}
 
 function NavAnchor({
   href,
@@ -14,29 +20,134 @@ function NavAnchor({
   className,
   children,
   onClick,
+  ...rest
 }: {
   href: string
   external?: boolean
   className?: string
   children: ReactNode
   onClick?: () => void
-}) {
+} & AnchorHTMLAttributes<HTMLAnchorElement>) {
   if (external) {
     return (
-      <a
-        href={href}
-        className={className}
-        rel="noopener noreferrer"
-        onClick={onClick}
-      >
+      <a href={href} className={className} rel="noopener noreferrer" onClick={onClick} {...rest}>
         {children}
       </a>
     )
   }
   return (
-    <a href={href} className={className} onClick={onClick}>
+    <a href={href} className={className} onClick={onClick} {...rest}>
       {children}
     </a>
+  )
+}
+
+function ChevronIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
+function WindowsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden fill="currentColor">
+      <path d="M3 5.5 10.5 4.2V12H3V5.5zm0 13V13.5h7.5V19.8L3 18.5zM11.25 4 21 2v9.75h-9.75V4zm0 10.5H21V22l-9.75-1.8V14.5z" />
+    </svg>
+  )
+}
+
+function NavMoreMenu({
+  items,
+  label,
+  menuAria,
+  onNavigate,
+}: {
+  items: NavItem[]
+  label: string
+  menuAria: string
+  onNavigate?: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const menuId = useId()
+  const close = useCallback(() => setOpen(false), [])
+
+  useEffect(() => {
+    if (!open) return
+    const onPointer = (e: MouseEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) close()
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close()
+    }
+    document.addEventListener("mousedown", onPointer)
+    window.addEventListener("keydown", onKey)
+    return () => {
+      document.removeEventListener("mousedown", onPointer)
+      window.removeEventListener("keydown", onKey)
+    }
+  }, [open, close])
+
+  return (
+    <div ref={rootRef} className={`ds-nav-dropdown${open ? " ds-nav-dropdown--open" : ""}`}>
+      <button
+        type="button"
+        className="ds-nav-dropdown-trigger"
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-controls={menuId}
+        onClick={() => setOpen((v) => !v)}
+      >
+        {label}
+        <ChevronIcon />
+      </button>
+      <div id={menuId} className="ds-nav-dropdown-menu" role="menu" aria-label={menuAria}>
+        {items.map((item) => (
+          <NavAnchor
+            key={item.href + item.label}
+            href={item.href}
+            external={item.external}
+            className="ds-nav-dropdown-item"
+            role="menuitem"
+            onClick={() => {
+              close()
+              onNavigate?.()
+            }}
+          >
+            {item.label}
+          </NavAnchor>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MobileNavGroup({
+  title,
+  items,
+  onNavigate,
+}: {
+  title: string
+  items: NavItem[]
+  onNavigate: () => void
+}) {
+  return (
+    <div className="ds-mobile-menu-group">
+      <p className="ds-mobile-menu-group-title">{title}</p>
+      {items.map((item) => (
+        <NavAnchor
+          key={item.href + item.label}
+          href={item.href}
+          external={item.external}
+          className="ds-mobile-menu-link"
+          onClick={onNavigate}
+        >
+          {item.label}
+        </NavAnchor>
+      ))}
+    </div>
   )
 }
 
@@ -46,16 +157,46 @@ export function LandingNav({ links }: { links: LandingLinks }) {
   const [scrolled, setScrolled] = useState(false)
   const menuId = useId()
 
-  const navItems = [
-    { href: "/apprendre", label: m.nav.learn, external: false },
-    { href: "/veille-reglementaire", label: m.nav.regulationWatch, external: false },
-    { href: "#telecharger", label: m.nav.download, external: false },
-    { href: "#produits", label: m.nav.products, external: false },
-    { href: "#features", label: m.nav.features, external: false },
-    { href: "#pricing", label: m.nav.pricing, external: false },
-    { href: "#faq", label: m.nav.faq, external: false },
-    { href: "#contact", label: m.nav.contact, external: false },
-  ] as const
+  const primaryNavItems: NavItem[] = [
+    { href: "/apprendre", label: m.nav.learn },
+    { href: "/veille-reglementaire", label: m.nav.regulationWatch },
+    { href: "/#pricing", label: m.nav.pricing },
+  ]
+
+  const moreNavItems: NavItem[] = [
+    { href: "/#produits", label: m.nav.products },
+    { href: "/#features", label: m.nav.features },
+    { href: "/#faq", label: m.nav.faq },
+    { href: "/#contact", label: m.nav.contact },
+    { href: links.candidatUrl, label: m.nav.candidateSpace, external: true },
+    { href: links.backdashSignIn, label: m.nav.signIn, external: true },
+  ]
+
+  const mobileGroups = [
+    {
+      title: m.nav.groupDiscover,
+      items: [
+        { href: "/apprendre", label: m.nav.learn },
+        { href: "/veille-reglementaire", label: m.nav.regulationWatch },
+        { href: "/telecharger", label: m.nav.download },
+      ],
+    },
+    {
+      title: m.nav.groupPlatform,
+      items: [
+        { href: "/#produits", label: m.nav.products },
+        { href: "/#features", label: m.nav.features },
+        { href: "/#pricing", label: m.nav.pricing },
+      ],
+    },
+    {
+      title: m.nav.groupHelp,
+      items: [
+        { href: "/#faq", label: m.nav.faq },
+        { href: "/#contact", label: m.nav.contact },
+      ],
+    },
+  ]
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
@@ -110,14 +251,12 @@ export function LandingNav({ links }: { links: LandingLinks }) {
           </a>
 
           <div className="ds-nav-links" aria-label={m.nav.mobileSectionsAria}>
-            {navItems.map((item) => (
+            {primaryNavItems.map((item) => (
               <NavAnchor key={item.href} href={item.href} external={item.external}>
                 {item.label}
               </NavAnchor>
             ))}
-            <NavAnchor href={links.candidatUrl} external className="ds-nav-link-candidat">
-              {m.nav.candidateSpace}
-            </NavAnchor>
+            <NavMoreMenu items={moreNavItems} label={m.nav.more} menuAria={m.nav.moreMenuAria} />
           </div>
 
           <div className="ds-nav-end">
@@ -126,19 +265,23 @@ export function LandingNav({ links }: { links: LandingLinks }) {
               <NavAnchor
                 href={links.backdashSignIn}
                 external
-                className="ds-btn ds-btn-ghost ds-btn-nav"
+                className="ds-btn ds-btn-ghost ds-btn-nav ds-nav-signin"
               >
                 {m.nav.signIn}
               </NavAnchor>
-              <NavAnchor
-                href={links.backdashSignUp}
-                external
-                className="ds-btn ds-btn-primary ds-btn-nav"
-              >
+              <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-nav">
+                <WindowsIcon />
+                {m.nav.download}
+              </NavAnchor>
+              <NavAnchor href={links.backdashSignUp} external className="ds-btn ds-btn-primary ds-btn-nav">
                 {m.nav.getStarted}
               </NavAnchor>
             </div>
             <div className="ds-nav-mobile-bar">
+              <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-sm ds-nav-mobile-download">
+                <WindowsIcon />
+                <span className="ds-nav-mobile-download-label">{m.nav.download}</span>
+              </NavAnchor>
               <button
                 type="button"
                 className="ds-nav-toggle"
@@ -173,12 +316,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
         <div className="ds-mobile-menu-panel">
           <div className="ds-mobile-menu-head">
             <span className="ds-mobile-menu-title">{m.nav.menuTitle}</span>
-            <button
-              type="button"
-              className="ds-mobile-menu-close"
-              aria-label={m.nav.close}
-              onClick={closeMenu}
-            >
+            <button type="button" className="ds-mobile-menu-close" aria-label={m.nav.close} onClick={closeMenu}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
@@ -186,28 +324,27 @@ export function LandingNav({ links }: { links: LandingLinks }) {
           </div>
 
           <nav className="ds-mobile-menu-links" aria-label={m.nav.mobileSectionsAria}>
-            {navItems.map((item) => (
+            {mobileGroups.map((group) => (
+              <MobileNavGroup key={group.title} title={group.title} items={group.items} onNavigate={closeMenu} />
+            ))}
+            <div className="ds-mobile-menu-group">
+              <p className="ds-mobile-menu-group-title">{m.nav.groupSpaces}</p>
               <NavAnchor
-                key={item.href}
-                href={item.href}
-                external={item.external}
-                className="ds-mobile-menu-link"
+                href={links.candidatUrl}
+                external
+                className="ds-mobile-menu-link ds-mobile-menu-link--highlight"
                 onClick={closeMenu}
               >
-                {item.label}
+                {m.nav.candidateSpace}
               </NavAnchor>
-            ))}
-            <NavAnchor
-              href={links.candidatUrl}
-              external
-              className="ds-mobile-menu-link ds-mobile-menu-link--highlight"
-              onClick={closeMenu}
-            >
-              {m.nav.candidateSpace}
-            </NavAnchor>
+            </div>
           </nav>
 
           <div className="ds-mobile-menu-cta">
+            <NavAnchor href="/telecharger" className="ds-btn ds-btn-download ds-btn-block" onClick={closeMenu}>
+              <WindowsIcon />
+              {m.nav.download}
+            </NavAnchor>
             <NavAnchor
               href={links.candidatUrl}
               external

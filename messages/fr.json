@@ -31,7 +31,13 @@
     "alreadyHaveCode": "J'ai déjà mon code",
     "schoolSignIn": "Connexion auto-école",
     "freeTrial": "Essai gratuit",
-    "download": "Télécharger"
+    "download": "Télécharger",
+    "more": "Plus",
+    "moreMenuAria": "Autres pages et liens",
+    "groupDiscover": "Découvrir",
+    "groupPlatform": "Plateforme",
+    "groupHelp": "Aide",
+    "groupSpaces": "Espaces"
   },
   "hero": {
     "badge": "Auto-écoles en Algérie 🇩🇿",
@@ -55,12 +61,30 @@
   "desktop": {
     "eyebrow": "Application bureau",
     "title": "Installez Autovia sur Windows",
+    "pageTitle": "Télécharger Autovia pour Windows",
+    "pageDescription": "Téléchargez l'application bureau Autovia pour Windows : installateur officiel, connexion à votre auto-école et utilisation sans navigateur.",
+    "pageLead": "Application dédiée pour les auto-écoles — planning, élèves, paiements et listes d'examen, directement sur votre PC.",
     "subtitle": "Comme les logiciels professionnels : téléchargez l'installateur, lancez-le et connectez-vous à votre auto-école. Aucun navigateur requis au quotidien.",
     "download": "Télécharger pour Windows",
     "hint": "Windows 10 ou 11 · 64 bits · Connexion Internet requise",
     "orWeb": "Utiliser la version web",
     "unavailable": "L'installateur Windows sera disponible très prochainement. En attendant, utilisez la version web.",
-    "unavailableDev": "En local, le fichier public/downloads/autovia-setup.exe n'existe pas encore. Générez-le via GitHub Actions (voir public/downloads/README.md), puis relancez npm run dev."
+    "unavailableDev": "En local, le fichier public/downloads/autovia-setup.exe n'existe pas encore. Générez-le via GitHub Actions (voir public/downloads/README.md), puis relancez npm run dev.",
+    "stepsTitle": "Installation en 3 étapes",
+    "steps": [
+      {
+        "title": "Téléchargez l'installateur",
+        "text": "Cliquez sur le bouton ci-dessus pour récupérer autovia-setup.exe sur votre PC."
+      },
+      {
+        "title": "Lancez l'installation",
+        "text": "Double-cliquez sur le fichier, suivez l'assistant et choisissez le dossier d'installation."
+      },
+      {
+        "title": "Connectez-vous",
+        "text": "Ouvrez Autovia depuis le bureau ou le menu Démarrer et connectez-vous avec votre compte auto-école."
+      }
+    ]
   },
   "products": {
     "eyebrow": "Écosystème",

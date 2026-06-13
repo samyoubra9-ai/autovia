@@ -10,7 +10,6 @@ import { LandingImage } from "./landing/LandingImage"
 import { FEATURE_BLOCK_IMAGE_KEYS } from "./landing/landing-data"
 import { ContactForm } from "./landing/ContactForm"
 import { ContactEmail } from "./landing/ContactEmail"
-import { LandingDesktopDownload } from "./landing/LandingDesktopDownload"
 import { LandingFooter } from "./landing/LandingFooter"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
@@ -142,8 +141,6 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           })}
         </div>
       </section>
-
-      <LandingDesktopDownload links={links} messages={m.desktop} />
 
       <section id="produits" className="ds-products ds-container">
         <div className="ds-section-header">

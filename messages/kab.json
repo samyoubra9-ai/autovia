@@ -31,7 +31,13 @@
     "alreadyHaveCode": "",
     "schoolSignIn": "",
     "freeTrial": "",
-    "download": ""
+    "download": "",
+    "more": "",
+    "moreMenuAria": "",
+    "groupDiscover": "",
+    "groupPlatform": "",
+    "groupHelp": "",
+    "groupSpaces": ""
   },
   "hero": {
     "badge": "",
@@ -55,12 +61,21 @@
   "desktop": {
     "eyebrow": "",
     "title": "",
+    "pageTitle": "",
+    "pageDescription": "",
+    "pageLead": "",
     "subtitle": "",
     "download": "",
     "hint": "",
     "orWeb": "",
     "unavailable": "",
-    "unavailableDev": ""
+    "unavailableDev": "",
+    "stepsTitle": "",
+    "steps": [
+      { "title": "", "text": "" },
+      { "title": "", "text": "" },
+      { "title": "", "text": "" }
+    ]
   },
   "products": {
     "eyebrow": "",
