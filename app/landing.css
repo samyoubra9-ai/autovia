@@ -881,12 +881,14 @@ html:has(.ds-landing-page) body {
   box-shadow: 0 4px 20px rgb(15 23 42 / 0.07);
 }
 
-.ds-landing-page .ds-landing-image-frame--hero .ds-landing-shot {
-  box-shadow: 0 8px 32px rgb(15 23 42 / 0.1);
+.ds-landing-page .ds-hero-visual .ds-landing-shot {
+  border: none;
+  box-shadow: none;
+  border-radius: 12px;
 }
 
 @media (min-width: 1024px) {
-  .ds-landing-page .ds-hero-visual .ds-landing-image-frame--hero .ds-landing-shot {
+  .ds-landing-page .ds-hero-visual .ds-landing-shot {
     width: 112%;
     max-width: 112%;
     margin-inline-start: -4%;
@@ -894,7 +896,7 @@ html:has(.ds-landing-page) body {
 }
 
 @media (max-width: 1023px) {
-  .ds-landing-page .ds-hero-visual .ds-landing-image-frame--hero .ds-landing-shot {
+  .ds-landing-page .ds-hero-visual .ds-landing-shot {
     width: 108%;
     max-width: 108%;
     margin-inline: auto;

@@ -6,6 +6,7 @@ import { useVitrineMessages } from "@/app/components/vitrine/VitrineLocaleProvid
 import { formatVitrineMessage } from "@/lib/i18n/vitrine-messages"
 import { SUBSCRIPTION_PRICING, formatDzdAmount } from "@/lib/subscription-plans"
 
+import { LandingImage } from "./landing/LandingImage"
 import { LandingImageFrame } from "./landing/LandingImageFrame"
 import { FEATURE_BLOCK_IMAGE_BY_ID } from "./landing/landing-data"
 import { ContactForm } from "./landing/ContactForm"
@@ -122,7 +123,7 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
             </div>
           </div>
           <div className="ds-hero-visual">
-            <LandingImageFrame imageKey="hero" variant="hero" priority sizes="(max-width: 1024px) 100vw, 60vw" />
+            <LandingImage imageKey="hero" priority sizes="(max-width: 1024px) 100vw, 60vw" />
           </div>
         </div>
       </section>
