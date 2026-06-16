@@ -62,8 +62,28 @@ export async function registerAutoEcoleTenant(
 ) {
   const existing = await prisma.user.findUnique({
     where: { supabaseUserId },
+    include: { autoEcole: true },
   })
   if (existing) {
+    // Idempotency: if tenant already exists for this auth user, return it instead of 409.
+    if (existing.autoEcole) {
+      return {
+        autoEcole: {
+          id: existing.autoEcole.id,
+          nom: existing.autoEcole.nom,
+          slug: existing.autoEcole.slug,
+          subscriptionStatus: existing.autoEcole.subscriptionStatus,
+          trialEndsAt: existing.autoEcole.trialEndsAt.toISOString(),
+          paidUntil: existing.autoEcole.paidUntil?.toISOString() ?? null,
+        },
+        user: {
+          id: existing.id,
+          email: existing.email,
+          prenom: existing.prenom,
+          nom: existing.nom,
+        },
+      }
+    }
     throw new ApiError(409, "Un espace auto-école existe déjà pour ce compte.", "TENANT_EXISTS")
   }
 
