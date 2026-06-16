@@ -7,7 +7,11 @@ import { handleApiError } from "@/lib/api/errors"
 import { prisma } from "@/lib/prisma"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
 import { loadVerificationSnapshot } from "@/lib/verification/documents"
-import { verificationStatusLabel } from "@/lib/verification/constants"
+import {
+  isVerificationDocumentsEnabled,
+  verificationStatusLabel,
+} from "@/lib/verification/constants"
+import { syncAutoEcoleWhenVerificationDisabled } from "@/lib/verification/bypass"
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -51,7 +55,9 @@ export async function GET(request: Request) {
       )
     }
 
-    const ae = tenant.autoEcole
+    const aeSynced =
+      (await syncAutoEcoleWhenVerificationDisabled(prisma, tenant.autoEcoleId)) ?? tenant.autoEcole
+    const ae = aeSynced
     const hasAccess = hasAutoEcoleAccess(ae)
     const [quota, trialLimits, verificationRaw] = await Promise.all([
       loadEleveQuotaSnapshot(prisma, ae.id),
@@ -59,6 +65,9 @@ export async function GET(request: Request) {
       loadVerificationSnapshot(prisma, ae.id),
     ])
     const { autoEcoleNom: _n, ...verification } = verificationRaw
+    const verificationForClient = isVerificationDocumentsEnabled()
+      ? verification
+      : { ...verification, status: "APPROVED" as const, statusLabel: "Validé" }
 
     return jsonWithCors(
       {
@@ -66,6 +75,7 @@ export async function GET(request: Request) {
         email: authUser.email,
         hasTenant: true,
         hasAccess,
+        verificationDocumentsEnabled: isVerificationDocumentsEnabled(),
         user: {
           id: tenant.id,
           prenom: tenant.prenom,
@@ -94,8 +104,8 @@ export async function GET(request: Request) {
           subscriptionPlanLabel: subscriptionPlanLabel(quota.subscriptionPlan),
           trialLimits,
           verification: {
-            ...verification,
-            statusLabel: verificationStatusLabel(verification.status),
+            ...verificationForClient,
+            statusLabel: verificationForClient.statusLabel ?? verificationStatusLabel(verificationForClient.status),
           },
         },
       },

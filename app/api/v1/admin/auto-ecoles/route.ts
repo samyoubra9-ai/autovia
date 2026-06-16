@@ -5,6 +5,7 @@ import { requireSiteAdminApi } from "@/lib/api/site-admin-auth"
 import { buildSiteAdminStats, siteAdminAutoEcoleInclude, toSiteAdminAutoEcoleDto } from "@/lib/api/site-admin-dto"
 import { prisma } from "@/lib/prisma"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { isVerificationDocumentsEnabled } from "@/lib/verification/constants"
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -27,6 +28,9 @@ export async function GET(request: Request) {
       {
         autoEcoles: rows,
         stats: buildSiteAdminStats(rows),
+        features: {
+          verificationDocuments: isVerificationDocumentsEnabled(),
+        },
       },
       origin,
     )

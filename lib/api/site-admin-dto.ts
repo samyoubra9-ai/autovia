@@ -7,7 +7,10 @@ import {
   getTrialDaysLeft,
 } from "@/lib/api/site-admin-access-update"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
-import { verificationStatusLabel } from "@/lib/verification/constants"
+import {
+  isVerificationDocumentsEnabled,
+  verificationStatusLabel,
+} from "@/lib/verification/constants"
 import type { SubscriptionPlan, SubscriptionStatus, VerificationStatus } from "@prisma/client"
 
 export type SiteAdminQuotaDto = {
@@ -186,8 +189,10 @@ export function toSiteAdminAutoEcoleDto(
     paidDaysLeft: paidLeft,
     canResumeTrial: canResumeTrial(ae, now),
     canResumePaid: canResumePaid(ae, now),
-    verificationStatus: ae.verificationStatus,
-    verificationStatusLabel: verificationStatusLabel(ae.verificationStatus),
+    verificationStatus: isVerificationDocumentsEnabled() ? ae.verificationStatus : "APPROVED",
+    verificationStatusLabel: isVerificationDocumentsEnabled()
+      ? verificationStatusLabel(ae.verificationStatus)
+      : "Validé",
     verificationRejectionReason: ae.verificationRejectionReason,
     verificationReviewedAt: ae.verificationReviewedAt?.toISOString() ?? null,
     verificationDocumentsPurgedAt: ae.verificationDocumentsPurgedAt?.toISOString() ?? null,
@@ -211,11 +216,13 @@ export function buildSiteAdminStats(
     trial: rows.filter((r) => r.subscriptionStatus === "TRIAL").length,
     expired: rows.filter((r) => r.subscriptionStatus === "EXPIRED").length,
     cancelled: rows.filter((r) => r.subscriptionStatus === "CANCELLED").length,
-    pendingVerification: rows.filter(
-      (r) =>
-        r.verificationStatus === "PENDING_REVIEW" ||
-        r.verificationStatus === "PENDING_DOCUMENTS",
-    ).length,
+    pendingVerification: isVerificationDocumentsEnabled()
+      ? rows.filter(
+          (r) =>
+            r.verificationStatus === "PENDING_REVIEW" ||
+            r.verificationStatus === "PENDING_DOCUMENTS",
+        ).length
+      : 0,
     newLast7Days: rows.filter((r) => new Date(r.createdAt) >= day7).length,
     newLast30Days: rows.filter((r) => new Date(r.createdAt) >= day30).length,
   }

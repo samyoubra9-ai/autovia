@@ -14,6 +14,10 @@ import {
 } from "@/lib/api/categories-permis"
 import { getTrialEndsAt, slugifyAutoEcole } from "@/lib/auth-utils"
 import { prisma } from "@/lib/prisma"
+import {
+  initialSubscriptionStatusForRegistration,
+  initialVerificationStatusForRegistration,
+} from "@/lib/verification/bypass"
 
 export type OnboardingRegisterInput = {
   nomAutoEcole: string
@@ -142,8 +146,8 @@ export async function registerAutoEcoleTenant(
         slug,
         emailContact: email,
         trialEndsAt,
-        subscriptionStatus: "EXPIRED",
-        verificationStatus: "PENDING_DOCUMENTS",
+        subscriptionStatus: initialSubscriptionStatusForRegistration(),
+        verificationStatus: initialVerificationStatusForRegistration(),
         adminNotes: termsNote,
         ...printSettingsToPrismaUpdate({
           ...printInput,

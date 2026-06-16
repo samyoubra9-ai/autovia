@@ -5,6 +5,7 @@ import { hasAutoEcoleAccess } from "@/lib/access"
 import { appRedirectPath } from "@/lib/app-urls"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
+import { syncAutoEcoleWhenVerificationDisabled } from "@/lib/verification/bypass"
 
 export async function GET(request: Request) {
   const supabase = await createClient()
@@ -54,7 +55,10 @@ export async function GET(request: Request) {
   }
 
   if (tenantUser) {
-    if (!hasAutoEcoleAccess(tenantUser.autoEcole)) {
+    const ae =
+      (await syncAutoEcoleWhenVerificationDisabled(prisma, tenantUser.autoEcoleId)) ??
+      tenantUser.autoEcole
+    if (!hasAutoEcoleAccess(ae)) {
       return backdashCallbackWithSession("/trial-expired")
     }
     return backdashCallbackWithSession()

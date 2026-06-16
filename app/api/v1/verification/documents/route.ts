@@ -12,8 +12,10 @@ import {
 import {
   VERIFICATION_MAX_BYTES,
   buildVerificationStoragePath,
+  isVerificationDocumentsEnabled,
   verificationExtensionFromMime,
   verificationStatusLabel,
+  verificationUploadDisabledMessage,
 } from "@/lib/verification/constants"
 import { uploadVerificationDocument, removeVerificationPaths } from "@/lib/verification/storage"
 
@@ -27,6 +29,10 @@ export async function OPTIONS(request: Request) {
 export async function POST(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
   try {
+    if (!isVerificationDocumentsEnabled()) {
+      throw new ApiError(403, verificationUploadDisabledMessage(), "VERIFICATION_DISABLED")
+    }
+
     const tenant = await requireTenantMembership(request)
     const ae = await prisma.autoEcole.findUniqueOrThrow({
       where: { id: tenant.autoEcoleId },

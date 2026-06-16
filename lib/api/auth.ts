@@ -4,6 +4,7 @@ import { ApiError } from "@/lib/api/errors"
 import { isNetworkError, NETWORK_ERROR_MESSAGE } from "@/lib/api/network"
 import { hasAutoEcoleAccess } from "@/lib/access"
 import { prisma } from "@/lib/prisma"
+import { syncAutoEcoleWhenVerificationDisabled } from "@/lib/verification/bypass"
 
 export type TenantContext = {
   supabaseUserId: string
@@ -112,9 +113,12 @@ export async function requireTenantMembership(request: Request): Promise<TenantC
 export async function requireTenant(request: Request): Promise<TenantContext> {
   const tenant = await requireTenantMembership(request)
 
-  const full = await prisma.autoEcole.findUniqueOrThrow({
+  let full = await prisma.autoEcole.findUniqueOrThrow({
     where: { id: tenant.autoEcoleId },
   })
+
+  const synced = await syncAutoEcoleWhenVerificationDisabled(prisma, full.id)
+  if (synced) full = synced
 
   if (!hasAutoEcoleAccess(full)) {
     throw new ApiError(403, "Accès bloqué ou expiré. Contactez Autovia.")

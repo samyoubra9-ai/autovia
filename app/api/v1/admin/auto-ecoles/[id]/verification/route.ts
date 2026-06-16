@@ -9,7 +9,10 @@ import {
 import { siteAdminAutoEcoleInclude, toSiteAdminAutoEcoleDto } from "@/lib/api/site-admin-dto"
 import { prisma } from "@/lib/prisma"
 import { loadVerificationSnapshot } from "@/lib/verification/documents"
-import { verificationStatusLabel } from "@/lib/verification/constants"
+import {
+  isVerificationDocumentsEnabled,
+  verificationStatusLabel,
+} from "@/lib/verification/constants"
 import { createVerificationSignedUrl } from "@/lib/verification/storage"
 
 type Params = { params: Promise<{ id: string }> }
@@ -67,6 +70,10 @@ export async function PATCH(request: Request, { params }: Params) {
     const action = body.action
     if (!action || !["approve", "reject", "purge_documents"].includes(action)) {
       throw new ApiError(400, "Action invalide (approve, reject, purge_documents).")
+    }
+
+    if (!isVerificationDocumentsEnabled()) {
+      throw new ApiError(403, "La vérification de documents est temporairement désactivée.")
     }
 
     const result = await applyVerificationAdminAction(prisma, id, action, {

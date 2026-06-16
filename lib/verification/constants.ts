@@ -1,5 +1,10 @@
 import type { VerificationDocumentKind, VerificationStatus } from "@prisma/client"
 
+/** Réactiver avec VERIFICATION_DOCUMENTS_ENABLED=true (API Vercel). */
+export function isVerificationDocumentsEnabled(): boolean {
+  return process.env.VERIFICATION_DOCUMENTS_ENABLED === "true"
+}
+
 export const VERIFICATION_BUCKET = "auto-ecole-verification"
 export const VERIFICATION_MAX_BYTES = 10 * 1024 * 1024
 
@@ -52,7 +57,12 @@ export function verificationStatusLabel(status: VerificationStatus): string {
 }
 
 export function isVerificationApproved(status: VerificationStatus): boolean {
+  if (!isVerificationDocumentsEnabled()) return true
   return status === "APPROVED"
+}
+
+export function verificationUploadDisabledMessage(): string {
+  return "L'envoi de documents est temporairement désactivé. Réessayez dans quelques semaines."
 }
 
 export function documentKindLabel(kind: VerificationDocumentKind): string {

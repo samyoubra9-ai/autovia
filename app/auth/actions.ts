@@ -5,6 +5,10 @@ import { redirect } from "next/navigation"
 import { getBackdashUrl, getTrialEndsAt, slugifyAutoEcole } from "@/lib/auth-utils"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
+import {
+  initialSubscriptionStatusForRegistration,
+  initialVerificationStatusForRegistration,
+} from "@/lib/verification/bypass"
 
 export type AuthResult = { error?: string; success?: boolean }
 
@@ -90,8 +94,8 @@ export async function registerTenant(input: {
       telephone: input.telephone?.trim() || null,
       emailContact: user.email,
       trialEndsAt,
-      subscriptionStatus: "EXPIRED",
-      verificationStatus: "PENDING_DOCUMENTS",
+      subscriptionStatus: initialSubscriptionStatusForRegistration(),
+      verificationStatus: initialVerificationStatusForRegistration(),
       users: {
         create: {
           supabaseUserId: user.id,
