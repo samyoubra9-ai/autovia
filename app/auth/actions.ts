@@ -90,7 +90,8 @@ export async function registerTenant(input: {
       telephone: input.telephone?.trim() || null,
       emailContact: user.email,
       trialEndsAt,
-      subscriptionStatus: "TRIAL",
+      subscriptionStatus: "EXPIRED",
+      verificationStatus: "PENDING_DOCUMENTS",
       users: {
         create: {
           supabaseUserId: user.id,

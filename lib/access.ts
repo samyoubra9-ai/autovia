@@ -1,8 +1,17 @@
-import type { AutoEcole, SubscriptionStatus } from "@prisma/client"
+import type { AutoEcole, SubscriptionStatus, VerificationStatus } from "@prisma/client"
 
-type AccessInput = Pick<AutoEcole, "subscriptionStatus" | "trialEndsAt" | "paidUntil">
+import { isVerificationApproved } from "@/lib/verification/constants"
+
+type AccessInput = Pick<
+  AutoEcole,
+  "subscriptionStatus" | "trialEndsAt" | "paidUntil" | "verificationStatus"
+>
 
 export function hasAutoEcoleAccess(autoEcole: AccessInput, now: Date = new Date()): boolean {
+  if (!isVerificationApproved(autoEcole.verificationStatus)) {
+    return false
+  }
+
   switch (autoEcole.subscriptionStatus) {
     case "ACTIVE":
       if (autoEcole.paidUntil && autoEcole.paidUntil < now) return false
@@ -27,6 +36,10 @@ export function getAccessLabel(status: SubscriptionStatus): string {
 }
 
 export function getAccessDetail(autoEcole: AccessInput, now: Date = new Date()): string {
+  if (!isVerificationApproved(autoEcole.verificationStatus)) {
+    return verificationAccessDetail(autoEcole.verificationStatus)
+  }
+
   if (hasAutoEcoleAccess(autoEcole, now)) {
     if (autoEcole.subscriptionStatus === "ACTIVE" && autoEcole.paidUntil) {
       return `Accès jusqu'au ${autoEcole.paidUntil.toLocaleDateString("fr-FR")}`
@@ -51,4 +64,17 @@ export function getAccessDetail(autoEcole: AccessInput, now: Date = new Date()):
     return "Abonnement expiré"
   }
   return "Accès bloqué"
+}
+
+function verificationAccessDetail(status: VerificationStatus): string {
+  switch (status) {
+    case "PENDING_DOCUMENTS":
+      return "En attente de vos documents (agrément + carte d'identité)"
+    case "PENDING_REVIEW":
+      return "Documents reçus — validation Autovia en cours"
+    case "REJECTED":
+      return "Dossier refusé — renvoyez vos documents"
+    default:
+      return "Vérification requise"
+  }
 }

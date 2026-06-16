@@ -7,7 +7,8 @@ import {
   getTrialDaysLeft,
 } from "@/lib/api/site-admin-access-update"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
-import type { SubscriptionPlan, SubscriptionStatus } from "@prisma/client"
+import { verificationStatusLabel } from "@/lib/verification/constants"
+import type { SubscriptionPlan, SubscriptionStatus, VerificationStatus } from "@prisma/client"
 
 export type SiteAdminQuotaDto = {
   maxEleves: number | null
@@ -50,6 +51,12 @@ export type SiteAdminAutoEcoleDto = {
   paidDaysLeft: number | null
   canResumeTrial: boolean
   canResumePaid: boolean
+  verificationStatus: VerificationStatus
+  verificationStatusLabel: string
+  verificationRejectionReason: string | null
+  verificationReviewedAt: string | null
+  verificationDocumentsPurgedAt: string | null
+  verificationDocumentCount: number
 }
 
 export type SiteAdminDashboardStats = {
@@ -59,6 +66,7 @@ export type SiteAdminDashboardStats = {
   trial: number
   expired: number
   cancelled: number
+  pendingVerification: number
   newLast7Days: number
   newLast30Days: number
 }
@@ -76,6 +84,10 @@ type AutoEcoleForAdminDto = {
   trialEndsAt: Date
   paidUntil: Date | null
   adminNotes: string | null
+  verificationStatus: VerificationStatus
+  verificationRejectionReason: string | null
+  verificationReviewedAt: Date | null
+  verificationDocumentsPurgedAt: Date | null
   createdAt: Date
   updatedAt: Date
   users: Array<{ prenom: string; nom: string; email: string }>
@@ -86,6 +98,7 @@ type AutoEcoleForAdminDto = {
     moniteurs: number
     vehicules: number
     listesExamen: number
+    verificationDocuments?: number
   }
 }
 
@@ -99,6 +112,7 @@ export const siteAdminAutoEcoleInclude = {
       moniteurs: true,
       vehicules: true,
       listesExamen: true,
+      verificationDocuments: true,
     },
   },
 } as const
@@ -112,6 +126,7 @@ export function toSiteAdminAutoEcoleDto(
     subscriptionStatus: ae.subscriptionStatus,
     trialEndsAt: ae.trialEndsAt,
     paidUntil: ae.paidUntil,
+    verificationStatus: ae.verificationStatus,
   }
   const trialLeft = getTrialDaysLeft(ae.trialEndsAt, now)
   const paidLeft = getPaidDaysLeft(ae.paidUntil, now)
@@ -171,6 +186,12 @@ export function toSiteAdminAutoEcoleDto(
     paidDaysLeft: paidLeft,
     canResumeTrial: canResumeTrial(ae, now),
     canResumePaid: canResumePaid(ae, now),
+    verificationStatus: ae.verificationStatus,
+    verificationStatusLabel: verificationStatusLabel(ae.verificationStatus),
+    verificationRejectionReason: ae.verificationRejectionReason,
+    verificationReviewedAt: ae.verificationReviewedAt?.toISOString() ?? null,
+    verificationDocumentsPurgedAt: ae.verificationDocumentsPurgedAt?.toISOString() ?? null,
+    verificationDocumentCount: ae._count?.verificationDocuments ?? 0,
   }
 }
 
@@ -190,6 +211,11 @@ export function buildSiteAdminStats(
     trial: rows.filter((r) => r.subscriptionStatus === "TRIAL").length,
     expired: rows.filter((r) => r.subscriptionStatus === "EXPIRED").length,
     cancelled: rows.filter((r) => r.subscriptionStatus === "CANCELLED").length,
+    pendingVerification: rows.filter(
+      (r) =>
+        r.verificationStatus === "PENDING_REVIEW" ||
+        r.verificationStatus === "PENDING_DOCUMENTS",
+    ).length,
     newLast7Days: rows.filter((r) => new Date(r.createdAt) >= day7).length,
     newLast30Days: rows.filter((r) => new Date(r.createdAt) >= day30).length,
   }

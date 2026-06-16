@@ -103,7 +103,8 @@ export async function registerAutoEcoleTenant(
         slug,
         emailContact: email,
         trialEndsAt,
-        subscriptionStatus: "TRIAL",
+        subscriptionStatus: "EXPIRED",
+        verificationStatus: "PENDING_DOCUMENTS",
         ...printSettingsToPrismaUpdate({
           ...printInput,
           ville,

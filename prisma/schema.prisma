@@ -23,6 +23,18 @@ enum SubscriptionPlan {
   ELITE
 }
 
+enum VerificationStatus {
+  PENDING_DOCUMENTS
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum VerificationDocumentKind {
+  AGREMENT
+  IDENTITE
+}
+
 enum BillingPeriod {
   ANNUAL
   MONTHLY
@@ -89,6 +101,10 @@ model AutoEcole {
   subscriptionStatus SubscriptionStatus @default(EXPIRED) @map("subscription_status")
   subscriptionPlan   SubscriptionPlan?    @map("subscription_plan")
   maxElevesOverride  Int?                 @map("max_eleves_override")
+  verificationStatus VerificationStatus   @default(APPROVED) @map("verification_status")
+  verificationRejectionReason String?       @map("verification_rejection_reason")
+  verificationReviewedAt      DateTime?     @map("verification_reviewed_at")
+  verificationDocumentsPurgedAt DateTime?   @map("verification_documents_purged_at")
   trialEndsAt        DateTime             @map("trial_ends_at")
   paidUntil          DateTime?          @map("paid_until")
   adminNotes         String?            @map("admin_notes")
@@ -107,8 +123,26 @@ model AutoEcole {
   categoriesPermis   CategoriePermisEcole[]
   adminAuditLogs             SiteAdminAuditLog[]
   subscriptionBillingRecords SubscriptionBillingRecord[]
+  verificationDocuments      AutoEcoleVerificationDocument[]
 
   @@map("auto_ecoles")
+}
+
+model AutoEcoleVerificationDocument {
+  id          String                   @id @default(cuid())
+  autoEcoleId String                   @map("auto_ecole_id")
+  kind        VerificationDocumentKind
+  storagePath String                   @map("storage_path")
+  fileName    String                   @map("file_name")
+  mimeType    String                   @map("mime_type")
+  sizeBytes   Int                      @map("size_bytes")
+  uploadedAt  DateTime                 @default(now()) @map("uploaded_at")
+
+  autoEcole AutoEcole @relation(fields: [autoEcoleId], references: [id], onDelete: Cascade)
+
+  @@unique([autoEcoleId, kind])
+  @@index([autoEcoleId])
+  @@map("auto_ecole_verification_documents")
 }
 
 model SubscriptionBillingRecord {

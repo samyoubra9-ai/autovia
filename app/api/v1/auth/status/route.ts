@@ -6,6 +6,8 @@ import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
 import { prisma } from "@/lib/prisma"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
+import { loadVerificationSnapshot } from "@/lib/verification/documents"
+import { verificationStatusLabel } from "@/lib/verification/constants"
 
 export async function OPTIONS(request: Request) {
   const origin = getAllowedOrigin(request.headers.get("origin"))
@@ -51,10 +53,12 @@ export async function GET(request: Request) {
 
     const ae = tenant.autoEcole
     const hasAccess = hasAutoEcoleAccess(ae)
-    const [quota, trialLimits] = await Promise.all([
+    const [quota, trialLimits, verificationRaw] = await Promise.all([
       loadEleveQuotaSnapshot(prisma, ae.id),
       loadTrialPlanSnapshot(prisma, ae.id, ae.subscriptionStatus),
+      loadVerificationSnapshot(prisma, ae.id),
     ])
+    const { autoEcoleNom: _n, ...verification } = verificationRaw
 
     return jsonWithCors(
       {
@@ -89,6 +93,10 @@ export async function GET(request: Request) {
           subscriptionPlan: quota.subscriptionPlan,
           subscriptionPlanLabel: subscriptionPlanLabel(quota.subscriptionPlan),
           trialLimits,
+          verification: {
+            ...verification,
+            statusLabel: verificationStatusLabel(verification.status),
+          },
         },
       },
       origin,

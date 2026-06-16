@@ -5,7 +5,7 @@ import { useMemo, useState, useTransition } from "react"
 import { updateAutoEcoleAccess } from "@/app/admin/actions"
 import { getAccessDetail, hasAutoEcoleAccess } from "@/lib/access"
 import { SUBSCRIPTION_PRICING, subscriptionPlanLabel } from "@/lib/subscription-plans"
-import type { BillingPeriod, SubscriptionPlan, SubscriptionStatus } from "@prisma/client"
+import type { BillingPeriod, SubscriptionPlan, SubscriptionStatus, VerificationStatus } from "@prisma/client"
 
 export type BillingRecordRow = {
   id: string
@@ -27,6 +27,7 @@ export type AutoEcoleRowData = {
   subscriptionPlan: SubscriptionPlan | null
   trialEndsAt: string
   paidUntil: string | null
+  verificationStatus?: VerificationStatus
   adminNotes: string | null
   owner: { prenom: string; nom: string; email: string } | null
   billingRecords: BillingRecordRow[]
@@ -72,6 +73,7 @@ export function AutoEcoleAccessRow({ row }: { row: AutoEcoleRowData }) {
     subscriptionStatus: row.subscriptionStatus,
     trialEndsAt: new Date(row.trialEndsAt),
     paidUntil: row.paidUntil ? new Date(row.paidUntil) : null,
+    verificationStatus: row.verificationStatus ?? "APPROVED",
   }
   const hasAccess = hasAutoEcoleAccess(autoEcole)
 

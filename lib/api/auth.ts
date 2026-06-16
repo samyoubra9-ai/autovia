@@ -77,7 +77,7 @@ export async function requireAuthUser(request: Request): Promise<AuthUser> {
   return { id: user.id, email: user.email }
 }
 
-export async function requireTenant(request: Request): Promise<TenantContext> {
+export async function requireTenantMembership(request: Request): Promise<TenantContext> {
   const authUser = await requireAuthUser(request)
 
   const tenant = await prisma.user.findUnique({
@@ -87,10 +87,6 @@ export async function requireTenant(request: Request): Promise<TenantContext> {
 
   if (!tenant) {
     throw new ApiError(403, "Compte auto-école introuvable.")
-  }
-
-  if (!hasAutoEcoleAccess(tenant.autoEcole)) {
-    throw new ApiError(403, "Accès bloqué ou expiré. Contactez Autovia.")
   }
 
   return {
@@ -111,6 +107,20 @@ export async function requireTenant(request: Request): Promise<TenantContext> {
       paidUntil: tenant.autoEcole.paidUntil,
     },
   }
+}
+
+export async function requireTenant(request: Request): Promise<TenantContext> {
+  const tenant = await requireTenantMembership(request)
+
+  const full = await prisma.autoEcole.findUniqueOrThrow({
+    where: { id: tenant.autoEcoleId },
+  })
+
+  if (!hasAutoEcoleAccess(full)) {
+    throw new ApiError(403, "Accès bloqué ou expiré. Contactez Autovia.")
+  }
+
+  return tenant
 }
 
 const ELEVE_IDENTIFIANT_RE = /^ELV-(\d{4})-(\d+)$/

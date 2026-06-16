@@ -91,7 +91,8 @@ export async function POST(request: Request) {
           telephone: body.telephone ? String(body.telephone).trim() || null : null,
           emailContact: email,
           trialEndsAt: getTrialEndsAt(),
-          subscriptionStatus: "EXPIRED",
+          subscriptionStatus: "TRIAL",
+          verificationStatus: "APPROVED",
           adminNotes: body.adminNotes ? String(body.adminNotes).trim() || null : null,
           users: {
             create: {

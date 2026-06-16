@@ -20,7 +20,9 @@ export function isTrialSubscription(status: SubscriptionStatus): boolean {
 }
 
 export function isTrialPrintBlocked(status: SubscriptionStatus): boolean {
-  return isTrialSubscription(status)
+  // Impression autorisée en essai gratuit (les autres limites TRIAL restent actives).
+  void status
+  return false
 }
 
 export function getTrialMaxEleves(): number {
