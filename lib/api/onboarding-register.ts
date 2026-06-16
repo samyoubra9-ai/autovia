@@ -24,6 +24,10 @@ export type OnboardingRegisterInput = {
   printSettings?: unknown
   listeSettings?: unknown
   categoriesPermis: OnboardingCategorieInput[]
+  termsAccepted?: {
+    version: string
+    acceptedAt: string
+  }
 }
 
 export function parseOnboardingRegisterInput(body: unknown): OnboardingRegisterInput {
@@ -52,7 +56,19 @@ export function parseOnboardingRegisterInput(body: unknown): OnboardingRegisterI
     printSettings: b.printSettings,
     listeSettings: b.listeSettings,
     categoriesPermis: parseOnboardingCategoriesInput(b.categoriesPermis),
+    termsAccepted: parseTermsAcceptedInput(b.termsAccepted),
   }
+}
+
+function parseTermsAcceptedInput(raw: unknown): OnboardingRegisterInput['termsAccepted'] {
+  if (!raw || typeof raw !== 'object') return undefined
+  const t = raw as Record<string, unknown>
+  const version = String(t.version ?? '').trim()
+  const acceptedAt = String(t.acceptedAt ?? '').trim()
+  if (!version || !acceptedAt) return undefined
+  const date = new Date(acceptedAt)
+  if (Number.isNaN(date.getTime())) return undefined
+  return { version, acceptedAt: date.toISOString() }
 }
 
 export async function registerAutoEcoleTenant(
@@ -115,6 +131,9 @@ export async function registerAutoEcoleTenant(
   const telephone = input.telephone ?? printInput.telephone ?? null
 
   const trialEndsAt = getTrialEndsAt()
+  const termsNote = input.termsAccepted
+    ? `[CGU ${input.termsAccepted.version} acceptées le ${new Date(input.termsAccepted.acceptedAt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })} — ${email}]`
+    : null
 
   const autoEcole = await prisma.$transaction(async (tx) => {
     const created = await tx.autoEcole.create({
@@ -125,6 +144,7 @@ export async function registerAutoEcoleTenant(
         trialEndsAt,
         subscriptionStatus: "EXPIRED",
         verificationStatus: "PENDING_DOCUMENTS",
+        adminNotes: termsNote,
         ...printSettingsToPrismaUpdate({
           ...printInput,
           ville,
