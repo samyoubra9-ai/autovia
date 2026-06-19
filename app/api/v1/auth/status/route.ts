@@ -68,7 +68,7 @@ export async function GET(request: Request) {
     const { autoEcoleNom: _n, ...verification } = verificationRaw
     const verificationForClient = isVerificationDocumentsEnabled()
       ? verification
-      : { ...verification, status: "APPROVED" as const, statusLabel: "Validé" }
+      : { ...verification, status: "APPROVED" as const }
 
     return jsonWithCors(
       {
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
           trialLimits,
           verification: {
             ...verificationForClient,
-            statusLabel: verificationForClient.statusLabel ?? verificationStatusLabel(verificationForClient.status),
+            statusLabel: verificationStatusLabel(verificationForClient.status),
           },
         },
       },
