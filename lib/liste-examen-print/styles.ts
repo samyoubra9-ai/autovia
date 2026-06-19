@@ -1,5 +1,6 @@
 import {
   LISTE_EXAMEN_PAGE_MARGIN_MM,
+  LISTE_EXAMEN_PAGE_MARGIN_TOP_MM,
   LISTE_EXAMEN_TABLE_ROW_MM,
   LISTE_EXAMEN_TABLE_BODY_FONT_PT,
   LISTE_EXAMEN_TABLE_CELL_FONT_PT,
@@ -9,12 +10,15 @@ import {
   LISTE_EXAMEN_TABLE_NOM_FONT_PT,
   LISTE_EXAMEN_TABLE_CELL_VAL_SHIFT_MM,
   LISTE_EXAMEN_TABLE_NOM_VAL_SHIFT_MM,
+  LISTE_EXAMEN_STAMP_BOX_WIDTH_CM,
+  LISTE_EXAMEN_STAMP_BOX_HEIGHT_CM,
   listeExamenPrintTableCssVars,
 } from "./constants"
 
 /** CSS embarqué pour PDF / HTML officiel — typo fixe, pas de zoom. */
 export function listeExamenPrintStyles(): string {
   const margin = LISTE_EXAMEN_PAGE_MARGIN_MM
+  const marginTop = LISTE_EXAMEN_PAGE_MARGIN_TOP_MM
   const rowH = `${LISTE_EXAMEN_TABLE_ROW_MM}mm`
   const tableFont = `${LISTE_EXAMEN_TABLE_BODY_FONT_PT}pt`
   const cellFont = `${LISTE_EXAMEN_TABLE_CELL_FONT_PT}pt`
@@ -24,11 +28,13 @@ export function listeExamenPrintStyles(): string {
   const cellValShift = `${LISTE_EXAMEN_TABLE_CELL_VAL_SHIFT_MM}mm`
   const nomFont = `${LISTE_EXAMEN_TABLE_NOM_FONT_PT}pt`
   const nomValShift = `${LISTE_EXAMEN_TABLE_NOM_VAL_SHIFT_MM}mm`
+  const stampW = `${LISTE_EXAMEN_STAMP_BOX_WIDTH_CM}cm`
+  const stampH = `${LISTE_EXAMEN_STAMP_BOX_HEIGHT_CM}cm`
   const tableCssVars = Object.entries(listeExamenPrintTableCssVars())
     .map(([k, v]) => `${k}: ${v};`)
     .join(" ")
   return `
-@page { size: A4 portrait; margin: ${margin}mm; }
+@page { size: A4 portrait; margin: ${marginTop}mm ${margin}mm ${margin}mm ${margin}mm; }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
@@ -42,7 +48,7 @@ html, body {
   width: 100%;
   max-width: 210mm;
   margin: 0 auto;
-  padding: 2mm 4mm;
+  padding: 0.5mm 4mm 2mm 4mm;
   page-break-inside: auto;
   break-inside: auto;
   overflow: visible;
@@ -75,30 +81,36 @@ html, body {
 }
 .top-header {
   text-align: center; font-size: 13pt; font-weight: 700;
-  line-height: 1.35; margin-bottom: 5px;
+  line-height: 1.22; margin-bottom: 2px;
 }
 .header-section {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 3px; margin-bottom: 4px;
 }
 .header-right {
   border: 3px solid #000; border-radius: 8px; padding: 3px 5px;
   text-align: center; font-size: 10pt; font-weight: 700; line-height: 1.3;
-  width: 6.4cm; height: 3.3cm; min-width: 6.4cm; min-height: 3.3cm;
+  width: ${stampW}; height: ${stampH}; min-width: ${stampW}; min-height: ${stampH};
   box-sizing: border-box; flex-shrink: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .header-left {
   border: 3px solid #000; border-radius: 8px; padding: 3px 5px;
   text-align: center; font-size: 10pt; font-weight: 400; line-height: 1.3;
-  width: 6.4cm; height: 3.3cm; min-width: 6.4cm; min-height: 3.3cm;
+  width: ${stampW}; height: ${stampH}; min-width: ${stampW}; min-height: ${stampH};
   box-sizing: border-box; flex-shrink: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .ecole-nom-ar { font-size: 12pt; font-weight: 700; margin-top: 4px; }
-.main-title-container { text-align: center; margin: 7px 0; }
+.main-title-container {
+  flex: 1 1 auto; min-width: 0; margin: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  text-align: center; padding: 0 3px;
+}
 .main-title {
-  border: 3px solid #000; border-radius: 6px; padding: 5px 16px;
-  font-size: 14pt; font-weight: 700; display: inline-block;
+  border: 3px solid #000; border-radius: 6px; padding: 3px 10px;
+  font-size: 12pt; font-weight: 700; line-height: 1.22;
+  display: inline-block; max-width: 100%;
 }
 .doc-reference { margin: 4px 0 0; font-size: 11pt; font-weight: 700; text-align: center; }
 .first-page-hint {
@@ -106,7 +118,7 @@ html, body {
   font-size: 9.5pt; font-weight: 700; text-align: center; line-height: 1.35;
 }
 .exam-details-box {
-  border: 3px solid #000; border-radius: 8px; margin-bottom: 6px; font-size: 11pt;
+  border: 3px solid #000; border-radius: 8px; margin-bottom: 4px; font-size: 11pt;
   font-weight: 700; overflow: hidden;
 }
 .exam-details-row {
@@ -225,7 +237,7 @@ html, body {
 .stats-table td:last-child { border-left-width: 3px; }
 .inspector-stamp-box {
   border: 3px solid #000; border-radius: 12px;
-  width: 6.4cm; height: 3.3cm; min-width: 6.4cm; min-height: 3.3cm;
+  width: ${stampW}; height: ${stampH}; min-width: ${stampW}; min-height: ${stampH};
   box-sizing: border-box; padding: 8px; font-weight: 400; font-size: 11.5pt;
   text-align: center; flex-shrink: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;

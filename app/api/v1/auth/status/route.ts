@@ -6,6 +6,7 @@ import { getAllowedOrigin, jsonWithCors } from "@/lib/api/cors"
 import { handleApiError } from "@/lib/api/errors"
 import { prisma } from "@/lib/prisma"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
+import { hasOnlineInscriptionFeature } from "@/lib/plan-features"
 import { loadVerificationSnapshot } from "@/lib/verification/documents"
 import {
   isVerificationDocumentsEnabled,
@@ -102,6 +103,10 @@ export async function GET(request: Request) {
           formulaQuota: quota.formulaQuota,
           subscriptionPlan: quota.subscriptionPlan,
           subscriptionPlanLabel: subscriptionPlanLabel(quota.subscriptionPlan),
+          onlineInscription: hasOnlineInscriptionFeature(
+            ae.subscriptionStatus,
+            ae.subscriptionPlan,
+          ),
           trialLimits,
           verification: {
             ...verificationForClient,

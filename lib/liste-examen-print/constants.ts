@@ -5,6 +5,12 @@ import { deriveListeExamenPrintCaps } from "./physical-layout"
  * Garder synchronisé avec backdash/.../liste-examen-print-constants.ts
  */
 export const LISTE_EXAMEN_PAGE_MARGIN_MM = 4
+/** Marge haute @page (mm) — plus serrée pour gagner des lignes tableau. */
+export const LISTE_EXAMEN_PAGE_MARGIN_TOP_MM = 2
+
+/** Cadres cachet / délégation — léger agrandissement (6,4×3,3 → 6,7×3,6). */
+export const LISTE_EXAMEN_STAMP_BOX_WIDTH_CM = 6.7
+export const LISTE_EXAMEN_STAMP_BOX_HEIGHT_CM = 3.6
 
 export {
   LISTE_EXAMEN_TABLE_ROW_MM,

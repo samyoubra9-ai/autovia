@@ -151,6 +151,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
 
   const primaryNavItems: NavItem[] = [
     { href: "/apprendre", label: m.nav.learn },
+    { href: "/inscription", label: m.nav.candidateDossier },
     { href: "/veille-reglementaire", label: m.nav.regulationWatch },
     { href: "/#pricing", label: m.nav.pricing },
   ]
@@ -169,6 +170,7 @@ export function LandingNav({ links }: { links: LandingLinks }) {
       title: m.nav.groupDiscover,
       items: [
         { href: "/apprendre", label: m.nav.learn },
+        { href: "/inscription", label: m.nav.candidateDossier },
         { href: "/veille-reglementaire", label: m.nav.regulationWatch },
       ],
     },

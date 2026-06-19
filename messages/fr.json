@@ -14,6 +14,7 @@
     "logoAria": "Autovia — accueil",
     "learn": "Apprendre",
     "regulationWatch": "Actualités route",
+    "candidateDossier": "Inscription",
     "products": "Produits",
     "features": "Fonctionnalités",
     "pricing": "Tarifs",
@@ -82,6 +83,176 @@
         "description": "Création de compte, paramètres d'impression, catégories de permis et gestion de l'accès à la plateforme."
       }
     ]
+  },
+  "candidatDossier": {
+    "eyebrow": "Candidats",
+    "title": "Dossier à fournir à l'auto-école",
+    "subtitle": "Constituez votre dossier d'inscription au permis de conduire avec les pièces ci-dessous. Votre auto-école pourra vous préciser les modalités locales.",
+    "items": [
+      {
+        "id": "birth",
+        "text": "Un acte de naissance"
+      },
+      {
+        "id": "blood",
+        "text": "Photocopie de la carte de groupage sanguin (ou photocopie du permis de conduire pour la catégorie A)"
+      },
+      {
+        "id": "cin",
+        "text": "Photocopie de la carte d'identité nationale"
+      },
+      {
+        "id": "photos",
+        "text": "5 photos d'identité"
+      },
+      {
+        "id": "medical",
+        "text": "Un certificat médical avec photo attestant de la capacité de conduire un véhicule automobile"
+      },
+      {
+        "id": "residence",
+        "text": "Une fiche de résidence"
+      }
+    ],
+    "printables": {
+      "title": "Documents à imprimer",
+      "subtitle": "Téléchargez ces deux formulaires, imprimez-les et signez-les pour compléter votre dossier papier.",
+      "downloadLabel": "Télécharger le PDF",
+      "fileFormat": "PDF",
+      "hint": "Pensez aussi à remplir la pré-inscription en ligne (étape 2) en parallèle.",
+      "items": [
+        {
+          "id": "ta3ahoud",
+          "title": "Formulaire تعهد",
+          "description": "Engagement à imprimer et signer pour votre dossier d'inscription.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/ao4abxosgd5fpe3ezlx5p/ta3ahoud.pdf?rlkey=ygzpdxo4dqov0il74vsghbqbd&dl=1"
+        },
+        {
+          "id": "3aqd",
+          "title": "Formulaire عقد",
+          "description": "Contrat à imprimer et remettre à l'auto-école avec les autres pièces.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/vllek7x6fo8lve1yfyyci/3aqd.pdf?rlkey=hry7xarl42abe52l17z0uf0ta&dl=1"
+        }
+      ]
+    },
+    "pieceCount": "{count} pièces justificatives à prévoir",
+    "scrollToForm": "Passer au formulaire en ligne"
+  },
+  "inscription": {
+    "meta": {
+      "title": "Inscription en ligne — Candidat permis",
+      "description": "Inscrivez-vous en ligne auprès d'une auto-école partenaire Autovia. Préparez votre dossier et remplissez le formulaire."
+    },
+    "hero": {
+      "eyebrow": "Candidats",
+      "title": "Inscription en ligne",
+      "subtitle": "Préparez votre dossier, complétez la pré-inscription puis présentez-vous à l'auto-école pour la validation finale."
+    },
+    "journey": {
+      "ariaLabel": "Étapes d'inscription",
+      "step1Title": "Préparer le dossier",
+      "step1Desc": "Pièces justificatives + formulaires PDF à imprimer",
+      "step2Title": "Pré-inscription en ligne",
+      "step2Desc": "Même formulaire que l'auto-école, avec photo",
+      "step3Title": "Validation en agence",
+      "step3Desc": "Présentez le dossier papier sur place"
+    },
+    "dossierPanelTitle": "Dossier papier à constituer",
+    "dossierPanelSubtitle": "Rassemblez ces documents avant votre visite à l'auto-école.",
+    "formPanelTitle": "Pré-inscription en ligne",
+    "formPanelSubtitle": "Remplissez toutes les informations comme au back-office — votre auto-école validera après vérification des papiers.",
+    "agencyNoteTitle": "Ensuite, à l'auto-école",
+    "agencyNoteText": "Une fois votre demande envoyée, rendez-vous en agence avec le dossier papier complet. L'auto-école vérifie vos pièces et active votre inscription (code de suivi candidat).",
+    "dossierSectionTitle": "Votre dossier papier",
+    "formSectionTitle": "Formulaire de pré-inscription",
+    "formSectionSubtitle": "Même formulaire que celui de l'auto-école (photo, identité, permis, état civil). Votre demande sera validée après vérification de vos documents sur place.",
+    "steps": {
+      "school": "Auto-école",
+      "identity": "Identité",
+      "permis": "Permis",
+      "civil": "État civil"
+    },
+    "fields": {
+      "autoEcole": "Auto-école",
+      "autoEcolePlaceholder": "Sélectionnez une auto-école",
+      "categorie": "Catégorie de permis",
+      "categoriePlaceholder": "Sélectionnez une catégorie",
+      "photo": "Photo d'identité",
+      "photoHint": "JPEG, PNG ou WebP — 5 Mo max. Même photo que sur votre carte candidat.",
+      "photoChange": "Changer la photo",
+      "photoRemove": "Supprimer",
+      "telephone": "Téléphone",
+      "prenom": "Prénom",
+      "nom": "Nom",
+      "nin": "N.I.N (carte d'identité nationale)",
+      "ninDigits": "chiffres",
+      "dateNaissance": "Date de naissance",
+      "age": "Âge",
+      "ageHint": "Calculé automatiquement",
+      "lieuNaissance": "Lieu de naissance",
+      "domicile": "Adresse de domicile",
+      "sexe": "Sexe",
+      "groupeSanguin": "Groupe sanguin",
+      "numeroDossier": "N° de dossier (optionnel)",
+      "nomJeuneFille": "Nom de jeune fille (optionnel)",
+      "permisDejaObtenu": "Je possède déjà un permis",
+      "permisDejaObtenuHint": "Cochez si vous passez une catégorie supplémentaire (ex. déjà B, passez le A).",
+      "numeroPermisObtenu": "N° de permis obtenu",
+      "datePermisObtenu": "Date d'obtention du permis",
+      "permisDelivrePar": "Délivré par (mairie / adresse)",
+      "categoriesPermisObtenues": "Catégories déjà obtenues",
+      "mairie": "Mairie d'enregistrement",
+      "nationalite": "Nationalité",
+      "prenomPere": "Prénom du père (optionnel)",
+      "nomMere": "Nom de la mère (optionnel)",
+      "prenomMere": "Prénom de la mère (optionnel)",
+      "situationFamiliale": "Situation familiale",
+      "situationProfessionnelle": "Situation professionnelle",
+      "situationProfessionnelleAutre": "Précisez votre situation",
+      "nomAr": "Nom en arabe (optionnel)",
+      "prenomAr": "Prénom en arabe (optionnel)"
+    },
+    "sexe": {
+      "masculin": "Masculin",
+      "feminin": "Féminin"
+    },
+    "situationFamiliale": {
+      "celibataire": "Célibataire",
+      "marie": "Marié(e)",
+      "divorce": "Divorcé(e)",
+      "veuf": "Veuf(ve)"
+    },
+    "situationProfessionnelle": {
+      "etudiant": "Étudiant",
+      "employe": "Employé",
+      "sans_emploi": "Sans emploi",
+      "fonctionnaire": "Fonctionnaire",
+      "commercant": "Commerçant",
+      "autre": "Autre"
+    },
+    "actions": {
+      "back": "Retour",
+      "next": "Continuer",
+      "submit": "Envoyer ma demande",
+      "submitting": "Envoi en cours…"
+    },
+    "loadingSchools": "Chargement des auto-écoles…",
+    "noSchools": "Aucune auto-école disponible pour l'inscription en ligne pour le moment.",
+    "schoolLocationSep": " · ",
+    "successTitle": "Demande enregistrée",
+    "successText": "Votre pré-inscription auprès de {autoEcole} est bien enregistrée. Présentez-vous à l'auto-école avec votre dossier papier pour finaliser l'inscription.",
+    "successHint": "Vous recevrez votre code de suivi candidat une fois l'auto-école aura validé votre dossier.",
+    "successNextTitle": "Prochaines étapes",
+    "successNextSteps": [
+      "Constituez votre dossier papier (6 pièces listées à gauche)",
+      "Rendez-vous à l'auto-école avec vos documents originaux ou copies",
+      "L'auto-école valide votre inscription et vous remet le code de suivi"
+    ],
+    "errorGeneric": "Une erreur est survenue. Vérifiez les champs ou réessayez plus tard.",
+    "errors": {
+      "photoRequired": "La photo d'identité est requise.",
+      "photoUpload": "La demande est enregistrée mais la photo n'a pas pu être envoyée. Contactez l'auto-école."
+    }
   },
   "features": {
     "eyebrow": "Fonctionnalités",
@@ -178,7 +349,8 @@
         "Plannings & moniteurs",
         "Paiements & reçus",
         "Listes d'examen & impression",
-        "Portail candidat (QR)"
+        "Portail candidat (QR)",
+        "Inscription en ligne (pré-inscriptions)"
       ],
       "cta": "Commencer"
     },
@@ -191,6 +363,7 @@
         "Moniteurs & véhicules illimités",
         "Listes d'examen & impressions",
         "Portail candidat (QR)",
+        "Inscription en ligne (pré-inscriptions)",
         "Support prioritaire"
       ],
       "cta": "Choisir Pro"
@@ -291,6 +464,7 @@
     "contactHint": "Une question ou une démo ?",
     "linkLearn": "Apprendre",
     "linkRegulationWatch": "Actualités route",
+    "linkCandidateDossier": "Inscription",
     "linkFeatures": "Fonctionnalités",
     "linkPricing": "Tarifs",
     "linkFaq": "FAQ",

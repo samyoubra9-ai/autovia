@@ -25,6 +25,7 @@ import type {
   Sexe,
   SituationFamiliale,
   StatutFormation,
+  StatutInscription,
 } from "@prisma/client"
 
 export type EleveWithCategorie = Eleve & {
@@ -91,7 +92,7 @@ export type PaiementDto = {
   createdAt: string
 }
 
-const GROUPE_TO_CLIENT: Record<GroupeSanguin, string> = {
+export const GROUPE_TO_CLIENT: Record<GroupeSanguin, string> = {
   A_POS: "A+",
   A_NEG: "A-",
   B_POS: "B+",
@@ -361,9 +362,12 @@ export function toPrismaEleveData(
   input: EleveInput,
   autoEcoleId: string,
   identifiant: string,
-  codeSuivi: string,
-  prixPermis: number,
-  relations?: EleveRelationsIds,
+  opts: {
+    codeSuivi: string | null
+    prixPermis: number
+    statutInscription?: StatutInscription
+    relations?: EleveRelationsIds
+  },
 ): Prisma.EleveCreateInput {
   const groupe = GROUPE_FROM_CLIENT[input.groupeSanguin]
   return {
@@ -378,6 +382,7 @@ export function toPrismaEleveData(
     sexe: input.sexe,
     groupeSanguin: groupe,
     statutFormation: input.statutFormation,
+    statutInscription: opts.statutInscription ?? "VALIDE",
     ...etapesValideesForStatut(input.statutFormation),
     categoriePermis: { connect: { id: input.categoriePermisId } },
     mairieEnregistrement: input.mairieEnregistrement,
@@ -388,19 +393,19 @@ export function toPrismaEleveData(
     nomJeuneFille: input.sexe === "feminin" ? input.nomJeuneFille ?? null : null,
     situationFamiliale: input.situationFamiliale,
     situationProfessionnelle: input.situationProfessionnelle,
-    prixPermis,
+    prixPermis: opts.prixPermis,
     numeroDossier: input.numeroDossier ?? null,
     nomAr: input.nomAr ?? null,
     prenomAr: input.prenomAr ?? null,
-    codeSuivi,
+    codeSuivi: opts.codeSuivi,
     ...(input.createdAt ? { createdAt: new Date(input.createdAt) } : {}),
     autoEcole: { connect: { id: autoEcoleId } },
     ...permisObtenuDataFromInput(input),
-    ...(relations?.moniteurId
-      ? { moniteur: { connect: { id: relations.moniteurId } } }
+    ...(opts.relations?.moniteurId
+      ? { moniteur: { connect: { id: opts.relations.moniteurId } } }
       : {}),
-    ...(relations?.vehiculeId
-      ? { vehicule: { connect: { id: relations.vehiculeId } } }
+    ...(opts.relations?.vehiculeId
+      ? { vehicule: { connect: { id: opts.relations.vehiculeId } } }
       : {}),
   }
 }

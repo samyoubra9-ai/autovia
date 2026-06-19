@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   try {
     const tenant = await requireTenant(request)
     const eleves = await prisma.eleve.findMany({
-      where: { autoEcoleId: tenant.autoEcoleId },
+      where: { autoEcoleId: tenant.autoEcoleId, statutInscription: "VALIDE" },
       orderBy: { createdAt: "desc" },
       include: eleveInclude,
     })
@@ -102,14 +102,12 @@ export async function POST(request: Request) {
     const identifiant = await generateEleveIdentifiant(tenant.autoEcoleId)
     const codeSuivi = await generateUniqueCodeSuivi()
     const eleve = await prisma.eleve.create({
-      data: toPrismaEleveData(
-        input,
-        tenant.autoEcoleId,
-        identifiant,
+      data: toPrismaEleveData(input, tenant.autoEcoleId, identifiant, {
         codeSuivi,
         prixPermis,
+        statutInscription: "VALIDE",
         relations,
-      ),
+      }),
       include: eleveInclude,
     })
 

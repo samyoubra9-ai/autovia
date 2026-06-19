@@ -45,7 +45,7 @@ export async function assertSetupCanCreateListeExamen(
   autoEcoleId: string,
 ): Promise<void> {
   const [eleveCount, monCount, ae] = await Promise.all([
-    prisma.eleve.count({ where: { autoEcoleId } }),
+    prisma.eleve.count({ where: { autoEcoleId, statutInscription: "VALIDE" } }),
     prisma.moniteur.count({ where: { autoEcoleId, actif: true } }),
     prisma.autoEcole.findUnique({
       where: { id: autoEcoleId },

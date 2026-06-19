@@ -218,6 +218,13 @@ export function resolveDisplayStatut(
   return statut
 }
 
+/** Séance terminée (horaire dépassé ou statut final) — hors annulée. */
+export function seanceHasPassed(statut: SeanceStatut, dateHeure: Date): boolean {
+  if (statut === "annule") return false
+  if (statut === "passe" || statut === "absent") return true
+  return dateHeure.getTime() < Date.now()
+}
+
 export type SeanceWithRelations = Prisma.SeanceExamenGetPayload<{
   include: {
     eleve: {

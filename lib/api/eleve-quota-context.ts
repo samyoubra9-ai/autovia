@@ -18,7 +18,9 @@ export async function loadEleveQuotaInput(
         maxElevesOverride: true,
       },
     }),
-    db.eleve.count({ where: { autoEcoleId } }),
+    db.eleve.count({
+      where: { autoEcoleId, statutInscription: "VALIDE" },
+    }),
     db.categoriePermisEcole.findMany({
       where: { autoEcoleId, actif: true },
       select: { code: true },

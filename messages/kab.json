@@ -14,6 +14,7 @@
     "logoAria": "",
     "learn": "",
     "regulationWatch": "",
+    "candidateDossier": "",
     "products": "",
     "features": "",
     "pricing": "",
@@ -82,6 +83,131 @@
         "description": ""
       }
     ]
+  },
+  "candidatDossier": {
+    "eyebrow": "",
+    "title": "",
+    "subtitle": "",
+    "items": [
+      { "id": "birth", "text": "" },
+      { "id": "blood", "text": "" },
+      { "id": "cin", "text": "" },
+      { "id": "photos", "text": "" },
+      { "id": "medical", "text": "" },
+      { "id": "residence", "text": "" }
+    ],
+    "printables": {
+      "title": "",
+      "subtitle": "",
+      "downloadLabel": "",
+      "fileFormat": "",
+      "hint": "",
+      "items": [
+        {
+          "id": "ta3ahoud",
+          "title": "",
+          "description": "",
+          "downloadUrl": ""
+        },
+        {
+          "id": "3aqd",
+          "title": "",
+          "description": "",
+          "downloadUrl": ""
+        }
+      ]
+    },
+    "pieceCount": "",
+    "scrollToForm": ""
+  },
+  "inscription": {
+    "meta": { "title": "", "description": "" },
+    "hero": { "eyebrow": "", "title": "", "subtitle": "" },
+    "journey": {
+      "ariaLabel": "",
+      "step1Title": "",
+      "step1Desc": "",
+      "step2Title": "",
+      "step2Desc": "",
+      "step3Title": "",
+      "step3Desc": ""
+    },
+    "dossierPanelTitle": "",
+    "dossierPanelSubtitle": "",
+    "formPanelTitle": "",
+    "formPanelSubtitle": "",
+    "agencyNoteTitle": "",
+    "agencyNoteText": "",
+    "dossierSectionTitle": "",
+    "formSectionTitle": "",
+    "formSectionSubtitle": "",
+    "steps": { "school": "", "identity": "", "permis": "", "civil": "" },
+    "fields": {
+      "autoEcole": "",
+      "autoEcolePlaceholder": "",
+      "categorie": "",
+      "categoriePlaceholder": "",
+      "photo": "",
+      "photoHint": "",
+      "photoChange": "",
+      "photoRemove": "",
+      "telephone": "",
+      "prenom": "",
+      "nom": "",
+      "nin": "",
+      "ninDigits": "",
+      "dateNaissance": "",
+      "age": "",
+      "ageHint": "",
+      "lieuNaissance": "",
+      "domicile": "",
+      "sexe": "",
+      "groupeSanguin": "",
+      "numeroDossier": "",
+      "nomJeuneFille": "",
+      "permisDejaObtenu": "",
+      "permisDejaObtenuHint": "",
+      "numeroPermisObtenu": "",
+      "datePermisObtenu": "",
+      "permisDelivrePar": "",
+      "categoriesPermisObtenues": "",
+      "mairie": "",
+      "nationalite": "",
+      "prenomPere": "",
+      "nomMere": "",
+      "prenomMere": "",
+      "situationFamiliale": "",
+      "situationProfessionnelle": "",
+      "situationProfessionnelleAutre": "",
+      "nomAr": "",
+      "prenomAr": ""
+    },
+    "sexe": { "masculin": "", "feminin": "" },
+    "situationFamiliale": {
+      "celibataire": "",
+      "marie": "",
+      "divorce": "",
+      "veuf": ""
+    },
+    "situationProfessionnelle": {
+      "etudiant": "",
+      "employe": "",
+      "sans_emploi": "",
+      "fonctionnaire": "",
+      "commercant": "",
+      "autre": ""
+    },
+    "actions": { "back": "", "next": "", "submit": "", "submitting": "" },
+    "loadingSchools": "",
+    "noSchools": "",
+    "schoolLocationSep": "",
+    "successTitle": "",
+    "successText": "",
+    "successHint": "",
+    "successNextTitle": "",
+    "successNextSteps": ["", "", ""],
+    "errorGeneric": "",
+    "errors": { "photoRequired": "", "photoUpload": "" }
   },
   "features": {
     "eyebrow": "",
@@ -177,6 +303,7 @@
         "",
         "",
         "",
+        "",
         ""
       ],
       "cta": ""
@@ -185,6 +312,7 @@
       "tag": "",
       "title": "",
       "features": [
+        "",
         "",
         "",
         "",
@@ -290,6 +418,7 @@
     "contactHint": "",
     "linkLearn": "",
     "linkRegulationWatch": "",
+    "linkCandidateDossier": "",
     "linkFeatures": "",
     "linkPricing": "",
     "linkFaq": "",

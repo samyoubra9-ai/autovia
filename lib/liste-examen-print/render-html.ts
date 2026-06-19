@@ -169,10 +169,10 @@ export function renderListeExamenPrintHtml(
         ? `<div class="top-header">الجمهورية الجزائرية الديمقراطية الشعبية<br/>وزارة الداخلية والجماعات المحلية والنقل</div>
         <div class="header-section">
           <div class="header-right">المندوبية الوطنية للأمن في الطرق<br/>المندوبية الولائية للأمن في الطرق<br/>ولاية : ${escapeHtml(liste.wilaya)}</div>
+          <div class="main-title-container">
+            <div class="main-title">قائمة المرشحين لإمتحان رخصة السياقة</div>
+          </div>
           <div class="header-left">ختم مدرسة تعليم السياقة</div>
-        </div>
-        <div class="main-title-container">
-          <div class="main-title">قائمة المرشحين لإمتحان رخصة السياقة</div>
         </div>
         `
         : ""

@@ -19,10 +19,12 @@ export const LISTE_EXAMEN_TABLE_CELL_VAL_SHIFT_MM = -0.14
 
 const TABLE_ROW_MM = LISTE_EXAMEN_TABLE_ROW_MM
 const TABLE_HEAD_MM = 9
-const SHEET_PADDING_MM = 5
-const FIRST_PAGE_HEADER_MM = 96
-const MIDDLE_PAGE_TOP_MM = 8
-const FOOTER_BLOCK_MM = 56
+const SHEET_PADDING_MM = 3
+/** +3 mm vs cadres 3,3 cm → 3,6 cm (en-tête). */
+const FIRST_PAGE_HEADER_MM = 91
+const MIDDLE_PAGE_TOP_MM = 5
+/** +3 mm vs cadre inspecteur 3,3 cm → 3,6 cm. */
+const FOOTER_BLOCK_MM = 59
 
 /** B (15) + A/A1 (10) barème officiel. */
 export const LISTE_EXAMEN_STANDARD_BA_ROWS = 25

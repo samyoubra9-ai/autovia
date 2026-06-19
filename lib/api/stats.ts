@@ -8,7 +8,7 @@ export async function getDashboardStats(autoEcoleId: string) {
 
   const [eleves, paiements, seances, vehicules] = await Promise.all([
     prisma.eleve.findMany({
-      where: { autoEcoleId },
+      where: { autoEcoleId, statutInscription: "VALIDE" },
       select: {
         id: true,
         prixPermis: true,

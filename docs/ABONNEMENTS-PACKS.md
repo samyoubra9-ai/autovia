@@ -17,6 +17,8 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Cartes QR candidat | Oui (volume limité possible) |
 | App candidat PWA | Oui |
 
+**Inscription en ligne** (formulaire vitrine + validation backdash) : **Essentiel, Pro et Élite** uniquement — pas en essai gratuit.
+
 ---
 
 ## Pack 1 — Essentiel
@@ -37,6 +39,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Impressions bulk cartes A4 | Non (ou limité) |
 | Paramètres établissement (nom FR/AR, wilaya…) | Oui |
 | App candidat (QR) | Oui |
+| Inscription en ligne (pré-inscriptions) | Oui |
 | Notifications push candidat | Non |
 | Support | E-mail standard |
 
@@ -69,6 +72,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Impressions bulk cartes A4 | Oui |
 | Paramètres établissement | Oui — complet |
 | App candidat (QR) | Oui |
+| Inscription en ligne (pré-inscriptions) | Oui |
 | Notifications push candidat | Oui |
 | Support | Prioritaire |
 
@@ -99,6 +103,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Impressions bulk cartes A4 | Oui |
 | Paramètres établissement | Oui — complet |
 | App candidat (QR) | Oui |
+| Inscription en ligne (pré-inscriptions) | Oui |
 | Notifications push candidat | Oui |
 | Export / sauvegarde données | Oui (à prévoir) |
 | Stats avancées | Oui (à prévoir) |
@@ -123,6 +128,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Utilisateurs | 1 | 1 | 3 | ∞ |
 | Listes examen | test | Oui | Illimité | Illimité |
 | Cartes QR / bulk | limité | 50/mois | Illimité | Illimité |
+| Inscription en ligne | Non | Oui | Oui | Oui |
 | Push candidat | — | Non | Oui | Oui |
 | Prix / mois (indicatif) | 0 | 4–6 k DZD | 8–12 k DZD | 15–25 k DZD |
 
@@ -139,6 +145,7 @@ Document de référence pour la commercialisation et l'implémentation des limit
 | Nombre moniteurs | 2 | 3 | ∞ | ∞ |
 | `estPrincipal` + pivot catégories | Non | 1 cat. | Oui | Oui |
 | Nombre véhicules | — | 3 | ∞ | ∞ |
+| `hasOnlineInscriptionFeature` | Non | Oui | Oui | Oui |
 
 Champ suggéré en base : `auto_ecoles.plan` → `ESSENTIEL` | `PRO` | `ELITE` (en plus de `subscription_status`).
 

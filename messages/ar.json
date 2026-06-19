@@ -12,9 +12,10 @@
   "nav": {
     "ariaMain": "",
     "logoAria": "",
-    "learn": "",
-    "regulationWatch": "",
-    "products": "",
+    "learn": "التعلّم",
+    "regulationWatch": "أخبار الطريق",
+    "candidateDossier": "التسجيل",
+    "products": "المنتجات",
     "features": "",
     "pricing": "",
     "faq": "",
@@ -82,6 +83,176 @@
         "description": ""
       }
     ]
+  },
+  "candidatDossier": {
+    "eyebrow": "المترشحون",
+    "title": "الوثائق المطلوبة لمدرسة تعليم السياقة",
+    "subtitle": "جهّز هذه الوثائق لتكوين ملف التسجيل في رخصة السياقة. يمكن لمدرستكم توضيح التفاصيل المحلية.",
+    "items": [
+      {
+        "id": "birth",
+        "text": "شهادة الميلاد"
+      },
+      {
+        "id": "blood",
+        "text": "نسخة من بطاقة فصيلة الدم (أو نسخة من رخصة السياقة للصنف أ)"
+      },
+      {
+        "id": "cin",
+        "text": "نسخة من بطاقة التعريف الوطنية"
+      },
+      {
+        "id": "photos",
+        "text": "5 صور شمسية"
+      },
+      {
+        "id": "medical",
+        "text": "شهادة طبية مصورة تثبت القدرة على قيادة مركبة"
+      },
+      {
+        "id": "residence",
+        "text": "ورقة إقامة"
+      }
+    ],
+    "printables": {
+      "title": "وثائق للطباعة",
+      "subtitle": "حمّل هذين النموذجين، اطبعهما ووقّعهما لإكمال ملفك الورقي.",
+      "downloadLabel": "تحميل PDF",
+      "fileFormat": "PDF",
+      "hint": "أكمل أيضاً التسجيل المسبق عبر الإنترنت (الخطوة 2) بالتوازي.",
+      "items": [
+        {
+          "id": "ta3ahoud",
+          "title": "نموذج تعهد",
+          "description": "تعهد للطباعة والتوقيع لملف التسجيل.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/ao4abxosgd5fpe3ezlx5p/ta3ahoud.pdf?rlkey=ygzpdxo4dqov0il74vsghbqbd&dl=1"
+        },
+        {
+          "id": "3aqd",
+          "title": "نموذج عقد",
+          "description": "عقد للطباعة وتسليمه للمدرسة مع باقي الوثائق.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/vllek7x6fo8lve1yfyyci/3aqd.pdf?rlkey=hry7xarl42abe52l17z0uf0ta&dl=1"
+        }
+      ]
+    },
+    "pieceCount": "{count} وثائق مطلوبة",
+    "scrollToForm": "الانتقال إلى الاستمارة عبر الإنترنت"
+  },
+  "inscription": {
+    "meta": {
+      "title": "التسجيل عبر الإنترنت — مترشح رخصة السياقة",
+      "description": "سجّل عبر الإنترنت لدى مدرسة تعليم سياقة شريكة لأوتوفيا."
+    },
+    "hero": {
+      "eyebrow": "المترشحون",
+      "title": "التسجيل عبر الإنترنت",
+      "subtitle": "جهّز ملفك، أكمل التسجيل المسبق ثم احضر إلى المدرسة للتأكيد النهائي."
+    },
+    "journey": {
+      "ariaLabel": "خطوات التسجيل",
+      "step1Title": "تجهيز الملف",
+      "step1Desc": "الوثائق + نماذج PDF للطباعة",
+      "step2Title": "التسجيل المسبق عبر الإنترنت",
+      "step2Desc": "نفس استمارة المدرسة مع الصورة",
+      "step3Title": "التأكيد في المؤسسة",
+      "step3Desc": "تقديم الملف الورقي في المكان"
+    },
+    "dossierPanelTitle": "الملف الورقي المطلوب",
+    "dossierPanelSubtitle": "اجمع هذه الوثائق قبل زيارة مدرسة تعليم السياقة.",
+    "formPanelTitle": "التسجيل المسبق عبر الإنترنت",
+    "formPanelSubtitle": "أكمل جميع المعلومات كما في نظام المدرسة — ستؤكد المدرسة بعد التحقق من الأوراق.",
+    "agencyNoteTitle": "ثم في المدرسة",
+    "agencyNoteText": "بعد إرسال طلبك، احضر إلى المؤسسة مع الملف الورقي الكامل. تتحقق المدرسة من وثائقك وتفعّل تسجيلك (رمز المتابعة).",
+    "dossierSectionTitle": "ملفك الورقي",
+    "formSectionTitle": "استمارة التسجيل المسبق",
+    "formSectionSubtitle": "نفس المعلومات المطلوبة من المدرسة. يتم تأكيد طلبك بعد التحقق من وثائقك في المؤسسة.",
+    "steps": {
+      "school": "المدرسة",
+      "identity": "الهوية",
+      "permis": "الرخصة",
+      "civil": "الحالة المدنية"
+    },
+    "fields": {
+      "autoEcole": "مدرسة تعليم السياقة",
+      "autoEcolePlaceholder": "اختر مدرسة",
+      "categorie": "صنف الرخصة",
+      "categoriePlaceholder": "اختر الصنف",
+      "photo": "صورة الهوية",
+      "photoHint": "JPEG أو PNG أو WebP — 5 ميغا كحد أقصى.",
+      "photoChange": "تغيير الصورة",
+      "photoRemove": "حذف",
+      "telephone": "الهاتف",
+      "prenom": "الاسم",
+      "nom": "اللقب",
+      "nin": "رقم التعريف الوطني",
+      "ninDigits": "رقمًا",
+      "dateNaissance": "تاريخ الميلاد",
+      "age": "العمر",
+      "ageHint": "يُحسب تلقائيًا",
+      "lieuNaissance": "مكان الميلاد",
+      "domicile": "عنوان السكن",
+      "sexe": "الجنس",
+      "groupeSanguin": "فصيلة الدم",
+      "numeroDossier": "رقم الملف (اختياري)",
+      "nomJeuneFille": "اسم العائلة قبل الزواج (اختياري)",
+      "permisDejaObtenu": "أملك رخصة سياقة بالفعل",
+      "permisDejaObtenuHint": "حدد إذا كنت تمرّر صنفًا إضافيًا.",
+      "numeroPermisObtenu": "رقم الرخصة",
+      "datePermisObtenu": "تاريخ الحصول على الرخصة",
+      "permisDelivrePar": "صادرة عن (البلدية / العنوان)",
+      "categoriesPermisObtenues": "الأصناف المحصل عليها",
+      "mairie": "بلدية التسجيل",
+      "nationalite": "الجنسية",
+      "prenomPere": "اسم الأب (اختياري)",
+      "nomMere": "لقب الأم (اختياري)",
+      "prenomMere": "اسم الأم (اختياري)",
+      "situationFamiliale": "الحالة العائلية",
+      "situationProfessionnelle": "الحالة المهنية",
+      "situationProfessionnelleAutre": "حدد حالتك",
+      "nomAr": "اللقب بالعربية (اختياري)",
+      "prenomAr": "الاسم بالعربية (اختياري)"
+    },
+    "sexe": {
+      "masculin": "ذكر",
+      "feminin": "أنثى"
+    },
+    "situationFamiliale": {
+      "celibataire": "أعزب/عزباء",
+      "marie": "متزوج(ة)",
+      "divorce": "مطلق(ة)",
+      "veuf": "أرمل(ة)"
+    },
+    "situationProfessionnelle": {
+      "etudiant": "طالب",
+      "employe": "موظف",
+      "sans_emploi": "بدون عمل",
+      "fonctionnaire": "موظف عمومي",
+      "commercant": "تاجر",
+      "autre": "أخرى"
+    },
+    "actions": {
+      "back": "رجوع",
+      "next": "متابعة",
+      "submit": "إرسال طلبي",
+      "submitting": "جارٍ الإرسال…"
+    },
+    "loadingSchools": "جارٍ تحميل المدارس…",
+    "noSchools": "لا توجد مدرسة متاحة للتسجيل عبر الإنترنت حاليًا.",
+    "schoolLocationSep": " · ",
+    "successTitle": "تم تسجيل الطلب",
+    "successText": "تم تسجيل طلبك المسبق لدى {autoEcole}. احضر إلى المدرسة مع ملفك الورقي لإتمام التسجيل.",
+    "successHint": "ستحصل على رمز المتابعة بعد أن تؤكد المدرسة ملفك.",
+    "successNextTitle": "الخطوات التالية",
+    "successNextSteps": [
+      "جهّز ملفك الورقي (6 وثائق مذكورة في القائمة)",
+      "احضر إلى المدرسة مع أصول الوثائق أو نسخها",
+      "تؤكد المدرسة تسجيلك وتسلّمك رمز المتابعة"
+    ],
+    "errorGeneric": "حدث خطأ. تحقق من الحقول أو أعد المحاولة لاحقًا.",
+    "errors": {
+      "photoRequired": "صورة الهوية مطلوبة.",
+      "photoUpload": "تم تسجيل الطلب لكن تعذّر إرسال الصورة. اتصل بالمدرسة."
+    }
   },
   "features": {
     "eyebrow": "",
@@ -173,11 +344,12 @@
       "tag": "",
       "title": "",
       "features": [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "حتى 100 ملف",
+        "الجداول والمدربون",
+        "المدفوعات والإيصالات",
+        "قوائم الامتحان والطباعة",
+        "بوابة المترشح (QR)",
+        "التسجيل عبر الإنترنت (تسجيل مسبق)"
       ],
       "cta": ""
     },
@@ -185,12 +357,13 @@
       "tag": "",
       "title": "",
       "features": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
+        "حتى 300 ملف",
+        "أصناف غير محدودة",
+        "مدربون ومركبات غير محدودة",
+        "قوائم الامتحان والطباعة",
+        "بوابة المترشح (QR)",
+        "التسجيل عبر الإنترنت (تسجيل مسبق)",
+        "دعم أولوية"
       ],
       "cta": ""
     },
@@ -290,6 +463,7 @@
     "contactHint": "",
     "linkLearn": "",
     "linkRegulationWatch": "",
+    "linkCandidateDossier": "ملف التسجيل",
     "linkFeatures": "",
     "linkPricing": "",
     "linkFaq": "",

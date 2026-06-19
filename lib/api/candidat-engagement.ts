@@ -413,3 +413,86 @@ export async function respondCandidatEngagement(params: {
 
   return toCandidatEngagementDto(updated)
 }
+
+const STAFF_ABSENT_MOTIF = "Absent — confirmé par l'auto-école"
+
+export async function resolveSeanceEngagementByStaff(params: {
+  autoEcoleId: string
+  seanceId: string
+  outcome: "present" | "absent"
+}) {
+  const { autoEcoleId, seanceId, outcome } = params
+
+  const seance = await prisma.seanceExamen.findFirst({
+    where: { id: seanceId, autoEcoleId },
+  })
+  if (!seance) {
+    throw new ApiError(404, "Séance introuvable.")
+  }
+  if (seance.statut === "annule") {
+    throw new ApiError(400, "Cette séance est annulée.")
+  }
+  if (seance.dateHeure.getTime() >= Date.now()) {
+    throw new ApiError(
+      400,
+      "La séance n'est pas encore passée — la réponse manuelle n'est possible qu'après l'horaire prévu.",
+    )
+  }
+
+  let engagement
+  try {
+    engagement = await prisma.candidatEngagement.findFirst({
+      where: { type: "seance", referenceId: seanceId, eleveId: seance.eleveId },
+    })
+  } catch (error) {
+    if (isMissingEngagementTable(error)) {
+      throw new ApiError(
+        503,
+        "Confirmation candidat indisponible : migration base de données manquante.",
+      )
+    }
+    throw error
+  }
+
+  if (!engagement) {
+    throw new ApiError(404, "Aucune réponse candidat en attente pour cette séance.")
+  }
+  if (engagement.statut !== "en_attente") {
+    throw new ApiError(409, "Le candidat a déjà répondu à cette séance.")
+  }
+
+  const now = new Date()
+  const engagementUpdate =
+    outcome === "present"
+      ? { statut: "accepte" as const, motif: null, reponduAt: now }
+      : {
+          statut: "refuse" as const,
+          motif: STAFF_ABSENT_MOTIF,
+          reponduAt: now,
+        }
+
+  const updatedEngagement = await prisma.candidatEngagement.update({
+    where: { id: engagement.id },
+    data: engagementUpdate,
+  })
+
+  const nextStatut = outcome === "present" ? "passe" : "absent"
+  if (seance.statut !== nextStatut) {
+    const { updateSeanceForTenant } = await import("@/lib/api/seances")
+    await updateSeanceForTenant(seanceId, {
+      eleveId: seance.eleveId,
+      type: seance.type,
+      dateHeure: seance.dateHeure,
+      notes: seance.notes,
+      messageCandidat: seance.messageCandidat,
+      moniteurId: seance.moniteurId,
+      vehiculeId: seance.vehiculeId,
+      statut: nextStatut,
+    })
+  }
+
+  return {
+    engagement: toCandidatEngagementDto(updatedEngagement),
+    seanceStatut: nextStatut,
+  }
+}

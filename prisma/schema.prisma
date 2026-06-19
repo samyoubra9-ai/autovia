@@ -229,6 +229,13 @@ enum StatutFormation {
   valide
 }
 
+/// Inscription en ligne — EN_ATTENTE jusqu'à validation par l'auto-école.
+enum StatutInscription {
+  EN_ATTENTE
+  VALIDE
+  REFUSE
+}
+
 enum SeanceStatut {
   planifie
   passe
@@ -332,6 +339,9 @@ model Eleve {
   groupeSanguin            GroupeSanguin            @map("groupe_sanguin")
   categoriePermisId        String                   @map("categorie_permis_id")
   statutFormation          StatutFormation          @map("statut_formation")
+  statutInscription        StatutInscription        @default(VALIDE) @map("statut_inscription")
+  inscriptionRefusedReason String?                  @map("inscription_refused_reason")
+  inscriptionValidatedAt   DateTime?                @map("inscription_validated_at")
   mairieEnregistrement     String?                  @map("mairie_enregistrement")
   nationalite              String
   prenomPere               String?                  @map("prenom_pere")
@@ -379,6 +389,7 @@ model Eleve {
   @@unique([autoEcoleId, numeroDossier])
   @@index([autoEcoleId])
   @@index([codeSuivi])
+  @@index([autoEcoleId, statutInscription])
   @@index([moniteurId])
   @@index([vehiculeId])
   @@map("eleves")
