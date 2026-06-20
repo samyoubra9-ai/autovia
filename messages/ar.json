@@ -116,7 +116,7 @@
     ],
     "printables": {
       "title": "وثائق للطباعة",
-      "subtitle": "حمّل هذين النموذجين، اطبعهما ووقّعهما لإكمال ملفك الورقي.",
+      "subtitle": "حمّل هذه النماذج، اطبعها ووقّعها لإكمال ملفك الورقي.",
       "downloadLabel": "تحميل PDF",
       "fileFormat": "PDF",
       "hint": "أكمل أيضاً التسجيل المسبق عبر الإنترنت (الخطوة 2) بالتوازي.",
@@ -132,6 +132,12 @@
           "title": "نموذج عقد",
           "description": "عقد للطباعة وتسليمه للمدرسة مع باقي الوثائق.",
           "downloadUrl": "https://www.dropbox.com/scl/fi/vllek7x6fo8lve1yfyyci/3aqd.pdf?rlkey=hry7xarl42abe52l17z0uf0ta&dl=1"
+        },
+        {
+          "id": "form-2",
+          "title": "نموذج 2",
+          "description": "وثيقة للطباعة وتسليمها للمدرسة مع باقي الوثائق.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/qdrsbx4yf1ys5rrno91vw/2.pdf?rlkey=rng5r4v0wc1ck0ketbzl9k199&dl=1"
         }
       ]
     },
@@ -193,7 +199,6 @@
       "domicile": "عنوان السكن",
       "sexe": "الجنس",
       "groupeSanguin": "فصيلة الدم",
-      "numeroDossier": "رقم الملف (اختياري)",
       "nomJeuneFille": "اسم العائلة قبل الزواج (اختياري)",
       "permisDejaObtenu": "أملك رخصة سياقة بالفعل",
       "permisDejaObtenuHint": "حدد إذا كنت تمرّر صنفًا إضافيًا.",
@@ -209,8 +214,8 @@
       "situationFamiliale": "الحالة العائلية",
       "situationProfessionnelle": "الحالة المهنية",
       "situationProfessionnelleAutre": "حدد حالتك",
-      "nomAr": "اللقب بالعربية (اختياري)",
-      "prenomAr": "الاسم بالعربية (اختياري)"
+      "nomAr": "اللقب بالعربية",
+      "prenomAr": "الاسم بالعربية"
     },
     "sexe": {
       "masculin": "ذكر",
@@ -251,7 +256,8 @@
     "errorGeneric": "حدث خطأ. تحقق من الحقول أو أعد المحاولة لاحقًا.",
     "errors": {
       "photoRequired": "صورة الهوية مطلوبة.",
-      "photoUpload": "تم تسجيل الطلب لكن تعذّر إرسال الصورة. اتصل بالمدرسة."
+      "photoUpload": "تم تسجيل الطلب لكن تعذّر إرسال الصورة. اتصل بالمدرسة.",
+      "arabicNameRequired": "اللقب والاسم بالعربية مطلوبان."
     }
   },
   "features": {

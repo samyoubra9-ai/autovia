@@ -12,14 +12,23 @@ export const SUBSCRIPTION_PRICING = {
     annualFromMonthlyDzd: 14_400,
     annualSavingsVsMonthlyDzd: 2_400,
   },
+  ESSENTIEL_CONNECT: {
+    id: "ESSENTIEL_CONNECT" as const,
+    label: "Essentiel Connect",
+    description: "Essentiel + inscription en ligne",
+    annualDzd: 15_500,
+    monthlyDzd: 1_550,
+    annualFromMonthlyDzd: 18_600,
+    annualSavingsVsMonthlyDzd: 3_100,
+  },
   PRO: {
     id: "PRO" as const,
     label: "Pro",
     description: "École structurée — jusqu'à 300 dossiers",
-    annualDzd: 20_000,
-    monthlyDzd: 2_084,
-    annualFromMonthlyDzd: 25_000,
-    annualSavingsVsMonthlyDzd: 5_000,
+    annualDzd: 22_000,
+    monthlyDzd: 2_200,
+    annualFromMonthlyDzd: 26_400,
+    annualSavingsVsMonthlyDzd: 4_400,
   },
   ELITE: {
     id: "ELITE" as const,
@@ -32,6 +41,7 @@ export const SUBSCRIPTION_PRICING = {
 export function subscriptionPlanLabel(plan: SubscriptionPlan | null | undefined): string {
   if (!plan) return "Non défini"
   if (plan === "ESSENTIEL") return SUBSCRIPTION_PRICING.ESSENTIEL.label
+  if (plan === "ESSENTIEL_CONNECT") return SUBSCRIPTION_PRICING.ESSENTIEL_CONNECT.label
   if (plan === "PRO") return SUBSCRIPTION_PRICING.PRO.label
   return SUBSCRIPTION_PRICING.ELITE.label
 }

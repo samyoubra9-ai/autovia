@@ -1,7 +1,12 @@
 import type { AutoEcole, SubscriptionPlan } from "@prisma/client"
 import type { SiteAdminAccessPatchBody } from "@/lib/api/site-admin-access-update"
 
-const VALID_PLANS = new Set<SubscriptionPlan>(["ESSENTIEL", "PRO", "ELITE"])
+const VALID_PLANS = new Set<SubscriptionPlan>([
+  "ESSENTIEL",
+  "ESSENTIEL_CONNECT",
+  "PRO",
+  "ELITE",
+])
 
 export function isSiteAdminMetaOnlyPatch(body: SiteAdminAccessPatchBody): boolean {
   if (body.action !== undefined || body.subscriptionStatus !== undefined) {
@@ -23,7 +28,7 @@ function parseSubscriptionPlan(raw: unknown): SubscriptionPlan | null {
   if (raw === null || raw === "") return null
   const p = String(raw).trim().toUpperCase() as SubscriptionPlan
   if (!VALID_PLANS.has(p)) {
-    throw new Error("Plan invalide (Essentiel, Pro ou Élite).")
+    throw new Error("Plan invalide (Essentiel, Essentiel Connect, Pro ou Élite).")
   }
   return p
 }

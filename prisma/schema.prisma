@@ -19,6 +19,7 @@ enum SubscriptionStatus {
 
 enum SubscriptionPlan {
   ESSENTIEL
+  ESSENTIEL_CONNECT
   PRO
   ELITE
 }

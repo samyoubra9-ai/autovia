@@ -15,11 +15,41 @@ import { LandingFooter } from "./landing/LandingFooter"
 import { LandingNav } from "./landing/LandingNav"
 import { buildProductCards, type LandingLinks } from "./landing/landing-links"
 
-const CheckIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+const CheckIcon = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 )
+
+type PaidPlanPricing = {
+  annualDzd: number
+  monthlyDzd: number
+  annualFromMonthlyDzd: number
+  annualSavingsVsMonthlyDzd: number
+}
+
+function formatPaidPlanDisplay(
+  plan: PaidPlanPricing,
+  annual: boolean,
+  periodYear: string,
+  periodMonth: string,
+  annualCalcTemplate: string,
+  monthlyCalcTemplate: string,
+) {
+  const price = annual
+    ? formatDzdAmount(plan.annualDzd).replace(" DZD", "")
+    : formatDzdAmount(plan.monthlyDzd).replace(" DZD", "")
+  const period = annual ? periodYear : periodMonth
+  const calc = annual
+    ? formatVitrineMessage(annualCalcTemplate, {
+        monthlyEquivalent: formatDzdAmount(Math.round(plan.annualDzd / 12)),
+        savings: formatDzdAmount(plan.annualSavingsVsMonthlyDzd),
+      })
+    : formatVitrineMessage(monthlyCalcTemplate, {
+        annualTotal: formatDzdAmount(plan.annualFromMonthlyDzd),
+      })
+  return { price, period, calc }
+}
 
 function LandingAnchor({
   href,
@@ -49,38 +79,45 @@ function LandingAnchor({
 export function AutoviaLanding({ links }: { links: LandingLinks }) {
   const m = useVitrineMessages()
   const products = buildProductCards(links, m.products.cards)
-  const [essentielAnnual, setEssentielAnnual] = useState(true)
-  const [proAnnual, setProAnnual] = useState(true)
+  const [paidAnnual, setPaidAnnual] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   const essentiel = SUBSCRIPTION_PRICING.ESSENTIEL
+  const connect = SUBSCRIPTION_PRICING.ESSENTIEL_CONNECT
   const pro = SUBSCRIPTION_PRICING.PRO
 
-  const essentielPrice = essentielAnnual
-    ? formatDzdAmount(essentiel.annualDzd).replace(" DZD", "")
-    : formatDzdAmount(essentiel.monthlyDzd).replace(" DZD", "")
-  const essentielPeriod = essentielAnnual ? m.pricing.periodYear : m.pricing.periodMonth
-  const essentielCalc = essentielAnnual
-    ? formatVitrineMessage(m.pricing.annualCalc, {
-        monthlyEquivalent: formatDzdAmount(Math.round(essentiel.annualDzd / 12)),
-        savings: formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd),
-      })
-    : formatVitrineMessage(m.pricing.monthlyCalc, {
-        annualTotal: formatDzdAmount(essentiel.annualFromMonthlyDzd),
-      })
-
-  const proPrice = proAnnual
-    ? formatDzdAmount(pro.annualDzd).replace(" DZD", "")
-    : formatDzdAmount(pro.monthlyDzd).replace(" DZD", "")
-  const proPeriod = proAnnual ? m.pricing.periodYear : m.pricing.periodMonth
-  const proCalc = proAnnual
-    ? formatVitrineMessage(m.pricing.annualCalc, {
-        monthlyEquivalent: formatDzdAmount(Math.round(pro.annualDzd / 12)),
-        savings: formatDzdAmount(pro.annualSavingsVsMonthlyDzd),
-      })
-    : formatVitrineMessage(m.pricing.monthlyCalc, {
-        annualTotal: formatDzdAmount(pro.annualFromMonthlyDzd),
-      })
+  const paidPlans = [
+    {
+      id: "essentiel",
+      tag: m.pricing.essentiel.tag,
+      title: m.pricing.essentiel.title,
+      pricing: essentiel,
+      features: m.pricing.essentiel.features,
+      cta: m.pricing.essentiel.cta,
+      variant: "essentiel" as const,
+      primary: false,
+    },
+    {
+      id: "connect",
+      tag: m.pricing.essentielConnect.tag,
+      title: m.pricing.essentielConnect.title,
+      pricing: connect,
+      features: m.pricing.essentielConnect.features,
+      cta: m.pricing.essentielConnect.cta,
+      variant: "connect" as const,
+      primary: true,
+    },
+    {
+      id: "pro",
+      tag: m.pricing.pro.tag,
+      title: m.pricing.pro.title,
+      pricing: pro,
+      features: m.pricing.pro.features,
+      cta: m.pricing.pro.cta,
+      variant: "pro" as const,
+      primary: false,
+    },
+  ]
 
   const featureBlocks = m.features.blocks.map((block, index) => {
     const id = block.id as keyof typeof FEATURE_BLOCK_IMAGE_BY_ID
@@ -254,148 +291,125 @@ export function AutoviaLanding({ links }: { links: LandingLinks }) {
           <p>{m.pricing.subtitle}</p>
         </div>
 
-        <div className="ds-pricing-grid ds-pricing-grid--wide">
-          <div className="ds-pricing-card ds-pricing-card--trial">
-            <div className="ds-trial-tag">{m.pricing.trial.tag}</div>
-            <div className="ds-price-header">
-              <h3>{m.pricing.trial.title}</h3>
-              <div className="ds-price-amount ds-price-amount--trial">
-                <span>{m.pricing.trial.price}</span>
-                <span className="ds-price-currency">{m.pricing.currency}</span>
-              </div>
-              <div className="ds-price-calc ds-price-calc--muted">
-                {m.pricing.trial.calc}
-              </div>
+        <div className="ds-pricing-layout">
+          <article className="ds-pricing-trial-card">
+            <div className="ds-pricing-trial-card__body">
+              <span className="ds-pricing-label ds-pricing-label--trial">{m.pricing.trial.tag}</span>
+              <h3 className="ds-pricing-trial-card__title">{m.pricing.trial.title}</h3>
+              <p className="ds-pricing-trial-card__desc">{m.pricing.trial.calc}</p>
             </div>
+            <div className="ds-pricing-trial-card__aside">
+              <p className="ds-pricing-trial-card__price">
+                {m.pricing.trial.price}
+                <span>{m.pricing.currency}</span>
+              </p>
+              <LandingAnchor
+                href={links.backdashSignUp}
+                external
+                className="ds-btn ds-btn-secondary"
+              >
+                {m.pricing.trial.cta}
+              </LandingAnchor>
+            </div>
+          </article>
 
-            <ul className="ds-feature-list">
-              {m.pricing.trial.features.map((feature) => (
-                <li key={feature}>
-                  <CheckIcon /> {feature}
-                </li>
-              ))}
-            </ul>
-
-            <LandingAnchor
-              href={links.backdashSignUp}
-              external
-              className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
+          <div
+            className="ds-pricing-period"
+            role="group"
+            aria-label={`${m.pricing.monthlyLabel} / ${m.pricing.annualLabel}`}
+          >
+            <button
+              type="button"
+              className={!paidAnnual ? "is-active" : ""}
+              onClick={() => setPaidAnnual(false)}
             >
-              {m.pricing.trial.cta}
-            </LandingAnchor>
-          </div>
-
-          <div className="ds-pricing-card">
-            <div className="ds-popular-tag ds-popular-tag--essentiel">{m.pricing.essentiel.tag}</div>
-            <div className="ds-billing-toggle ds-billing-toggle--inline">
-              <span>{m.pricing.monthlyLabel}</span>
-              <button
-                type="button"
-                className={`ds-toggle-switch ${essentielAnnual ? "ds-annual" : ""}`}
-                onClick={() => setEssentielAnnual((v) => !v)}
-                aria-label={essentielAnnual ? m.pricing.toggleToMonthly : m.pricing.toggleToAnnual}
-              />
-              <span>
-                {m.pricing.annualLabel}{" "}
-                <span className="ds-save-badge">
-                  −{formatDzdAmount(essentiel.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
-                </span>
-              </span>
-            </div>
-            <div className="ds-price-header">
-              <h3>{m.pricing.essentiel.title}</h3>
-              <div className="ds-price-amount">
-                <span>{essentielPrice}</span>
-                <span className="ds-price-currency">{m.pricing.currency}</span>
-                <span className="ds-price-period">{essentielPeriod}</span>
-              </div>
-              <div className="ds-price-calc">{essentielCalc}</div>
-            </div>
-
-            <ul className="ds-feature-list">
-              {m.pricing.essentiel.features.map((feature) => (
-                <li key={feature}>
-                  <CheckIcon /> {feature}
-                </li>
-              ))}
-            </ul>
-
-            <LandingAnchor
-              href={links.backdashSignUp}
-              external
-              className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block"
+              {m.pricing.monthlyLabel}
+            </button>
+            <button
+              type="button"
+              className={paidAnnual ? "is-active" : ""}
+              onClick={() => setPaidAnnual(true)}
             >
-              {m.pricing.essentiel.cta}
-            </LandingAnchor>
+              {m.pricing.annualLabel}
+              <span className="ds-pricing-period__save">{m.pricing.annualSaveHint}</span>
+            </button>
           </div>
 
-          <div className="ds-pricing-card ds-popular">
-            <div className="ds-popular-tag">{m.pricing.pro.tag}</div>
-            <div className="ds-billing-toggle ds-billing-toggle--inline">
-              <span>{m.pricing.monthlyLabel}</span>
-              <button
-                type="button"
-                className={`ds-toggle-switch ${proAnnual ? "ds-annual" : ""}`}
-                onClick={() => setProAnnual((v) => !v)}
-                aria-label={proAnnual ? m.pricing.toggleToMonthly : m.pricing.toggleToAnnual}
-              />
-              <span>
-                {m.pricing.annualLabel}{" "}
-                <span className="ds-save-badge">
-                  −{formatDzdAmount(pro.annualSavingsVsMonthlyDzd).replace(" DZD", "")}
-                </span>
-              </span>
-            </div>
-            <div className="ds-price-header">
-              <h3>{m.pricing.pro.title}</h3>
-              <div className="ds-price-amount">
-                <span>{proPrice}</span>
-                <span className="ds-price-currency">{m.pricing.currency}</span>
-                <span className="ds-price-period">{proPeriod}</span>
-              </div>
-              <div className="ds-price-calc">{proCalc}</div>
-            </div>
-
-            <ul className="ds-feature-list">
-              {m.pricing.pro.features.map((feature) => (
-                <li key={feature}>
-                  <CheckIcon /> {feature}
-                </li>
-              ))}
-            </ul>
-
-            <LandingAnchor
-              href={links.backdashSignUp}
-              external
-              className="ds-btn ds-btn-primary ds-btn-lg ds-btn-block"
-            >
-              {m.pricing.pro.cta}
-            </LandingAnchor>
+          <div className="ds-pricing-cards">
+            {paidPlans.map((plan) => {
+              const display = formatPaidPlanDisplay(
+                plan.pricing,
+                paidAnnual,
+                m.pricing.periodYear,
+                m.pricing.periodMonth,
+                m.pricing.annualCalc,
+                m.pricing.monthlyCalc,
+              )
+              return (
+                <article
+                  key={plan.id}
+                  className={`ds-pricing-card-v2 ds-pricing-card-v2--${plan.variant}${plan.primary ? " ds-pricing-card-v2--featured" : ""}`}
+                >
+                  {plan.primary ? (
+                    <span className="ds-pricing-card-v2__ribbon">{m.pricing.recommendedLabel}</span>
+                  ) : null}
+                  <header className="ds-pricing-card-v2__header">
+                    <h3>{plan.tag}</h3>
+                    <p>{plan.title}</p>
+                  </header>
+                  <div className="ds-pricing-card-v2__price">
+                    <span className="ds-pricing-card-v2__amount">{display.price}</span>
+                    <span className="ds-pricing-card-v2__meta">
+                      {m.pricing.currency}
+                      {display.period}
+                    </span>
+                  </div>
+                  <p className="ds-pricing-card-v2__note">{display.calc}</p>
+                  <div className="ds-pricing-card-v2__divider" aria-hidden />
+                  <ul className="ds-pricing-card-v2__list">
+                    {plan.features.map((feature) => (
+                      <li key={feature}>
+                        <span className="ds-pricing-check" aria-hidden>
+                          <CheckIcon size={12} />
+                        </span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <LandingAnchor
+                    href={links.backdashSignUp}
+                    external
+                    className={`ds-btn ds-btn-block${plan.primary ? " ds-btn-primary" : " ds-btn-secondary"}`}
+                  >
+                    {plan.cta}
+                  </LandingAnchor>
+                </article>
+              )
+            })}
           </div>
 
-          <div className="ds-pricing-card ds-pricing-card--elite">
-            <div className="ds-price-header">
-              <h3>{m.pricing.elite.title}</h3>
-              <div className="ds-price-amount ds-price-amount--elite">
-                <span>{m.pricing.elite.priceLabel}</span>
-              </div>
-              <div className="ds-price-calc ds-price-calc--muted">
-                {m.pricing.elite.calc}
-              </div>
+          <article className="ds-pricing-elite-card">
+            <div className="ds-pricing-elite-card__copy">
+              <span className="ds-pricing-label ds-pricing-label--elite">{m.pricing.elite.title}</span>
+              <p>{m.pricing.elite.calc}</p>
+              <ul className="ds-pricing-elite-card__list">
+                {m.pricing.elite.features.map((feature) => (
+                  <li key={feature}>
+                    <span className="ds-pricing-check ds-pricing-check--muted" aria-hidden>
+                      <CheckIcon size={12} />
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <ul className="ds-feature-list">
-              {m.pricing.elite.features.map((feature) => (
-                <li key={feature}>
-                  <CheckIcon /> {feature}
-                </li>
-              ))}
-            </ul>
-
-            <LandingAnchor href="#contact" className="ds-btn ds-btn-secondary ds-btn-lg ds-btn-block">
-              {m.pricing.elite.cta}
-            </LandingAnchor>
-          </div>
+            <div className="ds-pricing-elite-card__action">
+              <p className="ds-pricing-elite-card__price">{m.pricing.elite.priceLabel}</p>
+              <LandingAnchor href="#contact" className="ds-btn ds-btn-secondary">
+                {m.pricing.elite.cta}
+              </LandingAnchor>
+            </div>
+          </article>
         </div>
       </section>
 

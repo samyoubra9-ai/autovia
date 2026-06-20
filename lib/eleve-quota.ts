@@ -131,7 +131,7 @@ export function assertCanAddEleveOnPlan(input: EleveQuotaInput): void {
 
   if (input.currentEleveCount >= maxEleves) {
     const hint = isTrial
-      ? "Passez à un abonnement Essentiel ou Pro pour ajouter plus de candidats."
+      ? "Passez à un abonnement Essentiel, Essentiel Connect ou Pro pour ajouter plus de candidats."
       : "Passez au plan Pro ou contactez Autovia pour augmenter votre quota."
     throw new ApiError(
       403,

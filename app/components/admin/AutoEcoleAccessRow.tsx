@@ -163,6 +163,7 @@ export function AutoEcoleAccessRow({ row }: { row: AutoEcoleRowData }) {
                 title="Plan commercial"
               >
                 <option value="ESSENTIEL">Essentiel</option>
+                <option value="ESSENTIEL_CONNECT">Essentiel Connect</option>
                 <option value="PRO">Pro</option>
                 <option value="ELITE">Élite</option>
               </select>

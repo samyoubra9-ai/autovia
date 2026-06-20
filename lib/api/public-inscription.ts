@@ -9,7 +9,10 @@ import { assertEleveMoniteurVehiculeForTenant } from "@/lib/api/eleve-relations"
 import { generatePendingEleveIdentifiant } from "@/lib/api/inscription-identifiant"
 import { parseEleveInput, toPrismaEleveData } from "@/lib/api/mappers"
 import { assertPublicAutoEcoleForInscription } from "@/lib/api/public-auto-ecoles"
-import { hasOnlineInscriptionFeature } from "@/lib/plan-features"
+import {
+  assertOnlineInscriptionForAutoEcole,
+  hasOnlineInscriptionFeature,
+} from "@/lib/plan-features"
 import { prisma } from "@/lib/prisma"
 
 export type PublicInscriptionResult = {
@@ -57,7 +60,7 @@ export async function createPublicPreInscription(
   ) {
     throw new ApiError(
       403,
-      "Les inscriptions en ligne sont disponibles avec les packs Essentiel ou Pro.",
+      "Les inscriptions en ligne sont disponibles avec les packs Essentiel Connect ou Pro.",
       "ONLINE_INSCRIPTION_PLAN_REQUIRED",
     )
   }
@@ -71,6 +74,9 @@ export async function createPublicPreInscription(
 
   if (!input.nom || !input.prenom || !input.nin || !input.domicile) {
     throw new ApiError(400, "Champs obligatoires manquants.")
+  }
+  if (!input.nomAr?.trim() || !input.prenomAr?.trim()) {
+    throw new ApiError(400, "Le nom et le prénom en arabe sont requis.")
   }
   if (!input.mairieEnregistrement?.trim()) {
     throw new ApiError(400, "La mairie d'enregistrement est requise.")
@@ -152,6 +158,8 @@ export async function validateEleveInscription(
   eleveId: string,
   opts?: { moniteurId?: string | null; vehiculeId?: string | null },
 ) {
+  await assertOnlineInscriptionForAutoEcole(prisma, autoEcoleId)
+
   const eleve = await prisma.eleve.findFirst({
     where: { id: eleveId, autoEcoleId },
   })
@@ -199,6 +207,8 @@ export async function refuseEleveInscription(
   eleveId: string,
   reason?: string | null,
 ) {
+  await assertOnlineInscriptionForAutoEcole(prisma, autoEcoleId)
+
   const eleve = await prisma.eleve.findFirst({
     where: { id: eleveId, autoEcoleId },
   })

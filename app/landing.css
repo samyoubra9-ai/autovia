@@ -2189,220 +2189,419 @@ html:has(.ds-landing-page) body {
 
 /* Pricing */
 .ds-landing-page .ds-pricing {
-  padding: 88px 0;
-  background: var(--ds-bg-soft);
-}
-
-.ds-landing-page .ds-billing-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 40px;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.ds-landing-page .ds-toggle-switch {
   position: relative;
-  width: 56px;
-  height: 32px;
-  background: #fff;
-  border: 1px solid var(--ds-border);
-  border-radius: 9999px;
-  cursor: pointer;
+  padding: 80px 0 88px;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(37 99 235 / 8%), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgb(5 150 105 / 6%), transparent 50%),
+    var(--ds-bg-soft);
+  overflow: hidden;
 }
 
-.ds-landing-page .ds-toggle-switch::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
-  background: var(--ds-primary);
-  border-radius: 50%;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ds-landing-page .ds-toggle-switch.ds-annual::after {
-  transform: translateX(24px);
-}
-
-.ds-landing-page .ds-save-badge {
-  background: var(--ds-success-soft);
-  color: var(--ds-success);
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  margin-left: 6px;
-}
-
-.ds-landing-page .ds-pricing-grid {
-  display: grid;
-  gap: 24px;
-  max-width: 920px;
+.ds-landing-page .ds-pricing-layout {
+  max-width: 1040px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
 }
 
-.ds-landing-page .ds-pricing-grid--wide {
-  max-width: 1120px;
+.ds-landing-page .ds-pricing-trial-card {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ds-radius);
+  border: 1px solid rgb(16 185 129 / 28%);
+  background: linear-gradient(135deg, #fff 0%, var(--ds-success-soft) 100%);
+  box-shadow: 0 4px 24px -8px rgb(5 150 105 / 18%);
 }
 
-@media (min-width: 768px) {
-  .ds-landing-page .ds-pricing-grid {
-    grid-template-columns: 1fr 1fr;
-    align-items: stretch;
+@media (min-width: 640px) {
+  .ds-landing-page .ds-pricing-trial-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
   }
 }
 
-@media (min-width: 1024px) {
-  .ds-landing-page .ds-pricing-grid--wide {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.ds-landing-page .ds-pricing-trial-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
 }
 
-.ds-landing-page .ds-pricing-card--elite {
-  grid-column: 1 / -1;
-  border-style: dashed;
-  background: linear-gradient(180deg, #f8fafc 0%, #fff 50%);
-}
-
-@media (min-width: 1024px) {
-  .ds-landing-page .ds-pricing-grid--wide .ds-pricing-card--elite {
-    grid-column: 1 / -1;
-    max-width: 720px;
-    margin: 0 auto;
-    width: 100%;
-  }
-}
-
-.ds-landing-page .ds-price-amount--elite {
-  font-size: 1.75rem;
+.ds-landing-page .ds-pricing-trial-card__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--ds-text);
 }
 
-.ds-landing-page .ds-popular-tag--essentiel {
-  background: var(--ds-success);
+.ds-landing-page .ds-pricing-trial-card__desc {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ds-text-muted);
 }
 
-.ds-landing-page .ds-pricing-card {
-  background: #fff;
-  border: 2px solid var(--ds-border);
-  border-radius: var(--ds-radius-lg);
-  padding: 40px 36px;
-  text-align: center;
-  position: relative;
-  box-shadow: var(--ds-shadow);
+.ds-landing-page .ds-pricing-trial-card__aside {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-.ds-landing-page .ds-pricing-card--trial {
-  border-color: var(--ds-success);
-  background: linear-gradient(180deg, var(--ds-success-soft) 0%, #fff 40%);
+@media (min-width: 640px) {
+  .ds-landing-page .ds-pricing-trial-card__aside {
+    align-items: flex-end;
+    text-align: right;
+  }
 }
 
-.ds-landing-page .ds-trial-tag {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--ds-success);
-  color: #fff;
-  padding: 6px 20px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.ds-landing-page .ds-price-amount--trial {
+.ds-landing-page .ds-pricing-trial-card__price {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: var(--ds-success);
 }
 
-.ds-landing-page .ds-price-calc--muted {
+.ds-landing-page .ds-pricing-trial-card__price span {
+  margin-left: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--ds-text-muted);
-  font-weight: 500;
 }
 
-.ds-landing-page .ds-billing-toggle--inline {
-  margin-bottom: 20px;
+.ds-landing-page .ds-pricing-label {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.ds-landing-page .ds-pricing-card .ds-feature-list {
-  flex: 1;
-  margin-bottom: 24px;
+.ds-landing-page .ds-pricing-label--trial {
+  background: rgb(255 255 255 / 72%);
+  color: var(--ds-success);
+  border: 1px solid rgb(16 185 129 / 22%);
 }
 
-.ds-landing-page .ds-pricing-card.ds-popular {
-  border-color: var(--ds-primary);
+.ds-landing-page .ds-pricing-label--elite {
+  background: #fff;
+  color: #64748b;
+  border: 1px solid var(--ds-border);
 }
 
-.ds-landing-page .ds-popular-tag {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+.ds-landing-page .ds-pricing-period {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid var(--ds-border);
+  box-shadow: 0 2px 12px -4px rgb(15 23 42 / 10%);
+}
+
+.ds-landing-page .ds-pricing-period button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ds-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ds-landing-page .ds-pricing-period button.is-active {
   background: var(--ds-primary);
   color: #fff;
-  padding: 6px 20px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  font-size: 0.75rem;
+  box-shadow: 0 4px 14px -4px rgb(37 99 235 / 55%);
+}
+
+.ds-landing-page .ds-pricing-period__save {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.65rem;
   font-weight: 700;
+  background: rgb(255 255 255 / 22%);
+  color: inherit;
 }
 
-.ds-landing-page .ds-price-header {
-  margin-bottom: 28px;
-}
-
-.ds-landing-page .ds-price-header h3 {
-  font-size: 1.35rem;
-  margin: 16px 0 8px;
-}
-
-.ds-landing-page .ds-price-amount {
-  font-size: 2.75rem;
-  font-weight: 800;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.ds-landing-page .ds-price-currency,
-.ds-landing-page .ds-price-period {
-  font-size: 1rem;
-  color: var(--ds-text-muted);
-  font-weight: 500;
-}
-
-.ds-landing-page .ds-price-calc {
-  font-size: 0.875rem;
+.ds-landing-page .ds-pricing-period button:not(.is-active) .ds-pricing-period__save {
+  background: var(--ds-success-soft);
   color: var(--ds-success);
-  font-weight: 600;
-  margin-top: 8px;
 }
 
-.ds-landing-page .ds-feature-list {
-  text-align: left;
-  margin-bottom: 28px;
+.ds-landing-page .ds-pricing-cards {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  align-items: stretch;
 }
 
-.ds-landing-page .ds-feature-list li {
+@media (min-width: 900px) {
+  .ds-landing-page .ds-pricing-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: center;
+  }
+}
+
+.ds-landing-page .ds-pricing-card-v2 {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: var(--ds-text-muted);
-  font-size: 0.9rem;
+  flex-direction: column;
+  gap: 0;
+  padding: 26px 22px 22px;
+  border-radius: var(--ds-radius);
+  background: #fff;
+  border: 1px solid var(--ds-border);
+  box-shadow: 0 2px 8px -2px rgb(15 23 42 / 6%);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
-.ds-landing-page .ds-feature-list li svg {
-  color: var(--ds-primary);
+.ds-landing-page .ds-pricing-card-v2:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ds-shadow);
+}
+
+.ds-landing-page .ds-pricing-card-v2--featured {
+  border-color: rgb(37 99 235 / 35%);
+  box-shadow:
+    0 0 0 1px rgb(37 99 235 / 12%),
+    0 16px 40px -16px rgb(37 99 235 / 35%);
+  padding-top: 34px;
+}
+
+@media (min-width: 900px) {
+  .ds-landing-page .ds-pricing-card-v2--featured {
+    transform: scale(1.03);
+    z-index: 1;
+  }
+
+  .ds-landing-page .ds-pricing-card-v2--featured:hover {
+    transform: scale(1.03) translateY(-3px);
+  }
+}
+
+.ds-landing-page .ds-pricing-card-v2--featured::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: var(--ds-radius) var(--ds-radius) 0 0;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+.ds-landing-page .ds-pricing-card-v2__ribbon {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 2px 8px -2px rgb(37 99 235 / 50%);
+}
+
+.ds-landing-page .ds-pricing-card-v2__header {
+  margin-bottom: 18px;
+}
+
+.ds-landing-page .ds-pricing-card-v2__header h3 {
+  margin: 0 0 4px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ds-text);
+}
+
+.ds-landing-page .ds-pricing-card-v2__header p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ds-text-muted);
+}
+
+.ds-landing-page .ds-pricing-card-v2__price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-bottom: 6px;
+}
+
+.ds-landing-page .ds-pricing-card-v2__amount {
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-text);
+}
+
+.ds-landing-page .ds-pricing-card-v2__meta {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ds-text-muted);
+}
+
+.ds-landing-page .ds-pricing-card-v2__note {
+  margin: 0 0 18px;
+  min-height: 2.5em;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ds-success);
+}
+
+.ds-landing-page .ds-pricing-card-v2__divider {
+  height: 1px;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, transparent, var(--ds-border) 20%, var(--ds-border) 80%, transparent);
+}
+
+.ds-landing-page .ds-pricing-card-v2__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 0;
+  flex: 1;
+}
+
+.ds-landing-page .ds-pricing-card-v2__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ds-text-muted);
+}
+
+.ds-landing-page .ds-pricing-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
   flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--ds-primary-soft);
+  color: var(--ds-primary);
+}
+
+.ds-landing-page .ds-pricing-check--muted {
+  background: var(--ds-bg-muted);
+  color: #64748b;
+}
+
+.ds-landing-page .ds-pricing-elite-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 26px 24px;
+  border-radius: var(--ds-radius);
+  border: 1px dashed rgb(100 116 139 / 35%);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 95%) 0%, rgb(248 250 252 / 98%) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 80%);
+}
+
+@media (min-width: 768px) {
+  .ds-landing-page .ds-pricing-elite-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 32px;
+  }
+}
+
+.ds-landing-page .ds-pricing-elite-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ds-landing-page .ds-pricing-elite-card__copy > p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ds-text-muted);
+  max-width: 52ch;
+}
+
+.ds-landing-page .ds-pricing-elite-card__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.ds-landing-page .ds-pricing-elite-card__list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--ds-text-muted);
+}
+
+.ds-landing-page .ds-pricing-elite-card__action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .ds-landing-page .ds-pricing-elite-card__action {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.ds-landing-page .ds-pricing-elite-card__price {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ds-text);
 }
 
 /* FAQ */

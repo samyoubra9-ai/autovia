@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { InscriptionPermisFields } from "@/app/components/inscription/InscriptionPermisFields"
 import { InscriptionPhotoField } from "@/app/components/inscription/InscriptionPhotoField"
@@ -12,13 +12,14 @@ type PublicAutoEcole = {
   nom: string
   ville: string | null
   wilaya: string | null
-  categories: Array<{
-    id: string
-    code: string
-    libelleFr: string
-    libelleAr: string | null
-    prixPermis: number
-  }>
+}
+
+type PublicCategoriePermis = {
+  id: string
+  code: string
+  libelleFr: string
+  libelleAr: string | null
+  prixPermis: number
 }
 
 type FormState = {
@@ -42,7 +43,6 @@ type FormState = {
   situationFamiliale: string
   situationProfessionnelle: string
   situationProfessionnelleAutre: string
-  numeroDossier: string
   nomAr: string
   prenomAr: string
   permisDejaObtenu: boolean
@@ -77,7 +77,6 @@ const initialForm: FormState = {
   situationFamiliale: "celibataire",
   situationProfessionnelle: "etudiant",
   situationProfessionnelleAutre: "",
-  numeroDossier: "",
   nomAr: "",
   prenomAr: "",
   permisDejaObtenu: false,
@@ -138,6 +137,8 @@ export function InscriptionForm() {
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [schools, setSchools] = useState<PublicAutoEcole[]>([])
   const [schoolsLoading, setSchoolsLoading] = useState(true)
+  const [schoolCategories, setSchoolCategories] = useState<PublicCategoriePermis[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<SuccessState | null>(null)
@@ -160,10 +161,43 @@ export function InscriptionForm() {
     }
   }, [])
 
-  const selectedSchool = useMemo(
-    () => schools.find((s) => s.id === form.autoEcoleId) ?? null,
-    [schools, form.autoEcoleId],
-  )
+  useEffect(() => {
+    if (!form.autoEcoleId) {
+      setSchoolCategories([])
+      setCategoriesLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setCategoriesLoading(true)
+    setSchoolCategories([])
+
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/v1/public/auto-ecoles/${form.autoEcoleId}/categories`)
+        const data = (await res.json()) as { categories?: PublicCategoriePermis[]; error?: string }
+        if (cancelled) return
+        if (!res.ok) {
+          setSchoolCategories([])
+          return
+        }
+        setSchoolCategories(data.categories ?? [])
+        setForm((prev) => {
+          if (!prev.categoriePermisId) return prev
+          const stillValid = (data.categories ?? []).some((c) => c.id === prev.categoriePermisId)
+          return stillValid ? prev : { ...prev, categoriePermisId: "" }
+        })
+      } catch {
+        if (!cancelled) setSchoolCategories([])
+      } finally {
+        if (!cancelled) setCategoriesLoading(false)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [form.autoEcoleId])
 
   const patch = useCallback((partial: Partial<FormState>) => {
     setForm((prev) => ({ ...prev, ...partial }))
@@ -173,6 +207,8 @@ export function InscriptionForm() {
   const validateStep = (index: number): string | null => {
     if (index === 0) {
       if (!form.autoEcoleId) return "Choisissez une auto-école."
+      if (categoriesLoading) return m.inscription.loadingCategories
+      if (schoolCategories.length === 0) return m.inscription.noCategories
       if (!form.categoriePermisId) return "Choisissez une catégorie de permis."
       return null
     }
@@ -182,6 +218,9 @@ export function InscriptionForm() {
         return "Numéro de téléphone invalide."
       }
       if (!form.prenom.trim() || !form.nom.trim()) return "Nom et prénom requis."
+      if (!form.nomAr.trim() || !form.prenomAr.trim()) {
+        return m.inscription.errors.arabicNameRequired
+      }
       if (form.nin.replace(/\D/g, "").length !== 18) {
         return "Le N.I.N doit comporter 18 chiffres."
       }
@@ -257,13 +296,12 @@ export function InscriptionForm() {
           nin: form.nin.replace(/\D/g, ""),
           situationProfessionnelle,
           statutFormation: "code",
-          nomAr: form.nomAr.trim() || null,
-          prenomAr: form.prenomAr.trim() || null,
+          nomAr: form.nomAr.trim(),
+          prenomAr: form.prenomAr.trim(),
           prenomPere: form.prenomPere.trim() || null,
           nomMere: form.nomMere.trim() || null,
           prenomMere: form.prenomMere.trim() || null,
           nomJeuneFille: form.sexe === "feminin" ? form.nomJeuneFille.trim() || null : null,
-          numeroDossier: form.numeroDossier.trim() || null,
           numeroPermisObtenu: form.permisDejaObtenu ? form.numeroPermisObtenu.trim() : null,
           datePermisObtenu: form.permisDejaObtenu ? form.datePermisObtenu : null,
           permisDelivrePar: form.permisDejaObtenu ? form.permisDelivrePar.trim() : null,
@@ -387,17 +425,32 @@ export function InscriptionForm() {
                   <span>{m.inscription.fields.categorie}</span>
                   <select
                     required
-                    disabled={!selectedSchool}
+                    disabled={
+                      !form.autoEcoleId ||
+                      categoriesLoading ||
+                      schoolCategories.length === 0
+                    }
                     value={form.categoriePermisId}
                     onChange={(e) => patch({ categoriePermisId: e.target.value })}
                   >
-                    <option value="">{m.inscription.fields.categoriePlaceholder}</option>
-                    {(selectedSchool?.categories ?? []).map((cat) => (
+                    <option value="">
+                      {!form.autoEcoleId
+                        ? m.inscription.categorieSelectSchoolFirst
+                        : categoriesLoading
+                          ? m.inscription.loadingCategories
+                          : schoolCategories.length === 0
+                            ? m.inscription.noCategories
+                            : m.inscription.fields.categoriePlaceholder}
+                    </option>
+                    {schoolCategories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.libelleFr} ({cat.code})
                       </option>
                     ))}
                   </select>
+                  {form.autoEcoleId && !categoriesLoading && schoolCategories.length === 0 ? (
+                    <span className="ds-inscription-muted">{m.inscription.noCategories}</span>
+                  ) : null}
                 </label>
               </>
             )}
@@ -443,6 +496,7 @@ export function InscriptionForm() {
               <label className="ds-inscription-field">
                 <span>{m.inscription.fields.nomAr}</span>
                 <input
+                  required
                   value={form.nomAr}
                   onChange={(e) => patch({ nomAr: e.target.value })}
                   dir="rtl"
@@ -451,20 +505,13 @@ export function InscriptionForm() {
               <label className="ds-inscription-field">
                 <span>{m.inscription.fields.prenomAr}</span>
                 <input
+                  required
                   value={form.prenomAr}
                   onChange={(e) => patch({ prenomAr: e.target.value })}
                   dir="rtl"
                 />
               </label>
             </div>
-            <label className="ds-inscription-field">
-              <span>{m.inscription.fields.numeroDossier}</span>
-              <input
-                value={form.numeroDossier}
-                onChange={(e) => patch({ numeroDossier: e.target.value })}
-                placeholder="ex. 00002727"
-              />
-            </label>
             <label className="ds-inscription-field">
               <span>{m.inscription.fields.nin}</span>
               <input

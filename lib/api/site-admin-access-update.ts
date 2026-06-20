@@ -167,9 +167,11 @@ export function applySiteAdminAccessUpdate(
       const planLabel =
         subscriptionPlan === "PRO"
           ? "Pro"
-          : subscriptionPlan === "ELITE"
-            ? "Élite"
-            : "Essentiel"
+          : subscriptionPlan === "ESSENTIEL_CONNECT"
+            ? "Essentiel Connect"
+            : subscriptionPlan === "ELITE"
+              ? "Élite"
+              : "Essentiel"
       return {
         subscriptionStatus: "ACTIVE",
         subscriptionPlan,

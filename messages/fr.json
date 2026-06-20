@@ -116,7 +116,7 @@
     ],
     "printables": {
       "title": "Documents à imprimer",
-      "subtitle": "Téléchargez ces deux formulaires, imprimez-les et signez-les pour compléter votre dossier papier.",
+      "subtitle": "Téléchargez ces formulaires, imprimez-les et signez-les pour compléter votre dossier papier.",
       "downloadLabel": "Télécharger le PDF",
       "fileFormat": "PDF",
       "hint": "Pensez aussi à remplir la pré-inscription en ligne (étape 2) en parallèle.",
@@ -132,6 +132,12 @@
           "title": "Formulaire عقد",
           "description": "Contrat à imprimer et remettre à l'auto-école avec les autres pièces.",
           "downloadUrl": "https://www.dropbox.com/scl/fi/vllek7x6fo8lve1yfyyci/3aqd.pdf?rlkey=hry7xarl42abe52l17z0uf0ta&dl=1"
+        },
+        {
+          "id": "form-2",
+          "title": "Formulaire 2",
+          "description": "Document à imprimer et remettre à l'auto-école avec les autres pièces.",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/qdrsbx4yf1ys5rrno91vw/2.pdf?rlkey=rng5r4v0wc1ck0ketbzl9k199&dl=1"
         }
       ]
     },
@@ -193,7 +199,6 @@
       "domicile": "Adresse de domicile",
       "sexe": "Sexe",
       "groupeSanguin": "Groupe sanguin",
-      "numeroDossier": "N° de dossier (optionnel)",
       "nomJeuneFille": "Nom de jeune fille (optionnel)",
       "permisDejaObtenu": "Je possède déjà un permis",
       "permisDejaObtenuHint": "Cochez si vous passez une catégorie supplémentaire (ex. déjà B, passez le A).",
@@ -209,8 +214,8 @@
       "situationFamiliale": "Situation familiale",
       "situationProfessionnelle": "Situation professionnelle",
       "situationProfessionnelleAutre": "Précisez votre situation",
-      "nomAr": "Nom en arabe (optionnel)",
-      "prenomAr": "Prénom en arabe (optionnel)"
+      "nomAr": "Nom en arabe",
+      "prenomAr": "Prénom en arabe"
     },
     "sexe": {
       "masculin": "Masculin",
@@ -237,7 +242,10 @@
       "submitting": "Envoi en cours…"
     },
     "loadingSchools": "Chargement des auto-écoles…",
+    "loadingCategories": "Chargement des catégories…",
     "noSchools": "Aucune auto-école disponible pour l'inscription en ligne pour le moment.",
+    "noCategories": "Cette auto-école n'a pas de catégorie ouverte à l'inscription en ligne.",
+    "categorieSelectSchoolFirst": "Choisissez d'abord une auto-école.",
     "schoolLocationSep": " · ",
     "successTitle": "Demande enregistrée",
     "successText": "Votre pré-inscription auprès de {autoEcole} est bien enregistrée. Présentez-vous à l'auto-école avec votre dossier papier pour finaliser l'inscription.",
@@ -251,7 +259,8 @@
     "errorGeneric": "Une erreur est survenue. Vérifiez les champs ou réessayez plus tard.",
     "errors": {
       "photoRequired": "La photo d'identité est requise.",
-      "photoUpload": "La demande est enregistrée mais la photo n'a pas pu être envoyée. Contactez l'auto-école."
+      "photoUpload": "La demande est enregistrée mais la photo n'a pas pu être envoyée. Contactez l'auto-école.",
+      "arabicNameRequired": "Le nom et le prénom en arabe sont requis."
     }
   },
   "features": {
@@ -322,6 +331,8 @@
     "periodMonth": "/ mois",
     "monthlyLabel": "Mensuel",
     "annualLabel": "Annuel",
+    "annualSaveHint": "−20 %",
+    "recommendedLabel": "Recommandé",
     "toggleToMonthly": "Basculer vers mensuel",
     "toggleToAnnual": "Basculer vers annuel",
     "annualCalc": "Soit {monthlyEquivalent} / mois. Vous économisez {savings} !",
@@ -349,10 +360,18 @@
         "Plannings & moniteurs",
         "Paiements & reçus",
         "Listes d'examen & impression",
-        "Portail candidat (QR)",
-        "Inscription en ligne (pré-inscriptions)"
+        "Portail candidat (QR)"
       ],
       "cta": "Commencer"
+    },
+    "essentielConnect": {
+      "tag": "Essentiel Connect",
+      "title": "Back-office + inscription en ligne",
+      "features": [
+        "Tout le pack Essentiel",
+        "Inscription en ligne (pré-inscriptions)"
+      ],
+      "cta": "Choisir Connect"
     },
     "pro": {
       "tag": "Pro",
@@ -383,6 +402,7 @@
   },
   "plans": {
     "essentielLabel": "Essentiel",
+    "essentielConnectLabel": "Essentiel Connect",
     "proLabel": "Pro",
     "eliteLabel": "Élite / Sur mesure"
   },
@@ -400,7 +420,7 @@
       },
       {
         "q": "Combien de candidats puis-je gérer ?",
-        "a": "L'essai gratuit permet jusqu'à 10 élèves, 1 liste d'examen et 1 paiement test pendant 15 jours (impression autorisée). Le plan Essentiel couvre jusqu'à 100 dossiers, le plan Pro jusqu'à 300 dossiers, et l'offre Élite est illimitée sur devis."
+        "a": "L'essai gratuit permet jusqu'à 10 élèves, 1 liste d'examen et 1 paiement test pendant 15 jours (impression autorisée). Le plan Essentiel couvre jusqu'à 100 dossiers (back-office). Essentiel Connect ajoute l'inscription en ligne. Le plan Pro monte à 300 dossiers, et l'offre Élite est illimitée sur devis."
       },
       {
         "q": "Les données sont-elles sécurisées ?",

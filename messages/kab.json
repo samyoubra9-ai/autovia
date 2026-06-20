@@ -114,6 +114,12 @@
           "title": "",
           "description": "",
           "downloadUrl": ""
+        },
+        {
+          "id": "form-2",
+          "title": "",
+          "description": "",
+          "downloadUrl": "https://www.dropbox.com/scl/fi/qdrsbx4yf1ys5rrno91vw/2.pdf?rlkey=rng5r4v0wc1ck0ketbzl9k199&dl=1"
         }
       ]
     },
@@ -163,7 +169,6 @@
       "domicile": "",
       "sexe": "",
       "groupeSanguin": "",
-      "numeroDossier": "",
       "nomJeuneFille": "",
       "permisDejaObtenu": "",
       "permisDejaObtenuHint": "",
@@ -207,7 +212,7 @@
     "successNextTitle": "",
     "successNextSteps": ["", "", ""],
     "errorGeneric": "",
-    "errors": { "photoRequired": "", "photoUpload": "" }
+    "errors": { "photoRequired": "", "photoUpload": "", "arabicNameRequired": "" }
   },
   "features": {
     "eyebrow": "",
