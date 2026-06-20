@@ -1,11 +1,15 @@
-import { LISTE_EXAMEN_PAGE_MARGIN_MM } from "./constants"
+import {
+  listeExamenPrintablePageHeightMm,
+  LISTE_EXAMEN_PRINT_MIN_SCALE,
+  LISTE_EXAMEN_PRINT_SCALE_EDGE,
+} from "./compute-print-scale"
 
-/** Script inline exécuté dans Puppeteer / HTML officiel — même logique que le zoom navigateur. */
+/** Script inline exécuté dans le navigateur — zoom visuel avant impression. */
 export function listeExamenPrintApplyFitScript(): string {
-  const margin = LISTE_EXAMEN_PAGE_MARGIN_MM
+  const pageBodyMm = listeExamenPrintablePageHeightMm()
   return `(function(){
-  var MIN_SCALE = 0.78;
-  var marginMm = ${margin};
+  var MIN_SCALE = ${LISTE_EXAMEN_PRINT_MIN_SCALE};
+  var EDGE = ${LISTE_EXAMEN_PRINT_SCALE_EDGE};
   function mmToPx(mm) {
     var probe = document.createElement('div');
     probe.style.cssText = 'position:fixed;left:-9999px;top:0;height:' + mm + 'mm;width:1px;visibility:hidden';
@@ -14,7 +18,7 @@ export function listeExamenPrintApplyFitScript(): string {
     probe.remove();
     return h;
   }
-  var pageHeight = mmToPx(297 - marginMm * 2);
+  var pageHeight = mmToPx(${pageBodyMm});
   var doc = document.querySelector('.doc');
   if (!doc) return;
   doc.querySelectorAll('.page').forEach(function(shell) {
@@ -26,7 +30,7 @@ export function listeExamenPrintApplyFitScript(): string {
     void shell.offsetHeight;
     var contentHeight = Math.max(shell.scrollHeight, shell.getBoundingClientRect().height);
     if (contentHeight <= pageHeight || contentHeight <= 0) return;
-    var scale = (pageHeight / contentHeight) * 0.992;
+    var scale = (pageHeight / contentHeight) * EDGE;
     scale = Math.max(MIN_SCALE, Math.round(scale * 1000) / 1000);
     shell.style.setProperty('--liste-examen-print-scale', String(scale));
     shell.style.transform = 'scale(' + scale + ')';
@@ -37,3 +41,10 @@ export function listeExamenPrintApplyFitScript(): string {
   doc.classList.add('liste-examen-print-fit-active');
 })();`
 }
+
+export {
+  computeListeExamenPrintScale,
+  listeExamenPrintablePageHeightMm,
+  LISTE_EXAMEN_PRINT_MIN_SCALE,
+  LISTE_EXAMEN_PRINT_SCALE_EDGE,
+} from "./compute-print-scale"

@@ -7,6 +7,8 @@ import { listeExamenPrintStyles } from "./styles"
 export type ListeExamenPrintOptions = {
   /** Essai gratuit : aperçu à l'écran, impression désactivée */
   printBlocked?: boolean
+  /** PDF serveur : scale via Puppeteer, pas le script inline transform. */
+  skipClientFit?: boolean
 }
 
 function trialPrintBlockStyles(): string {
@@ -216,7 +218,12 @@ export function renderListeExamenPrintHtml(
         : ""
 
       const mainClass = page.showFooter ? "page-main page-main--footer" : "page-main"
-      const pageClass = page.footerOnly ? "page page--footer-only" : "page"
+      const pageClass = [
+        page.footerOnly ? "page page--footer-only" : "page",
+        page.totalPages === 1 ? "page--single-sheet" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")
       const tableHtml =
         page.chunks.length > 0
           ? `<table class="main-data-table">${tableHead()}<tbody>${rowsHtml}</tbody></table>`
@@ -252,7 +259,7 @@ export function renderListeExamenPrintHtml(
 <body>
   ${trialBanner}
   <div class="doc">${pagesHtml}</div>
-  <script>${listeExamenPrintApplyFitScript()}${printBlocked ? trialPrintBlockScript() : ""}</script>
+  ${options.skipClientFit ? "" : `<script>${listeExamenPrintApplyFitScript()}${printBlocked ? trialPrintBlockScript() : ""}</script>`}
 </body>
 </html>`
 }

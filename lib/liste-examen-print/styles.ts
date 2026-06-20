@@ -74,6 +74,14 @@ html, body {
   flex: 0 0 auto;
   width: 100%;
 }
+.page--single-sheet .sheet-bottom--footer {
+  page-break-inside: avoid;
+  break-inside: avoid-page;
+}
+.page--single-sheet .footer-section {
+  page-break-before: avoid;
+  break-before: avoid-page;
+}
 .footer-section,
 .footer-layout {
   page-break-inside: avoid;

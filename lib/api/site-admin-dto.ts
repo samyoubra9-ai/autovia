@@ -6,6 +6,7 @@ import {
   getPaidDaysLeft,
   getTrialDaysLeft,
 } from "@/lib/api/site-admin-access-update"
+import { hasOnlineInscriptionFeature } from "@/lib/plan-features"
 import { subscriptionPlanLabel } from "@/lib/subscription-plans"
 import {
   isVerificationDocumentsEnabled,
@@ -33,6 +34,7 @@ export type SiteAdminAutoEcoleDto = {
   subscriptionStatus: SubscriptionStatus
   subscriptionPlan: SubscriptionPlan | null
   subscriptionPlanLabel: string
+  onlineInscription: boolean
   maxElevesOverride: number | null
   quota: SiteAdminQuotaDto
   trialEndsAt: string
@@ -158,6 +160,10 @@ export function toSiteAdminAutoEcoleDto(
     subscriptionStatus: ae.subscriptionStatus,
     subscriptionPlan: ae.subscriptionPlan,
     subscriptionPlanLabel: subscriptionPlanLabel(ae.subscriptionPlan),
+    onlineInscription: hasOnlineInscriptionFeature(
+      ae.subscriptionStatus,
+      ae.subscriptionPlan,
+    ),
     maxElevesOverride: ae.maxElevesOverride,
     quota: {
       maxEleves: snapshot.maxEleves,
