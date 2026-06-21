@@ -6,12 +6,16 @@ function candidatOrigin(): string {
   return url.replace(/\/$/, "");
 }
 
+const chromiumTrace = ["./node_modules/@sparticuz/chromium/**"];
+
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   outputFileTracingIncludes: {
-    "/api/v1/eleves/[id]/fiche-avancement/pdf": [
-      "./lib/fiche-avancement-print/styles/**/*",
-      "./lib/fiche-avancement-print/assets/**/*",
+    "/api/v1/eleves/[id]/fiche-avancement/pdf/route": [
+      "./lib/fiche-avancement-print/**/*",
+      ...chromiumTrace,
     ],
+    "/api/v1/listes-examen/[id]/pdf/route": [...chromiumTrace],
   },
   async redirects() {
     const candidat = candidatOrigin();

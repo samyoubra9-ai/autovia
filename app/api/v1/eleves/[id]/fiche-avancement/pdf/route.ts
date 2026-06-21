@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma"
 
 export const maxDuration = 60
 export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
 
 type Params = { params: Promise<{ id: string }> }
 

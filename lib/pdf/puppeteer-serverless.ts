@@ -1,0 +1,52 @@
+import type { Browser } from "puppeteer-core"
+
+async function resolveLocalChromePath(): Promise<string | null> {
+  const fromEnv = process.env.CHROME_EXECUTABLE_PATH?.trim()
+  if (fromEnv) return fromEnv
+
+  const { existsSync } = await import("fs")
+  const candidates =
+    process.platform === "win32"
+      ? [
+          "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+          "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+        ]
+      : process.platform === "darwin"
+        ? ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
+        : [
+            "/usr/bin/google-chrome",
+            "/usr/bin/chromium-browser",
+            "/usr/bin/chromium",
+          ]
+
+  for (const path of candidates) {
+    if (existsSync(path)) return path
+  }
+  return null
+}
+
+/** Lance Chromium pour PDF serverless (Vercel) ou Chrome local en dev. */
+export async function launchServerlessBrowser(): Promise<Browser> {
+  const puppeteer = await import("puppeteer-core")
+  const isDev = process.env.NODE_ENV === "development"
+
+  if (isDev) {
+    const localChrome = await resolveLocalChromePath()
+    if (localChrome) {
+      return puppeteer.default.launch({
+        executablePath: localChrome,
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      })
+    }
+  }
+
+  const chromium = await import("@sparticuz/chromium")
+  const executablePath = await chromium.default.executablePath()
+
+  return puppeteer.default.launch({
+    args: chromium.default.args,
+    executablePath,
+    headless: true,
+  })
+}

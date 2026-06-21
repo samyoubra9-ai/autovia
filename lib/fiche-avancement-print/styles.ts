@@ -1,15 +1,28 @@
-import { readFileSync } from "fs"
-import { join } from "path"
+import { existsSync, readFileSync } from "fs"
+import { dirname, join } from "path"
+import { fileURLToPath } from "url"
 import {
   FICHE_AVANCEMENT_MARGIN_H_MM,
   FICHE_AVANCEMENT_MARGIN_V_MM,
 } from "./constants"
 
-/** Assets embarqués dans lib/ (déployés sur Vercel — backdash/ est gitignored). */
-const PRINT_ASSETS_DIR = join(process.cwd(), "lib/fiche-avancement-print")
+const PRINT_MODULE_DIR = dirname(fileURLToPath(import.meta.url))
 
 function readPrintAsset(relPath: string): string {
-  return readFileSync(join(PRINT_ASSETS_DIR, relPath), "utf8")
+  const candidates = [
+    join(PRINT_MODULE_DIR, relPath),
+    join(process.cwd(), "lib/fiche-avancement-print", relPath),
+  ]
+
+  for (const filePath of candidates) {
+    if (existsSync(filePath)) {
+      return readFileSync(filePath, "utf8")
+    }
+  }
+
+  throw new Error(
+    `Asset PDF fiche introuvable (${relPath}). Chemins testés: ${candidates.join(" | ")}`,
+  )
 }
 
 /** CSS embarqué pour PDF / HTML officiel. */
