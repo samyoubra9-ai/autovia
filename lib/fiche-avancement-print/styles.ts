@@ -5,17 +5,18 @@ import {
   FICHE_AVANCEMENT_MARGIN_V_MM,
 } from "./constants"
 
-function readBackdashCss(relPath: string): string {
-  return readFileSync(join(process.cwd(), "backdash", relPath), "utf8")
+/** Assets embarqués dans lib/ (déployés sur Vercel — backdash/ est gitignored). */
+const PRINT_ASSETS_DIR = join(process.cwd(), "lib/fiche-avancement-print")
+
+function readPrintAsset(relPath: string): string {
+  return readFileSync(join(PRINT_ASSETS_DIR, relPath), "utf8")
 }
 
-/** CSS embarqué pour PDF / HTML officiel — source : backdash (fiche + print-a4 + print-document). */
+/** CSS embarqué pour PDF / HTML officiel. */
 export function ficheAvancementPrintStyles(): string {
-  const ficheCss = readBackdashCss(
-    "src/features/eleves/components/fiche-avancement-print.css",
-  )
-  const printA4 = readBackdashCss("src/styles/print-a4.css")
-  const printDoc = readBackdashCss("src/styles/print-document.css")
+  const ficheCss = readPrintAsset("styles/fiche-avancement-print.css")
+  const printA4 = readPrintAsset("styles/print-a4.css")
+  const printDoc = readPrintAsset("styles/print-document.css")
 
   return `
 ${ficheCss}

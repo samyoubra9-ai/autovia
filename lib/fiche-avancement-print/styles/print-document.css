@@ -1,0 +1,294 @@
+/**
+ * Impression documents — masquage UI, une ou plusieurs pages A4.
+ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  /* Fiche d'avancement — 2 exemplaires côte à côte, A4 paysage (rectos puis versos) */
+  body:has([data-print-fiche-dual]),
+  html.print-landscape-fiche,
+  html.print-landscape-fiche body,
+  [data-print-fiche-dual] {
+    page: fiche-avancement-landscape;
+  }
+
+  @page fiche-avancement-landscape {
+    size: A4 landscape;
+    margin: 6mm 7mm;
+  }
+
+  /* Liste d'examen — marge haute réduite */
+  @page liste-examen-a4 {
+    size: A4 portrait;
+    margin: 2mm 4mm 4mm 4mm;
+  }
+
+  .liste-examen-print-page[data-print-root],
+  body:has(.liste-examen-print-page[data-print-active]) {
+    page: liste-examen-a4;
+  }
+
+  body:has(.liste-examen-print-page[data-print-root]) [data-print-root] {
+    padding: 0 !important;
+  }
+
+  body:has([data-print-fiche-dual]) [data-print-root] {
+    padding: 0 !important;
+  }
+
+  /* Ancien mode portrait multi-feuilles (autres documents) */
+  body:has([data-print-multi-a4][data-print-fill-priority='height']):not(
+      :has([data-print-fiche-dual])
+    ) {
+    page: fiche-avancement;
+  }
+
+  @page fiche-avancement {
+    size: A4 portrait;
+    margin: 4mm;
+  }
+
+  /* Paysage stats : page nommée APRÈS le portrait pour prendre le dessus (Chrome / Edge) */
+  @page stats-examen-landscape {
+    size: landscape;
+    margin: 0 4mm;
+  }
+
+  html.print-landscape-stats,
+  html.print-landscape-stats body,
+  [data-print-stats-examen] {
+    page: stats-examen-landscape;
+  }
+
+  body:has([data-print-stats-examen]) [data-print-root] {
+    top: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has([data-print-stats-examen]) [data-print-root] .print-a4-viewport {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  body:has([data-print-root]) * {
+    visibility: hidden !important;
+  }
+
+  body:has([data-print-root]) [data-print-root],
+  body:has([data-print-root]) [data-print-root] * {
+    visibility: visible !important;
+  }
+
+  body:has([data-print-root]) [data-sidebar],
+  body:has([data-print-root]) header:not(.fiche-header):not(.eleve-carte-header),
+  body:has([data-print-root]) [data-slot='sidebar'],
+  body:has([data-print-root]) .app-no-print,
+  body:has([data-print-root]) .liste-examen-no-print,
+  body:has([data-print-root]) .eleves-no-print,
+  body:has([data-print-root]) [data-radix-dialog-overlay],
+  body:has([data-print-root]) [data-radix-dialog-close] {
+    display: none !important;
+  }
+
+  /* Impression ciblée : masquer les autres documents si un seul est actif */
+  body:has([data-print-active]) [data-print-root]:not([data-print-active]) {
+    display: none !important;
+  }
+
+  /* Une page avec fit A4 */
+  body:has([data-print-fit-a4]):not(:has([data-print-multi-a4])) {
+    height: auto !important;
+    overflow: hidden !important;
+  }
+
+  body:has([data-print-fit-a4]):not(:has([data-print-multi-a4])) [data-print-root] {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: hidden !important;
+    z-index: 2147483647;
+    page-break-after: avoid !important;
+  }
+
+  /* Plusieurs pages (fiches moniteur) */
+  body:has([data-print-multi-a4]) {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body:has([data-print-multi-a4]) [data-print-root] {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+    z-index: 2147483647;
+    page-break-after: auto !important;
+  }
+
+  /* Fiche dual : ancrer en haut (après la règle multi-a4 static) — évite page 1 vide */
+  body:has([data-print-fiche-dual]) [data-print-root] {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+    page-break-after: avoid !important;
+  }
+
+  body:has([data-print-root]):not(:has([data-print-multi-a4])) [data-print-root] {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: hidden !important;
+    z-index: 2147483647;
+  }
+
+  body:has([data-print-fit-a4]) [data-print-root] .print-a4-viewport {
+    overflow: hidden !important;
+  }
+
+  body:has([data-print-fiche-dual]) [data-print-root] .print-a4-viewport {
+    overflow: visible !important;
+  }
+
+  body:has([data-print-root]) main,
+  body:has([data-print-root]) [data-print-root] main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  [data-print-root] .print-toolbar,
+  [data-print-root] .action-bar,
+  [data-print-root] .fiche-toolbar,
+  [data-print-root] .print-fit-hint {
+    display: none !important;
+  }
+
+  [data-radix-dialog-content]:has([data-print-root]) {
+    position: static !important;
+    transform: none !important;
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Cartes candidat — page dédiée, couleurs fidèles (comme fiche d'avancement) */
+  @page carte-candidat {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  body:has([data-print-carte]) {
+    page: carte-candidat;
+  }
+
+  body:has([data-print-carte]) [data-print-root],
+  body:has([data-print-carte]) [data-print-root] * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body:has([data-print-carte]) [data-print-root] {
+    position: static !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-header {
+    display: flex !important;
+    background: #0f172a !important;
+    color: #fff !important;
+    border-bottom-color: #c9a227 !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-name,
+  body:has([data-print-carte]) .eleve-carte-name-ar,
+  body:has([data-print-carte]) .eleve-carte-ecole,
+  body:has([data-print-carte]) .eleve-carte-ecole-ar,
+  body:has([data-print-carte]) .eleve-carte-photo-fallback {
+    color: #fff !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-badge {
+    background: #fff !important;
+    border-color: #c9a227 !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-badge-code {
+    color: #0f172a !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-field-value--mono {
+    color: #0c4a6e !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-footer {
+    background: #f8fafc !important;
+  }
+
+  body:has([data-print-carte]) .eleve-carte-photo-img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Bordereau d'envoi — portrait obligatoire */
+  @page bordereau-envoi-portrait {
+    size: A4 portrait;
+    margin: 6mm 12mm;
+  }
+
+  html.print-bordereau-portrait,
+  html.print-bordereau-portrait body,
+  body:has([data-print-bordereau][data-print-active]) {
+    page: bordereau-envoi-portrait !important;
+  }
+
+  body:has([data-print-bordereau]) [data-print-root],
+  body:has([data-print-bordereau]) [data-print-root] * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body:has([data-print-bordereau]) .bordereau-cell-empty,
+  body:has([data-print-bordereau]) tr.row-empty td {
+    background-color: #c8c8c8 !important;
+    background-image: none !important;
+  }
+}

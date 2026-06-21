@@ -15,8 +15,6 @@ import {
   VERSO_CONTROLE_CHAPTERS_VEHICULE,
   VERSO_LOG_ROWS,
   VERSO_LOG_ROWS_VEHICULE,
-  VERSO_MAX_CONTROLE_ROWS,
-  VERSO_SUMMARY_COL_COUNT,
   VERSO_TOTAL_AR_FORMATION,
   VERSO_VOLUME_HOURS_FORMATION,
   VERSO_VOLUME_HOURS_VEHICULE,
@@ -215,10 +213,7 @@ function renderVerso(variant: FicheCopieVariant): string {
     ? VERSO_CONTROLE_CHAPTERS_FORMATION
     : VERSO_CONTROLE_CHAPTERS_VEHICULE
   const logRows = isFormation ? VERSO_LOG_ROWS : VERSO_LOG_ROWS_VEHICULE
-  const controlePadCount = Math.max(0, VERSO_MAX_CONTROLE_ROWS - controleChapters.length)
-  const summarySlots = Array.from({ length: VERSO_SUMMARY_COL_COUNT }, (_, i) =>
-    volumeHours[i] ?? { ch: "\u00a0", ar: "\u00a0" },
-  )
+  const summaryColCount = volumeHours.length
 
   const controleRows = controleChapters
     .map(
@@ -231,23 +226,14 @@ function renderVerso(variant: FicheCopieVariant): string {
     )
     .join("")
 
-  const controlePadRows = Array.from({ length: controlePadCount }, (_, i) => `<tr class="fiche-verso-controle-pad-row">
-      <td>&nbsp;</td>
-      <td class="checkbox-cell">&nbsp;</td>
-      <td class="checkbox-cell">&nbsp;</td>
-      <td class="checkbox-cell">&nbsp;</td>
-    </tr>`).join("")
-
   const summaryColgroup = Array.from(
-    { length: VERSO_SUMMARY_COL_COUNT },
-    (_, i) => `<col class="fiche-verso-summary-data-col" />`,
+    { length: summaryColCount },
+    () => `<col class="fiche-verso-summary-data-col" />`,
   ).join("")
 
-  const chRow = summarySlots
-    .map((v, i) => `<td>${escapeHtml(v.ch)}</td>`)
-    .join("")
-  const hoursRow = summarySlots
-    .map((v, i) => `<td class="text-arabic">${escapeHtml(v.ar)}</td>`)
+  const chRow = volumeHours.map((v) => `<td>${escapeHtml(v.ch)}</td>`).join("")
+  const hoursRow = volumeHours
+    .map((v) => `<td class="text-arabic">${escapeHtml(v.ar)}</td>`)
     .join("")
 
   return `<div class="fiche-verso-html print-a4-sheet fiche-verso-html--${variant}" data-fiche-verso="${variant}" data-print-max-scale="1" data-print-min-scale="0.52">
@@ -288,7 +274,7 @@ function renderVerso(variant: FicheCopieVariant): string {
           <th>Bonne maitrise</th>
         </tr>
       </thead>
-      <tbody>${controleRows}${controlePadRows}</tbody>
+      <tbody>${controleRows}</tbody>
     </table>
     <table class="fiche-verso-summary-table">
       <colgroup>
@@ -306,7 +292,7 @@ function renderVerso(variant: FicheCopieVariant): string {
         </tr>
         <tr>
           <td class="fiche-verso-summary-label">TOTAL <span class="text-arabic">المجموع</span></td>
-          <td colspan="${VERSO_SUMMARY_COL_COUNT}" class="text-arabic fiche-verso-total-ar">${escapeHtml(totalAr)}</td>
+          <td colspan="${summaryColCount}" class="text-arabic fiche-verso-total-ar">${escapeHtml(totalAr)}</td>
         </tr>
       </tbody>
     </table>
@@ -344,6 +330,7 @@ export function renderFicheAvancementPrintHtml(
     options.runFitInline && !options.forPdf
       ? `<script>${ficheAvancementPrintApplyFitScript()}</script>`
       : ""
+  const pdfOfficialAttr = options.forPdf ? " data-fiche-pdf-official" : ""
 
   return `<!DOCTYPE html>
 <html class="print-landscape-fiche" lang="ar" dir="ltr">
@@ -357,7 +344,7 @@ export function renderFicheAvancementPrintHtml(
 <div
   class="fiche-avancement-print-root"
   data-print-root
-  data-print-active
+  data-print-active${pdfOfficialAttr}
   data-print-fit-a4
   data-print-multi-a4
   data-print-fiche-dual

@@ -7,6 +7,12 @@ function candidatOrigin(): string {
 }
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    "/api/v1/eleves/[id]/fiche-avancement/pdf": [
+      "./lib/fiche-avancement-print/styles/**/*",
+      "./lib/fiche-avancement-print/assets/**/*",
+    ],
+  },
   async redirects() {
     const candidat = candidatOrigin();
     return [

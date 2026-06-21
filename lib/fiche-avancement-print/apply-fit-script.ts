@@ -129,56 +129,6 @@ export function ficheAvancementPrintApplyFitScript(): string {
     return { scale: scale, contentHeight: contentHeight, contentWidth: contentWidth };
   }
 
-  function equalizeVersoJournalHeights(row) {
-    var documents = Array.prototype.slice.call(row.querySelectorAll('.fiche-verso-document'));
-    var journals = Array.prototype.slice.call(row.querySelectorAll('.fiche-verso-main-table'));
-    if (journals.length < 2) return;
-
-    documents.forEach(function(doc) {
-      doc.style.removeProperty('height');
-      doc.style.removeProperty('min-height');
-    });
-    journals.forEach(function(table) {
-      table.style.removeProperty('height');
-      table.style.removeProperty('flex');
-      Array.prototype.slice.call(table.querySelectorAll('tbody tr')).forEach(function(tr) {
-        tr.style.removeProperty('height');
-      });
-    });
-    void row.offsetHeight;
-
-    var maxDocH = Math.round(Math.max.apply(null, documents.map(function(doc) {
-      return doc.getBoundingClientRect().height;
-    })));
-    if (Number.isFinite(maxDocH) && maxDocH > 0) {
-      documents.forEach(function(doc) {
-        doc.style.height = maxDocH + 'px';
-        doc.style.minHeight = maxDocH + 'px';
-      });
-    }
-
-    var maxJournalH = Math.round(Math.max.apply(null, journals.map(function(table) {
-      return table.getBoundingClientRect().height;
-    })));
-    if (!Number.isFinite(maxJournalH) || maxJournalH <= 0) return;
-
-    var thead = journals[0] && journals[0].querySelector('thead');
-    var theadH = thead ? Math.round(thead.getBoundingClientRect().height) : 0;
-    var rowCount = (journals[0] && journals[0].querySelectorAll('tbody tr').length) || 30;
-    var bodyH = Math.max(1, maxJournalH - theadH);
-    var rowH = bodyH / rowCount;
-
-    journals.forEach(function(table) {
-      table.style.flex = '0 0 auto';
-      table.style.height = maxJournalH + 'px';
-      Array.prototype.slice.call(table.querySelectorAll('tbody tr')).forEach(function(tr) {
-        tr.style.height = rowH + 'px';
-      });
-    });
-
-    row.dataset.versoHeightsEqualized = '1';
-  }
-
   var root = document.querySelector('[data-print-fiche-dual]');
   if (!root) return;
 
@@ -214,10 +164,6 @@ export function ficheAvancementPrintApplyFitScript(): string {
       }
       f.viewport.style.overflow = 'visible';
     });
-
-    if (row.classList.contains('fiche-print-row--versos')) {
-      equalizeVersoJournalHeights(row);
-    }
   });
 
   root.dataset.printScale = String(lastScale);
