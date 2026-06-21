@@ -33,7 +33,10 @@ export async function generateFicheAvancementPdf(
     })
     await page.addScriptTag({ content: ficheAvancementPrintApplyFitScript() })
     await page.waitForFunction(
-      () => Boolean(document.querySelector("[data-print-fiche-dual]")?.dataset.printScale),
+      () => {
+        const root = document.querySelector("[data-print-fiche-dual]")
+        return root instanceof HTMLElement && Boolean(root.dataset.printScale)
+      },
       { timeout: 10_000 },
     )
 
