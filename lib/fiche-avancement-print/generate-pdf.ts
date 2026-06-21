@@ -12,6 +12,11 @@ export async function generateFicheAvancementPdf(
   try {
     browser = await launchServerlessBrowser()
     const page = await browser.newPage()
+    // A4 paysage @ 96 dpi — aligne mmToPx du script de fit avec l’impression
+    await page.setViewport({
+      width: Math.round((297 / 25.4) * 96),
+      height: Math.round((210 / 25.4) * 96),
+    })
     await page.setContent(html, { waitUntil: "load", timeout: 55_000 })
     await page.emulateMediaType("print")
     await page.evaluate(() => document.fonts?.ready)
@@ -27,6 +32,10 @@ export async function generateFicheAvancementPdf(
       )
     })
     await page.addScriptTag({ content: ficheAvancementPrintApplyFitScript() })
+    await page.waitForFunction(
+      () => Boolean(document.querySelector("[data-print-fiche-dual]")?.dataset.printScale),
+      { timeout: 10_000 },
+    )
 
     const pdf = await page.pdf({
       landscape: true,

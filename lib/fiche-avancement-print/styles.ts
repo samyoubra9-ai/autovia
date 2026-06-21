@@ -66,6 +66,34 @@ ${printDoc}
   .fiche-avancement-print-root {
     padding: 0 !important;
   }
+
+  /* PDF serveur (Puppeteer) : zoom CSS non fiable → transform + position statique */
+  html.print-landscape-fiche:has(.fiche-avancement-print-root[data-fiche-pdf-official]),
+  html.print-landscape-fiche:has(.fiche-avancement-print-root[data-fiche-pdf-official]) body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .fiche-avancement-print-root[data-fiche-pdf-official] {
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  .fiche-avancement-print-root[data-fiche-pdf-official] .print-a4-sheet {
+    zoom: 1 !important;
+    transform: scale(var(--print-fit-scale, 1)) !important;
+    transform-origin: top left !important;
+    width: calc(100% / var(--print-fit-scale, 1)) !important;
+  }
+
+  .fiche-avancement-print-root[data-fiche-pdf-official] .fiche-print-row .print-a4-viewport {
+    overflow: visible !important;
+    justify-content: flex-start !important;
+  }
+
+  .fiche-avancement-print-root[data-fiche-pdf-official] .fiche-print-row--versos .print-a4-viewport {
+    justify-content: center !important;
+  }
 }
 `
 }

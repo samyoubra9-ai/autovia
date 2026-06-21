@@ -156,9 +156,19 @@ export function ficheAvancementPrintApplyFitScript(): string {
     if (fitted.length === 0) return;
 
     var unifiedScale = Math.min.apply(null, fitted.map(function(f) { return f.result.scale; }));
+    var pdfOfficial = root.hasAttribute('data-fiche-pdf-official');
     fitted.forEach(function(f) {
       f.sheet.style.setProperty('--print-fit-scale', String(unifiedScale));
-      if (fillHeight) {
+      if (pdfOfficial) {
+        var ch = f.result.contentHeight;
+        var scaledH = Math.max(1, Math.ceil(ch * unifiedScale));
+        f.sheet.style.setProperty('zoom', '1', 'important');
+        f.sheet.style.transformOrigin = 'top left';
+        f.sheet.style.transform = 'scale(' + unifiedScale + ')';
+        f.sheet.style.width = (100 / unifiedScale) + '%';
+        f.viewport.style.height = scaledH + 'px';
+        f.viewport.style.maxHeight = pageHeight + 'px';
+      } else if (fillHeight) {
         f.viewport.style.height = pageHeight + 'px';
         f.viewport.style.maxHeight = pageHeight + 'px';
       }
