@@ -1,3 +1,5 @@
+import "@sparticuz/chromium-min"
+import "puppeteer-core"
 import { getAllowedOrigin, corsHeaders } from "@/lib/api/cors"
 import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"

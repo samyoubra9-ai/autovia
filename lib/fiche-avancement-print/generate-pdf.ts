@@ -12,7 +12,7 @@ export async function generateFicheAvancementPdf(
   try {
     browser = await launchServerlessBrowser()
     const page = await browser.newPage()
-    await page.setContent(html, { waitUntil: "load", timeout: 30_000 })
+    await page.setContent(html, { waitUntil: "load", timeout: 55_000 })
     await page.emulateMediaType("print")
     await page.evaluate(() => document.fonts?.ready)
     await page.evaluate(async () => {

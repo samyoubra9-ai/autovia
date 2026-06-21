@@ -1,3 +1,5 @@
+import "@sparticuz/chromium-min"
+import "puppeteer-core"
 import { getAllowedOrigin, corsHeaders } from "@/lib/api/cors"
 import { ApiError, handleApiError } from "@/lib/api/errors"
 import { requireTenant } from "@/lib/api/auth"
@@ -14,6 +16,7 @@ import { prisma } from "@/lib/prisma"
 
 export const maxDuration = 60
 export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
 
 type Params = { params: Promise<{ id: string }> }
 

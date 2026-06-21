@@ -1,5 +1,10 @@
 import type { Browser } from "puppeteer-core"
 
+/** Pack Chromium hébergé sur GitHub (requis par @sparticuz/chromium-min sur Vercel). */
+export const CHROMIUM_PACK_URL =
+  process.env.CHROMIUM_REMOTE_EXEC_PATH?.trim() ||
+  "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.x64.tar"
+
 async function resolveLocalChromePath(): Promise<string | null> {
   const fromEnv = process.env.CHROME_EXECUTABLE_PATH?.trim()
   if (fromEnv) return fromEnv
@@ -25,12 +30,17 @@ async function resolveLocalChromePath(): Promise<string | null> {
   return null
 }
 
+function shouldUseLocalChrome(): boolean {
+  if (process.env.VERCEL === "1") return false
+  if (process.env.PDF_USE_LOCAL_CHROME === "1") return true
+  return process.env.NODE_ENV !== "production"
+}
+
 /** Lance Chromium pour PDF serverless (Vercel) ou Chrome local en dev. */
 export async function launchServerlessBrowser(): Promise<Browser> {
   const puppeteer = await import("puppeteer-core")
-  const isDev = process.env.NODE_ENV === "development"
 
-  if (isDev) {
+  if (shouldUseLocalChrome()) {
     const localChrome = await resolveLocalChromePath()
     if (localChrome) {
       return puppeteer.default.launch({
@@ -41,12 +51,13 @@ export async function launchServerlessBrowser(): Promise<Browser> {
     }
   }
 
-  const chromium = await import("@sparticuz/chromium")
-  const executablePath = await chromium.default.executablePath()
+  const chromium = await import("@sparticuz/chromium-min")
+  chromium.default.setGraphicsMode = false
+  const executablePath = await chromium.default.executablePath(CHROMIUM_PACK_URL)
 
   return puppeteer.default.launch({
     args: chromium.default.args,
     executablePath,
-    headless: true,
+    headless: "shell",
   })
 }

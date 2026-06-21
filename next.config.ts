@@ -6,16 +6,16 @@ function candidatOrigin(): string {
   return url.replace(/\/$/, "");
 }
 
-const chromiumTrace = ["./node_modules/@sparticuz/chromium/**"];
-
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
+  serverExternalPackages: ["@sparticuz/chromium-min", "puppeteer-core"],
   outputFileTracingIncludes: {
     "/api/v1/eleves/[id]/fiche-avancement/pdf/route": [
       "./lib/fiche-avancement-print/**/*",
-      ...chromiumTrace,
+      "./node_modules/@sparticuz/chromium-min/**",
     ],
-    "/api/v1/listes-examen/[id]/pdf/route": [...chromiumTrace],
+    "/api/v1/listes-examen/[id]/pdf/route": [
+      "./node_modules/@sparticuz/chromium-min/**",
+    ],
   },
   async redirects() {
     const candidat = candidatOrigin();
