@@ -9,10 +9,6 @@ function candidatOrigin(): string {
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@sparticuz/chromium-min", "puppeteer-core"],
   outputFileTracingIncludes: {
-    "/api/v1/eleves/[id]/fiche-avancement/pdf/route": [
-      "./lib/fiche-avancement-print/**/*",
-      "./node_modules/@sparticuz/chromium-min/**",
-    ],
     "/api/v1/listes-examen/[id]/pdf/route": [
       "./node_modules/@sparticuz/chromium-min/**",
     ],
