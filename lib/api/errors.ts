@@ -126,6 +126,13 @@ export function handleApiError(error: unknown, origin: string) {
 
   console.error("[api]", error)
   const msg = String((error as Error)?.message ?? error)
+  if (
+    error instanceof Error &&
+    !prismaUserMessage(error) &&
+    (/\binvalide\b/i.test(msg) || /\brequis/i.test(msg))
+  ) {
+    return jsonWithCors({ error: msg }, origin, { status: 400 })
+  }
   const hint = prismaUserMessage(error)
   const prismaCode =
     error instanceof Prisma.PrismaClientKnownRequestError ? error.code : undefined

@@ -139,6 +139,15 @@ export async function PATCH(request: Request, { params }: Params) {
       return jsonWithCors({ eleve: dto }, origin)
     }
 
+    if (body && typeof body === "object") {
+      const patchBody = body as Record<string, unknown>
+      const sp = String(patchBody.situationProfessionnelle ?? "").trim()
+      if (!sp) {
+        patchBody.situationProfessionnelle =
+          existing.situationProfessionnelle?.trim() || "etudiant"
+      }
+    }
+
     const input = parseEleveInput(body)
     if (!input.categoriePermisId) {
       throw new ApiError(400, "Catégorie de permis requise.")
