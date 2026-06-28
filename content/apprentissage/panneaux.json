@@ -1,0 +1,178 @@
+{
+  "slug": "panneaux",
+  "title": "Panneaux de signalisation",
+  "description": "Apprenez à reconnaître les panneaux par famille : danger, interdiction, obligation, indication et priorité. Terminez par un quiz avec panneaux aléatoires.",
+  "quiz": {
+    "passPercent": 80,
+    "questionsPerRound": 10
+  },
+  "categories": [
+    {
+      "slug": "danger",
+      "title": "Panneaux de danger",
+      "description": "Forme triangulaire à bordure rouge. Ils annoncent un danger à l'approche.",
+      "signs": [
+        {
+          "id": "A1a",
+          "name": "dos d'ane",
+          "meaning": "Annonce un dos d'ane pour ralentir",
+          "image": "/panneaux/danger/dosdane.svg"
+        },
+        {
+          "id": "A1b",
+          "name": "Virage à gauche",
+          "meaning": "Annonce un virage dangereux vers la gauche.",
+          "image": "/panneaux/A1b.svg"
+        },
+        {
+          "id": "A1c",
+          "name": "Virage successif (premier à droite)",
+          "meaning": "Annonce une série de virages dont le premier est à droite.",
+          "image": "/panneaux/A1c.svg"
+        },
+        {
+          "id": "A2a",
+          "name": "Cassis ou dos d'âne",
+          "meaning": "Annonce une bosse ou une déformation de la chaussée.",
+          "image": "/panneaux/A2a.svg"
+        },
+        {
+          "id": "A3",
+          "name": "Passage à niveau avec barrières",
+          "meaning": "Annonce un passage à niveau muni de barrières ou demi-barrières.",
+          "image": "/panneaux/A3.svg"
+        },
+        {
+          "id": "A13a",
+          "name": "Passage piétons",
+          "meaning": "Annonce un passage pour piétons. Prudence et réduction de vitesse.",
+          "image": "/panneaux/A13a.svg"
+        }
+      ]
+    },
+    {
+      "slug": "interdiction",
+      "title": "Panneaux d'interdiction",
+      "description": "Forme circulaire à fond blanc et bordure rouge. Ils interdisent une manœuvre ou une circulation.",
+      "signs": [
+        {
+          "id": "B0",
+          "name": "Accès interdit",
+          "meaning": "Interdiction d'entrer dans la voie ou la zone.",
+          "image": "/panneaux/B0.svg"
+        },
+        {
+          "id": "B1",
+          "name": "Sens interdit",
+          "meaning": "Interdiction de circuler dans le sens indiqué par le panneau.",
+          "image": "/panneaux/B1.svg"
+        },
+        {
+          "id": "B3",
+          "name": "Interdiction de dépasser",
+          "meaning": "Interdiction de dépasser tous les véhicules à moteur autres que les deux-roues.",
+          "image": "/panneaux/B3.svg"
+        },
+        {
+          "id": "B9a",
+          "name": "Interdiction de stationner",
+          "meaning": "Stationnement interdit le long de la chaussée.",
+          "image": "/panneaux/B9a.svg"
+        },
+        {
+          "id": "B14",
+          "name": "Limitation de vitesse",
+          "meaning": "Vitesse maximale autorisée (km/h) indiquée sur le panneau.",
+          "image": "/panneaux/B14.svg"
+        }
+      ]
+    },
+    {
+      "slug": "obligation",
+      "title": "Panneaux d'obligation",
+      "description": "Forme circulaire à fond bleu. Ils imposent une direction ou une manœuvre.",
+      "signs": [
+        {
+          "id": "C1",
+          "name": "Direction obligatoire tout droit",
+          "meaning": "Obligation de continuer tout droit.",
+          "image": "/panneaux/C1.svg"
+        },
+        {
+          "id": "C2",
+          "name": "Contournement obligatoire",
+          "meaning": "Obligation de contourner l'obstacle par la droite ou la gauche (selon la flèche).",
+          "image": "/panneaux/C2.svg"
+        },
+        {
+          "id": "C3",
+          "name": "Voie réservée aux cycles",
+          "meaning": "Piste ou voie obligatoire pour les cycles.",
+          "image": "/panneaux/C3.svg"
+        }
+      ]
+    },
+    {
+      "slug": "indication",
+      "title": "Panneaux d'indication",
+      "description": "Forme carrée ou rectangulaire à fond bleu ou blanc. Ils informent ou guident.",
+      "signs": [
+        {
+          "id": "D1",
+          "name": "Voie sans issue",
+          "meaning": "La voie ne conduit pas à une autre route. Possibilité de sortir en marche avant.",
+          "image": "/panneaux/D1.svg"
+        },
+        {
+          "id": "D4",
+          "name": "Parking",
+          "meaning": "Emplacement aménagé pour le stationnement.",
+          "image": "/panneaux/D4.svg"
+        },
+        {
+          "id": "D7",
+          "name": "Sortie d'autoroute",
+          "meaning": "Indique la sortie d'une autoroute ou voie rapide.",
+          "image": "/panneaux/D7.svg"
+        },
+        {
+          "id": "D42",
+          "name": "Hôpital",
+          "meaning": "Indique la direction d'un établissement hospitalier.",
+          "image": "/panneaux/D42.svg"
+        }
+      ]
+    },
+    {
+      "slug": "priorite",
+      "title": "Panneaux de priorité",
+      "description": "Règles de priorité aux intersections : stop, cédez le passage, route prioritaire.",
+      "signs": [
+        {
+          "id": "AB1",
+          "name": "Stop",
+          "meaning": "Arrêt obligatoire à la ligne. Cédez le passage avant de repartir.",
+          "image": "/panneaux/AB1.svg"
+        },
+        {
+          "id": "AB2",
+          "name": "Cédez le passage",
+          "meaning": "Cédez le passage aux véhicules sur la route prioritaire.",
+          "image": "/panneaux/AB2.svg"
+        },
+        {
+          "id": "AB3a",
+          "name": "Route à caractère prioritaire",
+          "meaning": "Vous circulez sur une route prioritaire jusqu'au panneau de fin.",
+          "image": "/panneaux/AB3a.svg"
+        },
+        {
+          "id": "AB4",
+          "name": "Fin de route prioritaire",
+          "meaning": "Fin de la priorité. Les règles de priorité à droite s'appliquent sauf signalisation.",
+          "image": "/panneaux/AB4.svg"
+        }
+      ]
+    }
+  ]
+}

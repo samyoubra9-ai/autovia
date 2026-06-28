@@ -1,9 +1,9 @@
 "use client"
 
-import { createEmptyProgress, QUIZ_PASS_THRESHOLD_PERCENT } from "./access"
-import type { ApprentissageProgress, ChapterSlug, ModuleSlug } from "./types"
+import type { ApprentissageProgress } from "./tracks/types"
+import { createEmptyProgress } from "./access"
 
-export const STORAGE_KEY = "autovia-apprentissage-progress-v1"
+export const STORAGE_KEY = "autovia-apprentissage-progress-v3"
 
 function isBrowser(): boolean {
   return typeof window !== "undefined"
@@ -13,10 +13,10 @@ export function readProgress(): ApprentissageProgress {
   if (!isBrowser()) return createEmptyProgress()
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createEmptyProgress()
     const parsed = JSON.parse(raw) as ApprentissageProgress
-    if (parsed.version !== 1 || !parsed.modules) return createEmptyProgress()
+    if (parsed.version !== 3) return createEmptyProgress()
     return parsed
   } catch {
     return createEmptyProgress()
@@ -29,51 +29,84 @@ export function writeProgress(progress: ApprentissageProgress): void {
     ...progress,
     updatedAt: new Date().toISOString(),
   }
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
 }
 
-export function markChapterComplete(
+export function markSignStudied(
   progress: ApprentissageProgress,
-  moduleSlug: ModuleSlug,
-  chapterSlug: ChapterSlug,
+  signKey: string,
 ): ApprentissageProgress {
-  const mod = progress.modules[moduleSlug]
-  if (mod.chaptersCompleted.includes(chapterSlug)) return progress
-
+  if (progress.panneaux.signsStudied.includes(signKey)) return progress
   return {
     ...progress,
-    modules: {
-      ...progress.modules,
-      [moduleSlug]: {
-        ...mod,
-        chaptersCompleted: [...mod.chaptersCompleted, chapterSlug],
-      },
+    panneaux: {
+      ...progress.panneaux,
+      signsStudied: [...progress.panneaux.signsStudied, signKey],
     },
     updatedAt: new Date().toISOString(),
   }
 }
 
-export function recordQuizScore(
+export function markCategoryCompleted(
   progress: ApprentissageProgress,
-  moduleSlug: ModuleSlug,
-  scorePercent: number,
+  categorySlug: string,
 ): ApprentissageProgress {
-  const mod = progress.modules[moduleSlug]
-  const best =
-    mod.quizBestScore === null
-      ? scorePercent
-      : Math.max(mod.quizBestScore, scorePercent)
-
+  const set = new Set(progress.panneaux.categoriesCompleted)
+  set.add(categorySlug)
   return {
     ...progress,
-    modules: {
-      ...progress.modules,
-      [moduleSlug]: {
-        ...mod,
-        quizBestScore: best,
-        quizPassed: best >= QUIZ_PASS_THRESHOLD_PERCENT,
-        lastAttemptAt: new Date().toISOString(),
-      },
+    panneaux: {
+      ...progress.panneaux,
+      categoriesCompleted: [...set],
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
+export function markIntersectionStudied(
+  progress: ApprentissageProgress,
+  typeSlug: string,
+): ApprentissageProgress {
+  if (progress.intersections.typesStudied.includes(typeSlug)) return progress
+  return {
+    ...progress,
+    intersections: {
+      ...progress.intersections,
+      typesStudied: [...progress.intersections.typesStudied, typeSlug],
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
+export function recordPanneauxQuizScore(
+  progress: ApprentissageProgress,
+  scorePercent: number,
+  passPercent: number,
+): ApprentissageProgress {
+  const best = Math.max(progress.panneaux.quizBestScore ?? 0, scorePercent)
+  return {
+    ...progress,
+    panneaux: {
+      ...progress.panneaux,
+      quizBestScore: best,
+      quizPassed: best >= passPercent,
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
+export function recordIntersectionsQuizScore(
+  progress: ApprentissageProgress,
+  scorePercent: number,
+  passPercent: number,
+): ApprentissageProgress {
+  const best = Math.max(progress.intersections.quizBestScore ?? 0, scorePercent)
+  return {
+    ...progress,
+    intersections: {
+      ...progress.intersections,
+      quizBestScore: best,
+      quizPassed: best >= passPercent,
     },
     updatedAt: new Date().toISOString(),
   }
@@ -87,5 +120,5 @@ export function resetProgress(): ApprentissageProgress {
 
 export function clearProgressStorage(): void {
   if (!isBrowser()) return
-  window.localStorage.removeItem(STORAGE_KEY)
+  localStorage.removeItem(STORAGE_KEY)
 }

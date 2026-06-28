@@ -1,0 +1,342 @@
+{
+  "slug": "chapitre-1",
+  "step": 1,
+  "title": "Signalisation et règles de la circulation routière",
+  "subtitle": "Programme officiel — permis de conduire",
+  "description": "Signalisation verticale et horizontale, règles de circulation, infractions et feux du véhicule.",
+  "quizSlug": "quiz-chapitre-1",
+  "sections": [
+    {
+      "slug": "signalisation-verticale",
+      "code": "1",
+      "title": "Signalisation verticale",
+      "lessons": [
+        {
+          "slug": "1-1-panneaux-danger",
+          "code": "1-1",
+          "title": "Panneaux de danger",
+          "summary": "Forme, couleurs et familles de panneaux annonçant un danger.",
+          "body": "Les panneaux triangulaires de danger indiquent un danger de (type –A). En outre lors d’un trajet en agglomération, ces panneaux sont règlementairement situés à 50 mètres en amont du danger, alors que sur les routes hors agglomération, ils se trouvent à 150 mètres avant le danger qu'ils montrent aux usagers",
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-2-panneaux-interdiction",
+          "code": "1-2",
+          "title": "Panneaux d'interdiction et de fin d'interdiction",
+          "summary": "Interdictions, restrictions et levée d'interdiction.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-3-panneaux-obligation",
+          "code": "1-3",
+          "title": "Panneaux d'obligation et de fin d'obligation",
+          "summary": "Obligations imposées au conducteur et fin d'obligation.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-4-panneaux-indication",
+          "code": "1-4",
+          "title": "Panneaux d'indication et de direction",
+          "summary": "Informations utiles, services et directions.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-5-panneaux-priorite",
+          "code": "1-5",
+          "title": "Panneaux de priorité",
+          "summary": "Stop, cédez le passage, route prioritaire.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-6-panonces",
+          "code": "1-6",
+          "title": "Panonceaux",
+          "summary": "Compléments d'information sur les panneaux principaux.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-7-balises-bornes",
+          "code": "1-7",
+          "title": "Balises et bornes kilométriques",
+          "summary": "Guidage, délimitation et repères kilométriques.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-8-feux-tricolores",
+          "code": "1-8",
+          "title": "Feux tricolores",
+          "summary": "Feux rouge, orange et vert ; flèches et signaux associés.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "1-9-agents-circulation",
+          "code": "1-9",
+          "title": "Agents de la circulation routière",
+          "summary": "Police, gendarmerie et signaux manuels des agents.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    },
+    {
+      "slug": "signalisation-horizontale",
+      "code": "2",
+      "title": "Signalisation horizontale",
+      "lessons": [
+        {
+          "slug": "2-1-lignes",
+          "code": "2-1",
+          "title": "Lignes",
+          "summary": "Lignes continues, discontinues, doubles et leur signification.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "2-2-fleches",
+          "code": "2-2",
+          "title": "Flèches",
+          "summary": "Flèches de direction, de sélection et de changement de voie.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "2-3-voies-specialisees",
+          "code": "2-3",
+          "title": "Voies spécialisées",
+          "summary": "Voies bus, cycles, piétons et autres affectations.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "2-4-autres-marques",
+          "code": "2-4",
+          "title": "Autres marques",
+          "summary": "Passages piétons, dos d'âne, zones hachurées et marquages divers.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    },
+    {
+      "slug": "signalisation-temporaire",
+      "code": "3",
+      "title": "Signalisation temporaire",
+      "lessons": [
+        {
+          "slug": "3-1-signalisation-temporaire-verticale",
+          "code": "3-1",
+          "title": "Signalisation temporaire verticale",
+          "summary": "Panneaux et dispositifs lors de travaux ou d'événements.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "3-2-signalisation-temporaire-horizontale",
+          "code": "3-2",
+          "title": "Signalisation temporaire horizontale",
+          "summary": "Marquage provisoire au sol et déviations.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    },
+    {
+      "slug": "regles-circulation",
+      "code": "4",
+      "title": "Règles de la circulation routière",
+      "lessons": [
+        {
+          "slug": "4-1-regles-administratives",
+          "code": "4-1",
+          "title": "Règles administratives pour les véhicules et les conducteurs",
+          "summary": "Documents, contrôles et obligations légales.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-2-positionnement",
+          "code": "4-2",
+          "title": "Positionnement",
+          "summary": "Placement du véhicule sur la chaussée et en chaussée.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-3-croisement",
+          "code": "4-3",
+          "title": "Croisement",
+          "summary": "Règles de croisement et dégagements latéraux.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-4-depassement",
+          "code": "4-4",
+          "title": "Dépassement",
+          "summary": "Conditions, interdictions et bonnes pratiques de dépassement.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-5-priorite-passage",
+          "code": "4-5",
+          "title": "Priorité de passage",
+          "summary": "Priorités aux intersections, ronds-points et passages.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-6-vitesse",
+          "code": "4-6",
+          "title": "Vitesse",
+          "summary": "Limitations, adaptation et distances de sécurité.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-7-charge-vehicules",
+          "code": "4-7",
+          "title": "Charge et ensemble des véhicules",
+          "summary": "Chargement, remorques et gabarits.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-8-conduite-nuit",
+          "code": "4-8",
+          "title": "Conduite de nuit",
+          "summary": "Éclairage, visibilité et vigilance nocturne.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-9-conduite-mauvais-temps",
+          "code": "4-9",
+          "title": "Conduite par mauvais temps",
+          "summary": "Pluie, brouillard, vent et chaussée glissante.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "4-10-arret-stationnement",
+          "code": "4-10",
+          "title": "Arrêt et stationnement",
+          "summary": "Différences, interdictions et règles de stationnement.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    },
+    {
+      "slug": "infractions",
+      "code": "5",
+      "title": "Infractions aux règles de la circulation routière et sanctions",
+      "lessons": [
+        {
+          "slug": "5-1-contraventions",
+          "code": "5-1",
+          "title": "Contraventions",
+          "summary": "Infractions mineures, amendes et retrait de points.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "5-2-delits",
+          "code": "5-2",
+          "title": "Délits",
+          "summary": "Infractions graves et sanctions pénales.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    },
+    {
+      "slug": "feux-vehicule",
+      "code": "6",
+      "title": "Feux du véhicule",
+      "lessons": [
+        {
+          "slug": "6-1-feux-avant",
+          "code": "6-1",
+          "title": "Feux avant",
+          "summary": "Code, route, antibrouillard et feux de jour.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        },
+        {
+          "slug": "6-2-feux-arriere",
+          "code": "6-2",
+          "title": "Feux arrière",
+          "summary": "Feux de position, stop, recul et plaque.",
+          "body": null,
+          "bodyKab": null,
+          "images": [],
+          "published": true
+        }
+      ]
+    }
+  ]
+}

@@ -69,6 +69,7 @@ export type EleveDto = {
   codeSuiviDisplay: string | null
   suiviUrl: string | null
   numeroDossier: string | null
+  dateDepotDwsr: string | null
   nomAr: string | null
   prenomAr: string | null
   photoUrl: string | null
@@ -193,6 +194,12 @@ export function toEleveDto(eleve: EleveWithCategorie): EleveDto | null {
       : null,
     suiviUrl: eleve.codeSuivi ? getSuiviPublicUrl(eleve.codeSuivi) : null,
     numeroDossier: eleve.numeroDossier ?? null,
+    dateDepotDwsr:
+      "dateDepotDwsr" in eleve && eleve.dateDepotDwsr
+        ? eleve.dateDepotDwsr instanceof Date
+          ? eleve.dateDepotDwsr.toISOString().slice(0, 10)
+          : String(eleve.dateDepotDwsr).slice(0, 10)
+        : null,
     nomAr: eleve.nomAr ?? null,
     prenomAr: eleve.prenomAr ?? null,
     photoUrl: elevePhotoPublicUrl(
@@ -269,6 +276,7 @@ export type EleveInput = {
   situationProfessionnelle: string
   prixPermis?: number
   numeroDossier?: string | null
+  dateDepotDwsr?: string | null
   nomAr?: string | null
   prenomAr?: string | null
   permisDejaObtenu?: boolean
@@ -335,6 +343,7 @@ export function parseEleveInput(body: unknown): EleveInput {
     situationProfessionnelle,
     prixPermis,
     numeroDossier: trimOrNull(b.numeroDossier),
+    dateDepotDwsr: trimOrNull(b.dateDepotDwsr),
     nomAr: trimOrNull(b.nomAr),
     prenomAr: trimOrNull(b.prenomAr),
     permisDejaObtenu: Boolean(b.permisDejaObtenu),
@@ -395,6 +404,7 @@ export function toPrismaEleveData(
     situationProfessionnelle: input.situationProfessionnelle,
     prixPermis: opts.prixPermis,
     numeroDossier: input.numeroDossier ?? null,
+    dateDepotDwsr: input.dateDepotDwsr ? new Date(input.dateDepotDwsr) : null,
     nomAr: input.nomAr ?? null,
     prenomAr: input.prenomAr ?? null,
     codeSuivi: opts.codeSuivi,

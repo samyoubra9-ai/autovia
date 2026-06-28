@@ -42,82 +42,11 @@
     "chaptersCount": ""
   },
   "modules": {
-    "fondamentaux": {
-      "title": "",
-      "subtitle": "",
-      "description": "",
-      "chapters": {
-        "panneaux": {
-          "title": "",
-          "summary": ""
-        },
-        "marquage": {
-          "title": "",
-          "summary": ""
-        },
-        "feux": {
-          "title": "",
-          "summary": ""
-        }
-      }
-    },
-    "circulation": {
-      "title": "",
-      "subtitle": "",
-      "description": "",
-      "chapters": {
-        "intersections": {
-          "title": "",
-          "summary": ""
-        },
-        "ronds-points": {
-          "title": "",
-          "summary": ""
-        },
-        "depassement": {
-          "title": "",
-          "summary": ""
-        }
-      }
-    },
-    "conducteur": {
-      "title": "",
-      "subtitle": "",
-      "description": "",
-      "chapters": {
-        "vitesse": {
-          "title": "",
-          "summary": ""
-        },
-        "visibilite": {
-          "title": "",
-          "summary": ""
-        },
-        "eco-conduite": {
-          "title": "",
-          "summary": ""
-        }
-      }
-    },
-    "situations": {
-      "title": "",
-      "subtitle": "",
-      "description": "",
-      "chapters": {
-        "autoroutes": {
-          "title": "",
-          "summary": ""
-        },
-        "partage-route": {
-          "title": "",
-          "summary": ""
-        },
-        "secourisme": {
-          "title": "",
-          "summary": ""
-        }
-      }
-    }
+    "chapitre-1": { "title": "", "subtitle": "", "description": "", "chapters": {} },
+    "chapitre-2": { "title": "", "subtitle": "", "description": "", "chapters": {} },
+    "chapitre-3": { "title": "", "subtitle": "", "description": "", "chapters": {} },
+    "chapitre-4": { "title": "", "subtitle": "", "description": "", "chapters": {} },
+    "chapitre-5": { "title": "", "subtitle": "", "description": "", "chapters": {} }
   },
   "module": {
     "stepLabel": "",

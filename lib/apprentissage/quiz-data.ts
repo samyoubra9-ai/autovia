@@ -21,7 +21,7 @@ export type QuizQuestionData = {
 
 type QuizCatalog = {
   modules: Record<
-    ModuleSlug,
+    string,
     {
       questions: QuizQuestionData[]
     }
@@ -64,19 +64,25 @@ function mergeQuestion(
   }
 }
 
+const QUIZ_MODULE_ALIASES: Partial<Record<ModuleSlug, string>> = {
+  "chapitre-1": "fondamentaux",
+}
+
 export function getQuizQuestionsForModule(
   moduleSlug: ModuleSlug,
   locale: VitrineLocale = "fr",
 ): QuizQuestionData[] {
-  const frQuestions = catalogs.fr.modules[moduleSlug]?.questions ?? []
+  const resolved = QUIZ_MODULE_ALIASES[moduleSlug] ?? moduleSlug
+  const frQuestions = catalogs.fr.modules[resolved]?.questions ?? []
   if (locale === "fr") return frQuestions
 
-  const localeQuestions = catalogs[locale].modules[moduleSlug]?.questions ?? []
+  const localeQuestions = catalogs[locale].modules[resolved]?.questions ?? []
   return frQuestions.map((frQ, index) =>
     mergeQuestion(localeQuestions[index], frQ),
   )
 }
 
 export function getQuizQuestionCount(moduleSlug: ModuleSlug): number {
-  return catalogs.fr.modules[moduleSlug]?.questions.length ?? 0
+  const resolved = QUIZ_MODULE_ALIASES[moduleSlug] ?? moduleSlug
+  return catalogs.fr.modules[resolved]?.questions.length ?? 0
 }

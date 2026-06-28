@@ -8,7 +8,7 @@
     "platformLabel": "Plateforme d'apprentissage",
     "backHome": "Accueil",
     "sidebarTitle": "Parcours",
-    "menuLabel": "Curriculum",
+    "menuLabel": "Modules",
     "sidebarProgress": "Progression globale",
     "modulesCompleted": "{done} / {total} validés",
     "storageHint": "Progression enregistrée sur cet appareil uniquement",
@@ -24,104 +24,59 @@
   },
   "dashboard": {
     "title": "Votre parcours d'apprentissage",
-    "subtitle": "Quatre étapes thématiques, chacune avec des leçons puis un quiz de validation. Progressez à votre rythme — sans compte, sur cet appareil.",
+    "subtitle": "Deux modules pour maîtriser le code de la route : les panneaux de signalisation, puis les intersections et priorités. Chaque module se termine par un quiz. Progressez à votre rythme — sans compte, sur cet appareil.",
     "globalProgress": "Progression globale",
     "statsProgress": "Progression",
     "statsModules": "Modules validés",
     "statsNext": "Prochaine étape",
     "allComplete": "Parcours terminé — bravo !",
-    "roadmapTitle": "Feuille de route",
-    "roadmapSubtitle": "Quatre étapes à valider dans l'ordre — leçons puis quiz.",
+    "roadmapTitle": "Vos modules",
+    "roadmapSubtitle": "Panneaux puis intersections — étudiez les fiches puis validez le quiz.",
     "chaptersRead": "{done} / {total} leçons lues",
     "quizInfoTitle": "Validation par quiz",
     "quizInfoText": "Chaque module se termine par un quiz. Répondez aux questions, puis consultez la correction automatique et votre score (minimum 80 % pour débloquer l'étape suivante).",
     "startModule": "Commencer",
     "continueModule": "Continuer",
     "reviewModule": "Revoir",
-    "lockedModule": "Terminez le quiz précédent ({score} % min.)",
+    "lockedModule": "Validez le quiz panneaux ({score} % min.) ou étudiez la moitié des panneaux",
     "chaptersCount": "{count} leçons + quiz"
   },
   "modules": {
-    "fondamentaux": {
-      "title": "Les fondamentaux",
-      "subtitle": "Signalisation",
-      "description": "La base visuelle : lire la route grâce aux panneaux, au marquage au sol et aux feux.",
-      "chapters": {
-        "panneaux": {
-          "title": "Les panneaux",
-          "summary": "Danger, interdiction, obligation et indication."
-        },
-        "marquage": {
-          "title": "Le marquage au sol",
-          "summary": "Lignes, flèches de sélection et passages piétons."
-        },
-        "feux": {
-          "title": "Les signaux lumineux",
-          "summary": "Feux tricolores et signaux spécifiques."
-        }
-      }
+    "chapitre-1": {
+      "title": "Signalisation et règles de la circulation routière",
+      "subtitle": "Chapitre 1",
+      "description": "Signalisation verticale et horizontale, règles de circulation, infractions et feux du véhicule.",
+      "chapters": {}
     },
-    "circulation": {
-      "title": "Règles de circulation",
-      "subtitle": "Priorités",
-      "description": "Interagir avec les autres usagers : intersections, ronds-points et dépassements.",
-      "chapters": {
-        "intersections": {
-          "title": "Les intersections",
-          "summary": "Priorité à droite, cédez le passage et stops."
-        },
-        "ronds-points": {
-          "title": "Ronds-points",
-          "summary": "Placement, priorité et clignotants."
-        },
-        "depassement": {
-          "title": "Croisement et dépassement",
-          "summary": "Quand et comment doubler en sécurité."
-        }
-      }
+    "chapitre-2": {
+      "title": "Notions générales sur le véhicule",
+      "subtitle": "Chapitre 2 — bientôt",
+      "description": "Moteur, transmission, suspension, freinage, voyants et feux.",
+      "chapters": {}
     },
-    "conducteur": {
-      "title": "Conducteur et environnement",
-      "subtitle": "Analyse de situation",
-      "description": "Vitesse, visibilité et responsabilité du conducteur au quotidien.",
-      "chapters": {
-        "vitesse": {
-          "title": "Vitesse et distances",
-          "summary": "Distances de sécurité et temps de réaction."
-        },
-        "visibilite": {
-          "title": "Visibilité et éclairage",
-          "summary": "Feux de route, brouillard, pluie et nuit."
-        },
-        "eco-conduite": {
-          "title": "Éco-conduite et entretien",
-          "summary": "Mécanique de base et respect de l'environnement."
-        }
-      }
+    "chapitre-3": {
+      "title": "Conduite plus sûre et éthique du conducteur",
+      "subtitle": "Chapitre 3 — bientôt",
+      "description": "Facteurs de risque et précautions pour éviter les accidents.",
+      "chapters": {}
     },
-    "situations": {
-      "title": "Situations particulières",
-      "subtitle": "Sécurité",
-      "description": "Autoroutes, usagers vulnérables et gestes de secourisme.",
-      "chapters": {
-        "autoroutes": {
-          "title": "Autoroutes et voies rapides",
-          "summary": "Entrées, sorties et règles spécifiques."
-        },
-        "partage-route": {
-          "title": "Partage de la route",
-          "summary": "Piétons, vélos, motos et zones sensibles."
-        },
-        "secourisme": {
-          "title": "Secourisme et accidents",
-          "summary": "Protéger, alerter, secourir — les réflexes essentiels."
-        }
-      }
+    "chapitre-4": {
+      "title": "Premiers secours et comportements en cas d'accident",
+      "subtitle": "Chapitre 4 — bientôt",
+      "description": "Gestes de secours : accident matériel et corporel.",
+      "chapters": {}
+    },
+    "chapitre-5": {
+      "title": "Conduite économique et technologies modernes",
+      "subtitle": "Chapitre 5 — bientôt",
+      "description": "Éco-conduite et aides à la conduite.",
+      "chapters": {}
     }
   },
   "module": {
-    "stepLabel": "Étape {step}",
-    "chaptersTitle": "Leçons du module",
+    "stepLabel": "Chapitre {step}",
+    "chaptersTitle": "Leçons du chapitre",
+    "sectionsTitle": "Sommaire par section",
     "quizCardTitle": "Quiz de validation",
     "quizCardText": "Validez vos acquis avant de débloquer l'étape suivante.",
     "quizCta": "Lancer le quiz",
@@ -162,5 +117,34 @@
     "bestScore": "Meilleur score : {score} %",
     "noQuestions": "Aucune question pour ce module pour l'instant.",
     "backToModule": "Retour au module"
+  },
+  "tracks": {
+    "stepLabel": "Module {step}",
+    "studied": "étudié",
+    "categoriesTitle": "Familles de panneaux",
+    "typesTitle": "Types d'intersections",
+    "signsCount": "{count} panneaux",
+    "categoriesCount": "{count} catégories",
+    "typesCount": "{count} fiches",
+    "signsStudied": "{done} panneaux étudiés",
+    "typesStudied": "{done} / {total} fiches lues",
+    "quizCardTitle": "Quiz de validation",
+    "panneauxQuizText": "{count} questions aléatoires avec images — {score} % minimum pour valider.",
+    "intersectionsQuizText": "{count} questions — {score} % minimum pour valider.",
+    "panneauxQuizIntro": "Identifiez les panneaux à partir de leur image. Les questions sont tirées au hasard parmi les panneaux du parcours.",
+    "intersectionsQuizIntro": "Testez vos connaissances sur les règles de priorité et les différents types d'intersections.",
+    "backToPanneaux": "Retour aux panneaux",
+    "backToIntersections": "Retour aux intersections",
+    "signStudied": "Étudié",
+    "typeStudied": "Fiche lue",
+    "rulesTitle": "Règles à retenir",
+    "retakeQuiz": "Refaire le quiz",
+    "intersectionsLocked": "Étudiez les panneaux et validez leur quiz (ou parcourez la moitié des fiches) pour débloquer ce module.",
+    "panneaux": {
+      "badge": "Signalisation"
+    },
+    "intersections": {
+      "badge": "Priorités"
+    }
   }
 }

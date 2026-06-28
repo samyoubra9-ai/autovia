@@ -360,6 +360,8 @@ model Eleve {
   etapeExamenValidee       Boolean                  @default(false) @map("etape_examen_validee")
   codeSuivi                String?                  @unique @map("code_suivi")
   numeroDossier            String?                  @map("numero_dossier")
+  /// Date de dépôt du dossier à la DWSR (optionnel)
+  dateDepotDwsr            DateTime?                @map("date_depot_dwsr") @db.Date
   nomAr                    String?                  @map("nom_ar")
   prenomAr                 String?                  @map("prenom_ar")
   /// Chemin Supabase Storage : {autoEcoleId}/{eleveId}/photo.{ext}

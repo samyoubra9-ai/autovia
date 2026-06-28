@@ -1,33 +1,32 @@
+import type { ApprentissageProgress, TrackProgress, TrackSlug } from "./tracks/types"
+import { QUIZ_PASS_THRESHOLD_PERCENT } from "./tracks/types"
 import {
-  APPRENTISSAGE_CURRICULUM,
-  QUIZ_PASS_THRESHOLD_PERCENT,
-  getModule,
-} from "./curriculum"
-import type {
-  ApprentissageProgress,
-  ChapterSlug,
-  ModuleAccessState,
-  ModuleSlug,
-} from "./types"
+  countPanneauxSigns,
+  getAllPanneauSigns,
+  INTERSECTIONS,
+  PANNEAUX,
+} from "./tracks/content"
 
 export { QUIZ_PASS_THRESHOLD_PERCENT }
 
-export function createEmptyProgress(): ApprentissageProgress {
-  const modules = Object.fromEntries(
-    APPRENTISSAGE_CURRICULUM.map((m) => [
-      m.slug,
-      {
-        chaptersCompleted: [] as ChapterSlug[],
-        quizBestScore: null,
-        quizPassed: false,
-        lastAttemptAt: null,
-      },
-    ]),
-  ) as ApprentissageProgress["modules"]
-
+function emptyTrackProgress(): TrackProgress {
   return {
-    version: 1,
-    modules,
+    signsStudied: [],
+    categoriesCompleted: [],
+    quizBestScore: null,
+    quizPassed: false,
+  }
+}
+
+export function createEmptyProgress(): ApprentissageProgress {
+  return {
+    version: 3,
+    panneaux: emptyTrackProgress(),
+    intersections: {
+      typesStudied: [],
+      quizBestScore: null,
+      quizPassed: false,
+    },
     updatedAt: new Date().toISOString(),
   }
 }
@@ -36,49 +35,65 @@ export function isQuizPassed(score: number | null): boolean {
   return score !== null && score >= QUIZ_PASS_THRESHOLD_PERCENT
 }
 
-export function isModuleUnlocked(
-  moduleSlug: ModuleSlug,
-  progress: ApprentissageProgress,
-): boolean {
-  const mod = getModule(moduleSlug)
-  if (!mod.unlockAfterModule) return true
-  return progress.modules[mod.unlockAfterModule].quizPassed
+export function getPanneauxProgressPercent(progress: ApprentissageProgress): number {
+  const total = countPanneauxSigns()
+  if (total === 0) return 0
+  return Math.round((progress.panneaux.signsStudied.length / total) * 100)
 }
 
-export function getModuleAccessState(
-  moduleSlug: ModuleSlug,
-  progress: ApprentissageProgress,
-): ModuleAccessState {
-  if (!isModuleUnlocked(moduleSlug, progress)) return "locked"
-
-  const modProgress = progress.modules[moduleSlug]
-  if (modProgress.quizPassed) return "completed"
-
-  const mod = getModule(moduleSlug)
-  const hasStarted =
-    modProgress.chaptersCompleted.length > 0 || modProgress.quizBestScore !== null
-
-  return hasStarted ? "in_progress" : "available"
-}
-
-export function getModuleCompletionPercent(
-  moduleSlug: ModuleSlug,
+export function getPanneauxCategoryPercent(
+  categorySlug: string,
   progress: ApprentissageProgress,
 ): number {
-  const mod = getModule(moduleSlug)
-  const modProgress = progress.modules[moduleSlug]
-  const totalSteps = mod.chapterSlugs.length + 1
-  let done = modProgress.chaptersCompleted.length
-  if (modProgress.quizPassed) done += 1
-  return Math.round((done / totalSteps) * 100)
+  const cat = PANNEAUX.categories.find((c) => c.slug === categorySlug)
+  if (!cat || cat.signs.length === 0) return 0
+  const studied = cat.signs.filter((s) =>
+    progress.panneaux.signsStudied.includes(`${categorySlug}:${s.id}`),
+  ).length
+  return Math.round((studied / cat.signs.length) * 100)
 }
 
-export function getGlobalCompletionPercent(
+export function getIntersectionsProgressPercent(
   progress: ApprentissageProgress,
 ): number {
-  const sum = APPRENTISSAGE_CURRICULUM.reduce(
-    (acc, m) => acc + getModuleCompletionPercent(m.slug, progress),
-    0,
+  const total = INTERSECTIONS.types.length
+  if (total === 0) return 0
+  return Math.round((progress.intersections.typesStudied.length / total) * 100)
+}
+
+export function getGlobalCompletionPercent(progress: ApprentissageProgress): number {
+  const panneauxPart = getPanneauxProgressPercent(progress)
+  const intPart = getIntersectionsProgressPercent(progress)
+  const panneauxQuiz = progress.panneaux.quizPassed ? 100 : progress.panneaux.quizBestScore ?? 0
+  const intQuiz =
+    progress.intersections.quizPassed ? 100 : progress.intersections.quizBestScore ?? 0
+
+  return Math.round((panneauxPart + intPart + panneauxQuiz + intQuiz) / 4)
+}
+
+export function isIntersectionsUnlocked(progress: ApprentissageProgress): boolean {
+  return (
+    progress.panneaux.quizPassed ||
+    getPanneauxProgressPercent(progress) >= 50
   )
-  return Math.round(sum / APPRENTISSAGE_CURRICULUM.length)
 }
+
+export function getStudiedSignsPool(progress: ApprentissageProgress) {
+  const all = getAllPanneauSigns()
+  const studied = new Set(progress.panneaux.signsStudied)
+  const pool = all.filter((s) => studied.has(s.key))
+  return pool.length >= 4 ? pool : all
+}
+
+export function getTrackLabel(slug: TrackSlug): string {
+  return slug === "panneaux" ? PANNEAUX.title : INTERSECTIONS.title
+}
+
+export function tracksCompletedCount(progress: ApprentissageProgress): number {
+  let n = 0
+  if (progress.panneaux.quizPassed) n++
+  if (progress.intersections.quizPassed) n++
+  return n
+}
+
+export const TRACKS_TOTAL = 2

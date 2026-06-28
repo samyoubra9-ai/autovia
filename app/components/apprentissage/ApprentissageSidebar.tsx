@@ -10,22 +10,23 @@ import {
   formatApprentissageMessage,
   getApprentissageMessages,
 } from "@/lib/i18n/apprentissage-messages"
-import { getChapterContent } from "@/lib/i18n/apprentissage-content"
 import {
   getGlobalCompletionPercent,
-  getModuleAccessState,
-  getModuleCompletionPercent,
-  isModuleUnlocked,
+  getPanneauxCategoryPercent,
+  isIntersectionsUnlocked,
   QUIZ_PASS_THRESHOLD_PERCENT,
+  TRACKS_TOTAL,
+  tracksCompletedCount,
 } from "@/lib/apprentissage/access"
+import { PANNEAUX, INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
 import {
-  APPRENTISSAGE_CURRICULUM,
-  getChapterHref,
-  getModuleHref,
-  getQuizHref,
-  isModuleSlug,
-} from "@/lib/apprentissage/curriculum"
-import type { ModuleSlug } from "@/lib/apprentissage/types"
+  getIntersectionTypeHref,
+  getIntersectionsQuizHref,
+  getPanneauCategoryHref,
+  getPanneauxQuizHref,
+  getTrackHref,
+} from "@/lib/apprentissage/tracks/routes"
+import type { TrackSlug } from "@/lib/apprentissage/tracks/types"
 import { cn } from "@/lib/utils"
 
 import { useApprentissageProgress } from "./ApprentissageProgressProvider"
@@ -41,24 +42,26 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
     [hydrated, progress],
   )
 
-  const modulesCompleted = useMemo(() => {
-    if (!hydrated) return 0
-    return APPRENTISSAGE_CURRICULUM.filter(
-      (mod) => progress.modules[mod.slug].quizPassed,
-    ).length
-  }, [hydrated, progress])
+  const tracksDone = useMemo(
+    () => (hydrated ? tracksCompletedCount(progress) : 0),
+    [hydrated, progress],
+  )
 
-  const [expanded, setExpanded] = useState<ModuleSlug | null>(() => {
-    const match = pathname.match(/^\/apprendre\/([^/]+)/)
-    return (match?.[1] as ModuleSlug) ?? "fondamentaux"
+  const [expanded, setExpanded] = useState<TrackSlug | null>(() => {
+    if (pathname.startsWith("/apprendre/panneaux")) return "panneaux"
+    if (pathname.startsWith("/apprendre/intersections")) return "intersections"
+    return "panneaux"
   })
 
   useEffect(() => {
-    const match = pathname.match(/^\/apprendre\/([^/]+)/)
-    if (match?.[1] && isModuleSlug(match[1])) {
-      setExpanded(match[1] as ModuleSlug)
-    }
+    if (pathname.startsWith("/apprendre/panneaux")) setExpanded("panneaux")
+    else if (pathname.startsWith("/apprendre/intersections"))
+      setExpanded("intersections")
   }, [pathname])
+
+  const intersectionsLocked = hydrated
+    ? !isIntersectionsUnlocked(progress)
+    : false
 
   return (
     <aside className="ap-sidebar">
@@ -79,8 +82,8 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
           </div>
           <p className="ap-sidebar-progress-note">
             {formatApprentissageMessage(m.shell.modulesCompleted, {
-              done: modulesCompleted,
-              total: APPRENTISSAGE_CURRICULUM.length,
+              done: tracksDone,
+              total: TRACKS_TOTAL,
             })}
           </p>
         </div>
@@ -88,125 +91,225 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
 
       <nav className="ap-sidebar-nav" aria-label={m.shell.sidebarTitle}>
         <ul className="ap-nav-list">
-          {APPRENTISSAGE_CURRICULUM.map((mod) => {
-            const moduleMessages = m.modules[mod.slug]
-            const state = hydrated
-              ? getModuleAccessState(mod.slug, progress)
-              : mod.slug === "fondamentaux"
-                ? "available"
-                : "locked"
-            const unlocked = hydrated
-              ? isModuleUnlocked(mod.slug, progress)
-              : mod.slug === "fondamentaux"
-            const percent = hydrated
-              ? getModuleCompletionPercent(mod.slug, progress)
-              : 0
-            const isOpen = expanded === mod.slug
-            const moduleActive = pathname.startsWith(getModuleHref(mod.slug))
-            const stepLabel = String(mod.step).padStart(2, "0")
-
-            return (
-              <li
-                key={mod.slug}
-                className={cn(
-                  "ap-nav-module",
-                  state === "locked" && "ap-nav-module--locked",
-                  moduleActive && "ap-nav-module--active",
-                )}
+          {/* Panneaux */}
+          <li
+            className={cn(
+              "ap-nav-module",
+              pathname.startsWith("/apprendre/panneaux") && "ap-nav-module--active",
+            )}
+          >
+            <div className="ap-nav-module-head">
+              <Link
+                href={getTrackHref("panneaux")}
+                className="ap-nav-module-link"
+                onClick={onNavigate}
               >
-                {unlocked ? (
-                  <div className="ap-nav-module-head">
-                    <Link
-                      href={getModuleHref(mod.slug)}
-                      className="ap-nav-module-link"
-                      onClick={onNavigate}
-                    >
-                      <span
-                        className={cn(
-                          "ap-nav-step",
-                          state === "completed" && "ap-nav-step--done",
-                          moduleActive && "ap-nav-step--active",
-                        )}
-                      >
-                        {state === "completed" ? (
-                          <Check className="size-3.5" strokeWidth={2.5} />
-                        ) : (
-                          stepLabel
-                        )}
-                      </span>
-                      <span className="ap-nav-module-text">
-                        <span className="ap-nav-module-title">
-                          {moduleMessages.title}
-                        </span>
-                        <span className="ap-nav-module-sub">
-                          {moduleMessages.subtitle}
-                        </span>
-                      </span>
-                      <span className="ap-nav-module-pct">{percent}%</span>
-                    </Link>
-                    <button
-                      type="button"
-                      className={cn(
-                        "ap-nav-module-toggle",
-                        isOpen && "ap-nav-module-toggle--open",
-                      )}
-                      aria-expanded={isOpen}
-                      aria-label={isOpen ? m.shell.closeMenu : m.shell.openMenu}
-                      onClick={() =>
-                        setExpanded((cur) =>
-                          cur === mod.slug ? null : mod.slug,
-                        )
-                      }
-                    >
-                      <ChevronRight className="size-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="ap-nav-module-head ap-nav-module-head--locked">
-                    <div className="ap-nav-module-link ap-nav-module-link--disabled">
-                      <span className="ap-nav-step ap-nav-step--locked">
-                        <Lock className="size-3" />
-                      </span>
-                      <span className="ap-nav-module-text">
-                        <span className="ap-nav-module-title">
-                          {moduleMessages.title}
-                        </span>
-                        <span className="ap-nav-module-sub">
-                          {formatApprentissageMessage(m.dashboard.lockedModule, {
-                            score: QUIZ_PASS_THRESHOLD_PERCENT,
-                          })}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
+                <span
+                  className={cn(
+                    "ap-nav-step",
+                    hydrated &&
+                      progress.panneaux.quizPassed &&
+                      "ap-nav-step--done",
+                    pathname.startsWith("/apprendre/panneaux") &&
+                      "ap-nav-step--active",
+                  )}
+                >
+                  {hydrated && progress.panneaux.quizPassed ? (
+                    <Check className="size-3.5" strokeWidth={2.5} />
+                  ) : (
+                    "01"
+                  )}
+                </span>
+                <span className="ap-nav-module-text">
+                  <span className="ap-nav-module-title">{PANNEAUX.title}</span>
+                  <span className="ap-nav-module-sub">
+                    {m.tracks.panneaux.badge}
+                  </span>
+                </span>
+              </Link>
+              <button
+                type="button"
+                className={cn(
+                  "ap-nav-module-toggle",
+                  expanded === "panneaux" && "ap-nav-module-toggle--open",
                 )}
+                aria-expanded={expanded === "panneaux"}
+                aria-label={expanded === "panneaux" ? m.shell.closeMenu : m.shell.openMenu}
+                onClick={() =>
+                  setExpanded((cur) => (cur === "panneaux" ? null : "panneaux"))
+                }
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </div>
 
-                {unlocked && isOpen ? (
+            {expanded === "panneaux" ? (
+              <ul className="ap-nav-chapters">
+                {PANNEAUX.categories.map((cat) => {
+                  const href = getPanneauCategoryHref(cat.slug)
+                  const percent = hydrated
+                    ? getPanneauxCategoryPercent(cat.slug, progress)
+                    : 0
+                  const done = hydrated
+                    ? progress.panneaux.categoriesCompleted.includes(cat.slug)
+                    : false
+                  const active = pathname === href
+
+                  return (
+                    <li key={cat.slug}>
+                      <Link
+                        href={href}
+                        className={cn(
+                          "ap-nav-chapter",
+                          active && "ap-nav-chapter--active",
+                          done && "ap-nav-chapter--done",
+                        )}
+                        onClick={onNavigate}
+                      >
+                        <span className="ap-nav-chapter-label">{cat.title}</span>
+                        <span className="ap-nav-module-pct">{percent}%</span>
+                        {done ? (
+                          <Check
+                            className="size-3.5 shrink-0 text-emerald-600"
+                            strokeWidth={2.5}
+                          />
+                        ) : null}
+                      </Link>
+                    </li>
+                  )
+                })}
+                <li>
+                  <Link
+                    href={getPanneauxQuizHref()}
+                    className={cn(
+                      "ap-nav-chapter ap-nav-chapter--quiz",
+                      pathname === getPanneauxQuizHref() &&
+                        "ap-nav-chapter--active",
+                      hydrated &&
+                        progress.panneaux.quizPassed &&
+                        "ap-nav-chapter--done",
+                    )}
+                    onClick={onNavigate}
+                  >
+                    <span className="ap-nav-chapter-label">{m.shell.quizLabel}</span>
+                    {hydrated && progress.panneaux.quizPassed ? (
+                      <Check
+                        className="size-3.5 shrink-0 text-emerald-600"
+                        strokeWidth={2.5}
+                      />
+                    ) : null}
+                  </Link>
+                </li>
+              </ul>
+            ) : null}
+          </li>
+
+          {/* Intersections */}
+          <li
+            className={cn(
+              "ap-nav-module",
+              intersectionsLocked && "ap-nav-module--locked",
+              pathname.startsWith("/apprendre/intersections") &&
+                "ap-nav-module--active",
+            )}
+          >
+            {intersectionsLocked ? (
+              <div className="ap-nav-module-head ap-nav-module-head--locked">
+                <div className="ap-nav-module-link ap-nav-module-link--disabled">
+                  <span className="ap-nav-step ap-nav-step--locked">
+                    <Lock className="size-3" />
+                  </span>
+                  <span className="ap-nav-module-text">
+                    <span className="ap-nav-module-title">
+                      {INTERSECTIONS.title}
+                    </span>
+                    <span className="ap-nav-module-sub">
+                      {formatApprentissageMessage(m.dashboard.lockedModule, {
+                        score: QUIZ_PASS_THRESHOLD_PERCENT,
+                      })}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="ap-nav-module-head">
+                  <Link
+                    href={getTrackHref("intersections")}
+                    className="ap-nav-module-link"
+                    onClick={onNavigate}
+                  >
+                    <span
+                      className={cn(
+                        "ap-nav-step",
+                        hydrated &&
+                          progress.intersections.quizPassed &&
+                          "ap-nav-step--done",
+                        pathname.startsWith("/apprendre/intersections") &&
+                          "ap-nav-step--active",
+                      )}
+                    >
+                      {hydrated && progress.intersections.quizPassed ? (
+                        <Check className="size-3.5" strokeWidth={2.5} />
+                      ) : (
+                        "02"
+                      )}
+                    </span>
+                    <span className="ap-nav-module-text">
+                      <span className="ap-nav-module-title">
+                        {INTERSECTIONS.title}
+                      </span>
+                      <span className="ap-nav-module-sub">
+                        {m.tracks.intersections.badge}
+                      </span>
+                    </span>
+                  </Link>
+                  <button
+                    type="button"
+                    className={cn(
+                      "ap-nav-module-toggle",
+                      expanded === "intersections" && "ap-nav-module-toggle--open",
+                    )}
+                    aria-expanded={expanded === "intersections"}
+                    aria-label={
+                      expanded === "intersections"
+                        ? m.shell.closeMenu
+                        : m.shell.openMenu
+                    }
+                    onClick={() =>
+                      setExpanded((cur) =>
+                        cur === "intersections" ? null : "intersections",
+                      )
+                    }
+                  >
+                    <ChevronRight className="size-4" />
+                  </button>
+                </div>
+
+                {expanded === "intersections" ? (
                   <ul className="ap-nav-chapters">
-                    {mod.chapterSlugs.map((chapterSlug) => {
-                      const chapter = getChapterContent(m, mod.slug, chapterSlug)
-                      const href = getChapterHref(mod.slug, chapterSlug)
-                      const done =
-                        progress.modules[mod.slug].chaptersCompleted.includes(
-                          chapterSlug,
-                        )
+                    {INTERSECTIONS.types.map((type) => {
+                      const href = getIntersectionTypeHref(type.slug)
+                      const studied = hydrated
+                        ? progress.intersections.typesStudied.includes(type.slug)
+                        : false
                       const active = pathname === href
 
                       return (
-                        <li key={chapterSlug}>
+                        <li key={type.slug}>
                           <Link
                             href={href}
                             className={cn(
                               "ap-nav-chapter",
                               active && "ap-nav-chapter--active",
-                              done && "ap-nav-chapter--done",
+                              studied && "ap-nav-chapter--done",
                             )}
                             onClick={onNavigate}
                           >
                             <span className="ap-nav-chapter-label">
-                              {chapter.title}
+                              {type.title}
                             </span>
-                            {done ? (
+                            {studied ? (
                               <Check
                                 className="size-3.5 shrink-0 text-emerald-600"
                                 strokeWidth={2.5}
@@ -218,12 +321,13 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                     })}
                     <li>
                       <Link
-                        href={getQuizHref(mod.slug)}
+                        href={getIntersectionsQuizHref()}
                         className={cn(
                           "ap-nav-chapter ap-nav-chapter--quiz",
-                          pathname === getQuizHref(mod.slug) &&
+                          pathname === getIntersectionsQuizHref() &&
                             "ap-nav-chapter--active",
-                          progress.modules[mod.slug].quizPassed &&
+                          hydrated &&
+                            progress.intersections.quizPassed &&
                             "ap-nav-chapter--done",
                         )}
                         onClick={onNavigate}
@@ -231,7 +335,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                         <span className="ap-nav-chapter-label">
                           {m.shell.quizLabel}
                         </span>
-                        {progress.modules[mod.slug].quizPassed ? (
+                        {hydrated && progress.intersections.quizPassed ? (
                           <Check
                             className="size-3.5 shrink-0 text-emerald-600"
                             strokeWidth={2.5}
@@ -241,9 +345,9 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                     </li>
                   </ul>
                 ) : null}
-              </li>
-            )
-          })}
+              </>
+            )}
+          </li>
         </ul>
       </nav>
     </aside>

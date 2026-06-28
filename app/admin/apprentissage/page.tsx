@@ -34,7 +34,8 @@ export default async function ApprentissageAdminPage() {
           <p className="admin-page-kicker">Espace pédagogique</p>
           <h1 className="admin-page-title">Contenu apprentissage</h1>
           <p className="admin-page-desc">
-            Modules et leçons en base — images dans <code>public/panneaux/</code>.
+            Contenu des leçons dans <code>content/apprentissage/*.json</code> — images
+            dans <code>public/panneaux/</code>.
           </p>
         </div>
         <Link href="/admin/apprentissage/new" className="admin-btn admin-btn--primary">
@@ -94,12 +95,16 @@ export default async function ApprentissageAdminPage() {
         <h2>Première utilisation</h2>
         <ol className="admin-steps-list">
           <li>
-            Exécuter <code>docs/sql/learning-content.sql</code> dans Supabase (tables vides).
+            Éditer <code>content/apprentissage/chapitre-1.json</code> (titres, texte HTML,
+            images).
           </li>
-          <li>Créer un module, puis des leçons depuis cet espace admin.</li>
           <li>
             Déposer les images dans <code>public/panneaux/</code> et référencer{" "}
-            <code>/panneaux/…</code> dans chaque leçon.
+            <code>/panneaux/…</code> dans le champ <code>images</code> de chaque leçon.
+          </li>
+          <li>
+            Régénérer le squelette :{" "}
+            <code>node scripts/generate-apprentissage-chapitre-1-json.mjs</code>
           </li>
         </ol>
         <Link href="/apprendre" className="admin-btn admin-btn--ghost">

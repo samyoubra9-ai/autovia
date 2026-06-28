@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import {
@@ -13,26 +14,32 @@ import {
 import { Button } from "@/components/ui/button"
 import { useVitrineLocale } from "@/app/components/vitrine/VitrineLocaleProvider"
 import {
-  QUIZ_PASS_THRESHOLD_PERCENT,
-} from "@/lib/apprentissage/access"
-import { getModuleHref } from "@/lib/apprentissage/curriculum"
-import {
-  getQuizQuestionsForModule,
-  type QuizQuestionData,
-} from "@/lib/apprentissage/quiz-data"
-import {
   formatApprentissageMessage,
   getApprentissageMessages,
 } from "@/lib/i18n/apprentissage-messages"
-import type { ModuleSlug } from "@/lib/apprentissage/types"
 import { cn } from "@/lib/utils"
 
-import { useApprentissageProgress } from "./ApprentissageProgressProvider"
+export type TrackQuizQuestion = {
+  id: string
+  prompt: string
+  image?: string | null
+  options: { id: string; label: string }[]
+  correctOptionId: string
+  explanation: string
+}
 
 type QuizPhase = "intro" | "playing" | "results"
 
+type TrackQuizProps = {
+  questions: TrackQuizQuestion[]
+  passPercent: number
+  backHref: string
+  continueHref?: string
+  onComplete: (scorePercent: number) => void
+}
+
 function computeScore(
-  questions: QuizQuestionData[],
+  questions: TrackQuizQuestion[],
   answers: Record<string, string>,
 ): number {
   if (questions.length === 0) return 0
@@ -42,16 +49,15 @@ function computeScore(
   return Math.round((correct / questions.length) * 100)
 }
 
-export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
+export function TrackQuiz({
+  questions,
+  passPercent,
+  backHref,
+  continueHref,
+  onComplete,
+}: TrackQuizProps) {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
-  const moduleMessages = m.modules[moduleSlug]
-  const { saveQuizScore } = useApprentissageProgress()
-
-  const questions = useMemo(
-    () => getQuizQuestionsForModule(moduleSlug, locale),
-    [moduleSlug, locale],
-  )
 
   const [phase, setPhase] = useState<QuizPhase>("intro")
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -67,7 +73,7 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
     () => computeScore(questions, answers),
     [questions, answers],
   )
-  const passed = score >= QUIZ_PASS_THRESHOLD_PERCENT
+  const passed = score >= passPercent
 
   function startQuiz() {
     setPhase("playing")
@@ -86,7 +92,7 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
     if (isLast) {
       const finalScore = computeScore(questions, answers)
       if (!scoreSaved) {
-        saveQuizScore(moduleSlug, finalScore)
+        onComplete(finalScore)
         setScoreSaved(true)
       }
       setPhase("results")
@@ -95,16 +101,12 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
     setCurrentIndex((i) => i + 1)
   }
 
-  function retry() {
-    startQuiz()
-  }
-
   if (total === 0) {
     return (
       <div className="ap-quiz-empty">
         <p>{m.quiz.noQuestions}</p>
         <Button asChild variant="outline">
-          <Link href={getModuleHref(moduleSlug)}>{m.quiz.backToModule}</Link>
+          <Link href={backHref}>{m.quiz.backToModule}</Link>
         </Button>
       </div>
     )
@@ -120,7 +122,7 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
           </li>
           <li>
             {formatApprentissageMessage(m.quiz.passRequirement, {
-              score: QUIZ_PASS_THRESHOLD_PERCENT,
+              score: passPercent,
             })}
           </li>
           <li>{m.quiz.correctionAtEnd}</li>
@@ -153,6 +155,19 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
           </div>
         </div>
 
+        {current.image ? (
+          <div className="ap-sign-quiz-image-wrap">
+            <Image
+              src={current.image}
+              alt=""
+              width={160}
+              height={160}
+              className="ap-sign-quiz-image"
+              unoptimized
+            />
+          </div>
+        ) : null}
+
         <h2 className="ap-quiz-prompt">{current.prompt}</h2>
 
         <div className="ap-quiz-options" role="radiogroup" aria-label={current.prompt}>
@@ -171,7 +186,11 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
                 onClick={() => selectOption(opt.id)}
               >
                 <span className="ap-quiz-option-marker" aria-hidden>
-                  {checked ? <Check className="size-3.5" /> : <Circle className="size-3.5" />}
+                  {checked ? (
+                    <Check className="size-3.5" />
+                  ) : (
+                    <Circle className="size-3.5" />
+                  )}
                 </span>
                 <span>{opt.label}</span>
               </button>
@@ -195,6 +214,8 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
       </div>
     )
   }
+
+  const afterHref = passed && continueHref ? continueHref : backHref
 
   return (
     <div className="ap-quiz-results">
@@ -251,6 +272,17 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
                     {isCorrect ? m.quiz.correct : m.quiz.incorrect}
                   </span>
                 </div>
+                {q.image ? (
+                  <div className="ap-sign-quiz-review-image">
+                    <Image
+                      src={q.image}
+                      alt=""
+                      width={80}
+                      height={80}
+                      unoptimized
+                    />
+                  </div>
+                ) : null}
                 <p className="ap-quiz-review-prompt">{q.prompt}</p>
                 <p className="ap-quiz-review-answer">
                   <strong>{m.quiz.yourAnswer}</strong> {userLabel ?? "—"}
@@ -268,12 +300,12 @@ export function ModuleQuiz({ moduleSlug }: { moduleSlug: ModuleSlug }) {
       </div>
 
       <div className="ap-quiz-results-actions">
-        <Button type="button" variant="outline" onClick={retry} className="gap-2">
+        <Button type="button" variant="outline" onClick={startQuiz} className="gap-2">
           <RotateCcw className="size-4" />
           {m.quiz.retry}
         </Button>
         <Button asChild>
-          <Link href={getModuleHref(moduleSlug)}>
+          <Link href={afterHref}>
             {passed ? m.quiz.continuePath : m.quiz.backToModule}
             <ArrowRight className="size-4" />
           </Link>

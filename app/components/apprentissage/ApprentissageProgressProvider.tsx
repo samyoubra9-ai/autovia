@@ -13,29 +13,45 @@ import {
 import { useCookieConsent } from "@/app/components/vitrine/CookieConsentProvider"
 import { createEmptyProgress } from "@/lib/apprentissage/access"
 import {
-  markChapterComplete,
+  markCategoryCompleted,
+  markIntersectionStudied,
+  markSignStudied,
   readProgress,
-  recordQuizScore,
+  recordIntersectionsQuizScore,
+  recordPanneauxQuizScore,
   resetProgress,
   writeProgress,
 } from "@/lib/apprentissage/progress-store"
-import type {
-  ApprentissageProgress,
-  ChapterSlug,
-  ModuleSlug,
-} from "@/lib/apprentissage/types"
+import type { ApprentissageProgress } from "@/lib/apprentissage/tracks/types"
+import { getPanneauCategory } from "@/lib/apprentissage/tracks/content"
+import { signKey } from "@/lib/apprentissage/tracks/types"
 
 type ApprentissageProgressContextValue = {
   progress: ApprentissageProgress
   hydrated: boolean
   learningEnabled: boolean
-  completeChapter: (moduleSlug: ModuleSlug, chapterSlug: ChapterSlug) => void
-  saveQuizScore: (moduleSlug: ModuleSlug, scorePercent: number) => void
+  studySign: (categorySlug: string, signId: string) => void
+  studyIntersection: (typeSlug: string) => void
+  savePanneauxQuiz: (scorePercent: number, passPercent: number) => void
+  saveIntersectionsQuiz: (scorePercent: number, passPercent: number) => void
   resetAll: () => void
 }
 
 const ApprentissageProgressContext =
   createContext<ApprentissageProgressContextValue | null>(null)
+
+function maybeCompleteCategory(
+  progress: ApprentissageProgress,
+  categorySlug: string,
+): ApprentissageProgress {
+  const cat = getPanneauCategory(categorySlug)
+  if (!cat) return progress
+  const allStudied = cat.signs.every((s) =>
+    progress.panneaux.signsStudied.includes(signKey(categorySlug, s.id)),
+  )
+  if (!allStudied) return progress
+  return markCategoryCompleted(progress, categorySlug)
+}
 
 export function ApprentissageProgressProvider({
   children,
@@ -53,11 +69,12 @@ export function ApprentissageProgressProvider({
     setHydrated(true)
   }, [learning])
 
-  const completeChapter = useCallback(
-    (moduleSlug: ModuleSlug, chapterSlug: ChapterSlug) => {
+  const studySign = useCallback(
+    (categorySlug: string, signId: string) => {
       if (!learning) return
       setProgress((current) => {
-        const next = markChapterComplete(current, moduleSlug, chapterSlug)
+        const withSign = markSignStudied(current, signKey(categorySlug, signId))
+        const next = maybeCompleteCategory(withSign, categorySlug)
         writeProgress(next)
         return next
       })
@@ -65,11 +82,39 @@ export function ApprentissageProgressProvider({
     [learning],
   )
 
-  const saveQuizScore = useCallback(
-    (moduleSlug: ModuleSlug, scorePercent: number) => {
+  const studyIntersection = useCallback(
+    (typeSlug: string) => {
       if (!learning) return
       setProgress((current) => {
-        const next = recordQuizScore(current, moduleSlug, scorePercent)
+        const next = markIntersectionStudied(current, typeSlug)
+        writeProgress(next)
+        return next
+      })
+    },
+    [learning],
+  )
+
+  const savePanneauxQuiz = useCallback(
+    (scorePercent: number, passPercent: number) => {
+      if (!learning) return
+      setProgress((current) => {
+        const next = recordPanneauxQuizScore(current, scorePercent, passPercent)
+        writeProgress(next)
+        return next
+      })
+    },
+    [learning],
+  )
+
+  const saveIntersectionsQuiz = useCallback(
+    (scorePercent: number, passPercent: number) => {
+      if (!learning) return
+      setProgress((current) => {
+        const next = recordIntersectionsQuizScore(
+          current,
+          scorePercent,
+          passPercent,
+        )
         writeProgress(next)
         return next
       })
@@ -91,11 +136,22 @@ export function ApprentissageProgressProvider({
       progress,
       hydrated,
       learningEnabled: learning,
-      completeChapter,
-      saveQuizScore,
+      studySign,
+      studyIntersection,
+      savePanneauxQuiz,
+      saveIntersectionsQuiz,
       resetAll,
     }),
-    [progress, hydrated, learning, completeChapter, saveQuizScore, resetAll],
+    [
+      progress,
+      hydrated,
+      learning,
+      studySign,
+      studyIntersection,
+      savePanneauxQuiz,
+      saveIntersectionsQuiz,
+      resetAll,
+    ],
   )
 
   return (

@@ -231,6 +231,7 @@ export async function PATCH(request: Request, { params }: Params) {
         situationProfessionnelle: input.situationProfessionnelle,
         prixPermis,
         numeroDossier: input.numeroDossier ?? null,
+        dateDepotDwsr: input.dateDepotDwsr ? new Date(input.dateDepotDwsr) : null,
         nomAr: input.nomAr ?? null,
         prenomAr: input.prenomAr ?? null,
         ...(input.createdAt ? { createdAt: new Date(input.createdAt) } : {}),

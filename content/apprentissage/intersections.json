@@ -1,0 +1,173 @@
+{
+  "slug": "intersections",
+  "title": "Intersections et priorités",
+  "description": "Comprenez les différents types d'intersections et les règles de priorité. Validez vos acquis avec un quiz.",
+  "quiz": {
+    "passPercent": 80,
+    "questionsPerRound": 8
+  },
+  "types": [
+    {
+      "slug": "priorite-droite",
+      "title": "Priorité à droite",
+      "summary": "Règle par défaut lorsqu'il n'y a pas de signalisation.",
+      "body": "<p>Sauf signalisation contraire, la <strong>priorité à droite</strong> s'applique : vous devez céder le passage aux véhicules venant de votre droite.</p><p>Ralentissez à l'approche d'une intersection non signalée et vérifiez les véhicules à droite.</p>",
+      "image": null,
+      "rules": [
+        "Céder le passage à droite",
+        "Ralentir à l'approche",
+        "Ne pas présumer que l'autre va s'arrêter"
+      ]
+    },
+    {
+      "slug": "stop-cedez",
+      "title": "Stop et cédez le passage",
+      "summary": "Arrêt obligatoire ou cédez le passage selon le panneau.",
+      "body": "<p>Au <strong>STOP</strong>, l'arrêt est obligatoire à la ligne. Au <strong>cédez le passage</strong>, ralentissez et cédez sans arrêt complet si la voie est libre.</p>",
+      "image": null,
+      "rules": [
+        "STOP : arrêt complet obligatoire",
+        "Cédez le passage : priorité aux autres usagers",
+        "Ne jamais bloquer l'intersection"
+      ]
+    },
+    {
+      "slug": "route-prioritaire",
+      "title": "Route prioritaire",
+      "summary": "Vous avez la priorité sur les voies qui croisent la vôtre.",
+      "body": "<p>Le panneau losange jaune indique une <strong>route prioritaire</strong>. Les véhicules sur les routes secondaires doivent vous céder le passage.</p><p>Restez vigilant : un autre conducteur peut ne pas respecter la priorité.</p>",
+      "image": null,
+      "rules": [
+        "Priorité sur les routes secondaires",
+        "Fin de priorité au panneau AB4",
+        "Vigilance malgré la priorité"
+      ]
+    },
+    {
+      "slug": "rond-point",
+      "title": "Rond-point",
+      "summary": "Insertion, circulation et sortie dans un giratoire.",
+      "body": "<p>Avant d'entrer dans un rond-point, <strong>cédez le passage</strong> aux véhicules déjà engagés dans l'anneau (sauf signalisation différente).</p><p>Indiquez votre sortie avec le clignotant droit avant de quitter l'anneau.</p>",
+      "image": null,
+      "rules": [
+        "Céder le passage à l'entrée",
+        "Clignotant droit avant la sortie",
+        "Ne pas s'arrêter dans l'anneau sans raison"
+      ]
+    },
+    {
+      "slug": "carrefour-feux",
+      "title": "Carrefour à feux",
+      "summary": "Priorité selon les feux tricolores et les flèches.",
+      "body": "<p>Au feu <strong>rouge</strong>, arrêt obligatoire. Au <strong>orange</strong>, arrêt sauf danger si déjà engagé. Au <strong>vert</strong>, repartez en vérifiant les piétons et cyclistes.</p><p>Les flèches autorisent une direction même si le feu principal est rouge (selon le cas).</p>",
+      "image": null,
+      "rules": [
+        "Rouge : arrêt complet",
+        "Vert : repartir avec prudence",
+        "Respecter les flèches directionnelles"
+      ]
+    },
+    {
+      "slug": "giratoire-plurivoies",
+      "title": "Carrefour giratoire à plusieurs voies",
+      "summary": "Placement et changement de voie dans un giratoire complexe.",
+      "body": "<p>Choisissez la <strong>bonne voie</strong> avant d'entrer selon votre sortie. Les voies intérieures servent souvent aux sorties tardives.</p><p>Ne changez pas de voie brusquement dans l'anneau.</p>",
+      "image": null,
+      "rules": [
+        "Se placer à l'avance selon la sortie",
+        "Clignotant pour changer de voie",
+        "Attention aux angles morts"
+      ]
+    }
+  ],
+  "quizQuestions": [
+    {
+      "id": "int-01",
+      "prompt": "À une intersection sans signalisation, qui a la priorité ?",
+      "options": [
+        { "id": "a", "label": "Le véhicule le plus rapide" },
+        { "id": "b", "label": "Le véhicule venant de la droite" },
+        { "id": "c", "label": "Le véhicule le plus grand" }
+      ],
+      "correctOptionId": "b",
+      "explanation": "La priorité à droite s'applique par défaut."
+    },
+    {
+      "id": "int-02",
+      "prompt": "Au panneau STOP, que devez-vous faire ?",
+      "options": [
+        { "id": "a", "label": "Ralentir seulement" },
+        { "id": "b", "label": "Arrêt complet à la ligne" },
+        { "id": "c", "label": "Klaxonner et passer" }
+      ],
+      "correctOptionId": "b",
+      "explanation": "Le STOP impose un arrêt complet avant de repartir."
+    },
+    {
+      "id": "int-03",
+      "prompt": "En entrant dans un rond-point, vous devez généralement :",
+      "options": [
+        { "id": "a", "label": "Céder le passage aux véhicules dans l'anneau" },
+        { "id": "b", "label": "Passer en priorité" },
+        { "id": "c", "label": "Klaxonner systématiquement" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "On cède le passage aux véhicules déjà engagés."
+    },
+    {
+      "id": "int-04",
+      "prompt": "Le panneau losange jaune sur fond blanc indique :",
+      "options": [
+        { "id": "a", "label": "Une zone de danger" },
+        { "id": "b", "label": "Une route prioritaire" },
+        { "id": "c", "label": "Une voie sans issue" }
+      ],
+      "correctOptionId": "b",
+      "explanation": "C'est le panneau de route à caractère prioritaire (AB3a)."
+    },
+    {
+      "id": "int-05",
+      "prompt": "Au feu rouge, vous devez :",
+      "options": [
+        { "id": "a", "label": "Vous arrêter avant la ligne" },
+        { "id": "b", "label": "Passer si la voie est libre" },
+        { "id": "c", "label": "Ralentir sans vous arrêter" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "Le feu rouge impose un arrêt complet."
+    },
+    {
+      "id": "int-06",
+      "prompt": "Avant de quitter un rond-point, vous devez :",
+      "options": [
+        { "id": "a", "label": "Mettre le clignotant droit" },
+        { "id": "b", "label": "Mettre le clignotant gauche" },
+        { "id": "c", "label": "Ne jamais utiliser de clignotant" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "Le clignotant droit indique la sortie du giratoire."
+    },
+    {
+      "id": "int-07",
+      "prompt": "Le panneau « cédez le passage » signifie :",
+      "options": [
+        { "id": "a", "label": "Arrêt obligatoire dans tous les cas" },
+        { "id": "b", "label": "Céder la priorité sans arrêt si la voie est libre" },
+        { "id": "c", "label": "Vous avez toujours la priorité" }
+      ],
+      "correctOptionId": "b",
+      "explanation": "On cède le passage ; l'arrêt n'est pas toujours obligatoire."
+    },
+    {
+      "id": "int-08",
+      "prompt": "À la fin d'une route prioritaire (panneau AB4), quelle règle reprend souvent le dessus ?",
+      "options": [
+        { "id": "a", "label": "Priorité à droite" },
+        { "id": "b", "label": "Priorité aux camions" },
+        { "id": "c", "label": "Aucune règle" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "Sans autre signalisation, la priorité à droite s'applique."
+    }
+  ]
+}

@@ -1,41 +1,23 @@
-/** Identifiants stables du curriculum — ne pas renommer sans migration. */
-export const MODULE_SLUGS = [
-  "fondamentaux",
-  "circulation",
-  "conducteur",
-  "situations",
-] as const
+import type { ProgrammeSection } from "./programme"
 
-export type ModuleSlug = (typeof MODULE_SLUGS)[number]
+export type ModuleSlug =
+  | "chapitre-1"
+  | "chapitre-2"
+  | "chapitre-3"
+  | "chapitre-4"
+  | "chapitre-5"
 
-export type ChapterSlug =
-  | "panneaux"
-  | "marquage"
-  | "feux"
-  | "intersections"
-  | "ronds-points"
-  | "depassement"
-  | "vitesse"
-  | "visibilite"
-  | "eco-conduite"
-  | "autoroutes"
-  | "partage-route"
-  | "secourisme"
+/** Slug de leçon (ex. 1-1-panneaux-danger) */
+export type ChapterSlug = string
 
 export type QuizMode = "training" | "exam"
-
-export type CurriculumChapter = {
-  slug: ChapterSlug
-  order: number
-}
 
 export type CurriculumModule = {
   slug: ModuleSlug
   step: number
-  chapterSlugs: readonly ChapterSlug[]
-  /** Quiz de validation en fin de module */
+  chapterSlugs: readonly string[]
+  sections: readonly ProgrammeSection[]
   quizSlug: string
-  /** Module précédent requis (score quiz ≥ seuil) */
   unlockAfterModule: ModuleSlug | null
 }
 
@@ -45,14 +27,14 @@ export type QuizOption = {
 }
 
 export type ModuleProgress = {
-  chaptersCompleted: ChapterSlug[]
+  chaptersCompleted: string[]
   quizBestScore: number | null
   quizPassed: boolean
   lastAttemptAt: string | null
 }
 
 export type ApprentissageProgress = {
-  version: 1
+  version: 2
   modules: Record<ModuleSlug, ModuleProgress>
   updatedAt: string
 }

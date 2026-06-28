@@ -681,7 +681,46 @@
   line-height: 1.35;
 }
 
-/* Page content */
+.ap-nav-section {
+  margin-top: 4px;
+}
+
+.ap-nav-section-label {
+  padding: 10px 12px 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ap-muted, #64748b);
+  line-height: 1.35;
+}
+
+.ap-nav-section-lessons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ap-nav-chapter-code {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--ap-muted, #64748b);
+  min-width: 1.75rem;
+}
+
+.ap-nav-chapter {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ap-module-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .ap-page {
   display: flex;
   flex-direction: column;
@@ -1627,3 +1666,315 @@
   border-radius: 16px;
   border: 1px dashed var(--ap-border);
 }
+
+/* Panneaux & intersections */
+.ap-page-head-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--ap-text-muted);
+}
+
+.ap-track-section h2 {
+  margin: 0 0 16px;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.ap-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.ap-category-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-cat-soft, var(--ap-surface));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ap-category-card:hover {
+  border-color: var(--ap-cat-accent, var(--ap-accent));
+  box-shadow: var(--ap-shadow-md);
+}
+
+.ap-category-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ap-category-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ap-cat-accent, var(--ap-accent));
+}
+
+.ap-category-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ap-text-muted);
+  flex: 1;
+}
+
+.ap-category-card-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ap-text-muted);
+}
+
+.ap-category-card-pct {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.ap-track-quiz-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin-top: 32px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-surface);
+}
+
+.ap-track-quiz-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--ap-accent-soft);
+  color: var(--ap-accent);
+}
+
+.ap-track-quiz-card h2 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ap-track-quiz-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ap-text-muted);
+}
+
+.ap-sign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.ap-sign-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-surface);
+  overflow: hidden;
+}
+
+.ap-sign-card--studied {
+  border-color: #86efac;
+}
+
+.ap-sign-card-image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 20px;
+  background: var(--ap-surface-muted);
+}
+
+.ap-sign-card-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.ap-sign-card-id {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-border);
+  color: var(--ap-text-muted);
+}
+
+.ap-sign-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+
+.ap-sign-card-body h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.ap-sign-card-body p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ap-text-muted);
+  flex: 1;
+}
+
+.ap-sign-card-btn {
+  align-self: flex-start;
+  gap: 6px;
+}
+
+.ap-page-footer-cta {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ap-border);
+}
+
+.ap-type-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ap-type-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ap-type-card:hover {
+  border-color: var(--ap-accent);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-type-card--studied {
+  border-color: #86efac;
+}
+
+.ap-type-card--locked {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.ap-type-card-num {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--ap-accent);
+  min-width: 2rem;
+}
+
+.ap-type-card h3 {
+  margin: 0 0 4px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.ap-type-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ap-text-muted);
+}
+
+.ap-track-locked-hint {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.ap-studied-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #059669;
+}
+
+.ap-rules-box {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-accent-soft);
+}
+
+.ap-rules-box h2 {
+  margin: 0 0 12px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.ap-rules-box ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.ap-sign-quiz-image-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--ap-surface-muted);
+  border: 1px solid var(--ap-border);
+}
+
+.ap-sign-quiz-image {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.ap-sign-quiz-review-image {
+  margin-bottom: 10px;
+}
+
+.ap-sign-quiz-review-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+

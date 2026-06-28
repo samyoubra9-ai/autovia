@@ -16,6 +16,10 @@ import {
   fillMissingDatesDernierExamenOnListe,
   refreshDatesDernierExamenOnListe,
 } from "@/lib/api/liste-examen-date-dernier"
+import {
+  parseMessagesCategorieInput,
+  upsertListeExamenMessages,
+} from "@/lib/api/liste-examen-messages"
 import { toListeExamenDto } from "@/lib/api/mappers-liste-examen"
 import { prisma, PRISMA_TRANSACTION_OPTS } from "@/lib/prisma"
 
@@ -72,8 +76,9 @@ export async function PATCH(request: Request, { params }: Params) {
       ? parseListeExamenHeaderPatch(body)
       : null
     const hasCandidats = body.candidats !== undefined
+    const hasMessages = body.messagesCategorie !== undefined
 
-    if (!headerPatch && !hasCandidats) {
+    if (!headerPatch && !hasCandidats && !hasMessages) {
       throw new ApiError(400, "Aucune modification.")
     }
 
@@ -88,6 +93,11 @@ export async function PATCH(request: Request, { params }: Params) {
       headerPatch?.dateExamen !== undefined &&
       !sameCalendarDayUtc(headerPatch.dateExamen, liste.dateExamen)
 
+    const categoriesForMessages = await ensureDefaultCategoriesPermis(
+      prisma,
+      tenant.autoEcoleId,
+    )
+
     await prisma.$transaction(
       async (tx) => {
         if (headerPatch) {
@@ -95,6 +105,14 @@ export async function PATCH(request: Request, { params }: Params) {
             where: { id: liste.id },
             data: headerPatch,
           })
+        }
+
+        if (hasMessages) {
+          const messageRows = parseMessagesCategorieInput(
+            body.messagesCategorie,
+            categoriesForMessages,
+          )
+          await upsertListeExamenMessages(tx, liste.id, messageRows)
         }
 
         if (hasCandidats) {

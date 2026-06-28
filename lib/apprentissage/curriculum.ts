@@ -1,36 +1,55 @@
-import type { ChapterSlug, CurriculumModule, ModuleSlug } from "./types"
+import {
+  CHAPITRE_1_LESSON_SLUGS,
+  CHAPITRE_1_META,
+  CHAPITRE_1_SECTIONS,
+  CHAPITRES_PROGRAMME,
+  getProgrammeSections,
+  type ProgrammeChapitreSlug,
+} from "./programme"
+import type { CurriculumModule, ModuleSlug } from "./types"
 
 export const QUIZ_PASS_THRESHOLD_PERCENT = 80
 
-export const APPRENTISSAGE_CURRICULUM: readonly CurriculumModule[] = [
-  {
-    slug: "fondamentaux",
-    step: 1,
-    chapterSlugs: ["panneaux", "marquage", "feux"],
-    quizSlug: "quiz-fondamentaux",
+export const MODULE_SLUGS: ModuleSlug[] = [
+  "chapitre-1",
+  "chapitre-2",
+  "chapitre-3",
+  "chapitre-4",
+  "chapitre-5",
+]
+
+function buildChapitre1Module(): CurriculumModule {
+  return {
+    slug: CHAPITRE_1_META.slug as ModuleSlug,
+    step: CHAPITRE_1_META.step,
+    chapterSlugs: CHAPITRE_1_LESSON_SLUGS,
+    sections: CHAPITRE_1_SECTIONS,
+    quizSlug: CHAPITRE_1_META.quizSlug,
     unlockAfterModule: null,
-  },
-  {
-    slug: "circulation",
-    step: 2,
-    chapterSlugs: ["intersections", "ronds-points", "depassement"],
-    quizSlug: "quiz-circulation",
-    unlockAfterModule: "fondamentaux",
-  },
-  {
-    slug: "conducteur",
-    step: 3,
-    chapterSlugs: ["vitesse", "visibilite", "eco-conduite"],
-    quizSlug: "quiz-conducteur",
-    unlockAfterModule: "circulation",
-  },
-  {
-    slug: "situations",
-    step: 4,
-    chapterSlugs: ["autoroutes", "partage-route", "secourisme"],
-    quizSlug: "quiz-situations",
-    unlockAfterModule: "conducteur",
-  },
+  }
+}
+
+function buildPlaceholderModule(
+  slug: ProgrammeChapitreSlug,
+  step: number,
+  unlockAfter: ModuleSlug | null,
+): CurriculumModule {
+  return {
+    slug,
+    step,
+    chapterSlugs: [],
+    sections: [],
+    quizSlug: `quiz-${slug}`,
+    unlockAfterModule: unlockAfter,
+  }
+}
+
+export const APPRENTISSAGE_CURRICULUM: readonly CurriculumModule[] = [
+  buildChapitre1Module(),
+  buildPlaceholderModule("chapitre-2", 2, "chapitre-1"),
+  buildPlaceholderModule("chapitre-3", 3, "chapitre-2"),
+  buildPlaceholderModule("chapitre-4", 4, "chapitre-3"),
+  buildPlaceholderModule("chapitre-5", 5, "chapitre-4"),
 ] as const
 
 export function isModuleSlug(value: string): value is ModuleSlug {
@@ -46,9 +65,9 @@ export function getModule(slug: ModuleSlug): CurriculumModule {
 export function isChapterInModule(
   moduleSlug: ModuleSlug,
   chapterSlug: string,
-): chapterSlug is ChapterSlug {
+): boolean {
   const mod = getModule(moduleSlug)
-  return (mod.chapterSlugs as readonly string[]).includes(chapterSlug)
+  return mod.chapterSlugs.includes(chapterSlug)
 }
 
 export function getModuleHref(slug: ModuleSlug): string {
@@ -57,7 +76,7 @@ export function getModuleHref(slug: ModuleSlug): string {
 
 export function getChapterHref(
   moduleSlug: ModuleSlug,
-  chapterSlug: ChapterSlug,
+  chapterSlug: string,
 ): string {
   return `/apprendre/${moduleSlug}/${chapterSlug}`
 }
@@ -65,3 +84,5 @@ export function getChapterHref(
 export function getQuizHref(moduleSlug: ModuleSlug): string {
   return `/apprendre/${moduleSlug}/quiz`
 }
+
+export { getProgrammeSections }

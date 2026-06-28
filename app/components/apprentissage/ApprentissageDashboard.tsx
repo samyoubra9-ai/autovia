@@ -3,7 +3,6 @@
 import Link from "next/link"
 import {
   ArrowRight,
-  BookOpen,
   Check,
   ClipboardList,
   Lock,
@@ -18,18 +17,25 @@ import {
 } from "@/lib/i18n/apprentissage-messages"
 import {
   getGlobalCompletionPercent,
-  getModuleAccessState,
-  getModuleCompletionPercent,
-  isModuleUnlocked,
+  getIntersectionsProgressPercent,
+  getPanneauxProgressPercent,
+  isIntersectionsUnlocked,
   QUIZ_PASS_THRESHOLD_PERCENT,
+  TRACKS_TOTAL,
+  tracksCompletedCount,
 } from "@/lib/apprentissage/access"
+import { PANNEAUX, INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
 import {
-  APPRENTISSAGE_CURRICULUM,
-  getModuleHref,
-} from "@/lib/apprentissage/curriculum"
+  getIntersectionsHref,
+  getPanneauxHref,
+} from "@/lib/apprentissage/tracks/routes"
+import type {
+  ApprentissageProgress,
+  TrackSlug,
+} from "@/lib/apprentissage/tracks/types"
 import { cn } from "@/lib/utils"
 
-import { MODULE_UI } from "./module-ui"
+import { TRACK_UI } from "./track-ui"
 import { useApprentissageProgress } from "./ApprentissageProgressProvider"
 
 function DashboardProgressRing({ percent }: { percent: number }) {
@@ -48,36 +54,56 @@ function DashboardProgressRing({ percent }: { percent: number }) {
   )
 }
 
+const TRACKS: Array<{
+  slug: TrackSlug
+  title: string
+  description: string
+  href: string
+  itemsLabel: string
+  itemCount: number
+}> = [
+  {
+    slug: "panneaux",
+    title: PANNEAUX.title,
+    description: PANNEAUX.description,
+    href: getPanneauxHref(),
+    itemsLabel: "categories",
+    itemCount: PANNEAUX.categories.length,
+  },
+  {
+    slug: "intersections",
+    title: INTERSECTIONS.title,
+    description: INTERSECTIONS.description,
+    href: getIntersectionsHref(),
+    itemsLabel: "types",
+    itemCount: INTERSECTIONS.types.length,
+  },
+]
+
 export function ApprentissageDashboard() {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
   const { progress, hydrated } = useApprentissageProgress()
   const globalPercent = hydrated ? getGlobalCompletionPercent(progress) : 0
+  const tracksDone = hydrated ? tracksCompletedCount(progress) : 0
 
-  const modulesCompleted = hydrated
-    ? APPRENTISSAGE_CURRICULUM.filter(
-        (mod) => progress.modules[mod.slug].quizPassed,
-      ).length
-    : 0
-
-  const nextModule = APPRENTISSAGE_CURRICULUM.find((mod) => {
-    if (!hydrated) return mod.slug === "fondamentaux"
-    return (
-      isModuleUnlocked(mod.slug, progress) &&
-      !progress.modules[mod.slug].quizPassed
-    )
+  const nextTrack = TRACKS.find((track) => {
+    if (!hydrated) return track.slug === "panneaux"
+    if (track.slug === "panneaux") {
+      return !progress.panneaux.quizPassed
+    }
+    if (!isIntersectionsUnlocked(progress)) return false
+    return !progress.intersections.quizPassed
   })
 
-  const nextHref = nextModule ? getModuleHref(nextModule.slug) : "/apprendre"
-  const nextLabel = nextModule
-    ? m.modules[nextModule.slug].title
-    : m.dashboard.allComplete
+  const nextHref = nextTrack?.href ?? "/apprendre"
+  const nextLabel = nextTrack?.title ?? m.dashboard.allComplete
 
   const heroCta =
-    modulesCompleted === APPRENTISSAGE_CURRICULUM.length
+    tracksDone === TRACKS_TOTAL
       ? m.dashboard.reviewModule
-      : nextModule && hydrated
-        ? getModuleAccessState(nextModule.slug, progress) === "in_progress"
+      : nextTrack && hydrated
+        ? trackInProgress(nextTrack.slug, progress)
           ? m.dashboard.continueModule
           : m.dashboard.startModule
         : m.dashboard.startModule
@@ -100,7 +126,7 @@ export function ApprentissageDashboard() {
             <div className="ap-dash-metric-divider" aria-hidden />
             <div className="ap-dash-metric">
               <span className="ap-dash-metric-value">
-                {modulesCompleted}/{APPRENTISSAGE_CURRICULUM.length}
+                {tracksDone}/{TRACKS_TOTAL}
               </span>
               <span className="ap-dash-metric-label">
                 {m.dashboard.statsModules}
@@ -108,7 +134,7 @@ export function ApprentissageDashboard() {
             </div>
           </div>
 
-          {nextModule ? (
+          {nextTrack ? (
             <Button asChild size="lg" className="ap-dash-hero-cta">
               <Link href={nextHref}>
                 <Play className="size-4" aria-hidden />
@@ -148,30 +174,33 @@ export function ApprentissageDashboard() {
           </div>
           <span className="ap-dash-roadmap-count">
             {formatApprentissageMessage(m.shell.modulesCompleted, {
-              done: modulesCompleted,
-              total: APPRENTISSAGE_CURRICULUM.length,
+              done: tracksDone,
+              total: TRACKS_TOTAL,
             })}
           </span>
         </header>
 
         <ol className="ap-dash-steps">
-          {APPRENTISSAGE_CURRICULUM.map((mod, index) => {
-            const moduleMessages = m.modules[mod.slug]
-            const ui = MODULE_UI[mod.slug]
+          {TRACKS.map((track, index) => {
+            const ui = TRACK_UI[track.slug]
             const Icon = ui.icon
-            const state = hydrated
-              ? getModuleAccessState(mod.slug, progress)
-              : mod.slug === "fondamentaux"
-                ? "available"
-                : "locked"
+            const locked =
+              hydrated &&
+              track.slug === "intersections" &&
+              !isIntersectionsUnlocked(progress)
+            const completed = hydrated
+              ? track.slug === "panneaux"
+                ? progress.panneaux.quizPassed
+                : progress.intersections.quizPassed
+              : false
             const percent = hydrated
-              ? getModuleCompletionPercent(mod.slug, progress)
+              ? track.slug === "panneaux"
+                ? getPanneauxProgressPercent(progress)
+                : getIntersectionsProgressPercent(progress)
               : 0
-            const locked = state === "locked"
-            const completed = state === "completed"
-            const inProgress = state === "in_progress"
-            const isLast = index === APPRENTISSAGE_CURRICULUM.length - 1
-            const stepLabel = String(mod.step).padStart(2, "0")
+            const inProgress = !locked && !completed && percent > 0
+            const isLast = index === TRACKS.length - 1
+            const stepLabel = String(index + 1).padStart(2, "0")
 
             const ctaLabel = locked
               ? m.shell.locked
@@ -181,13 +210,18 @@ export function ApprentissageDashboard() {
                   ? m.dashboard.continueModule
                   : m.dashboard.startModule
 
-            const chaptersDone = hydrated
-              ? progress.modules[mod.slug].chaptersCompleted.length
-              : 0
+            const studiedCount =
+              track.slug === "panneaux"
+                ? hydrated
+                  ? progress.panneaux.signsStudied.length
+                  : 0
+                : hydrated
+                  ? progress.intersections.typesStudied.length
+                  : 0
 
             return (
               <li
-                key={mod.slug}
+                key={track.slug}
                 className={cn(
                   "ap-dash-step",
                   locked && "ap-dash-step--locked",
@@ -228,13 +262,11 @@ export function ApprentissageDashboard() {
                     </div>
                     <div className="ap-dash-step-titles">
                       <span className="ap-dash-step-eyebrow">
-                        {formatApprentissageMessage(m.module.stepLabel, {
-                          step: mod.step,
+                        {formatApprentissageMessage(m.tracks.stepLabel, {
+                          step: index + 1,
                         })}
-                        {" · "}
-                        {moduleMessages.subtitle}
                       </span>
-                      <h3>{moduleMessages.title}</h3>
+                      <h3>{track.title}</h3>
                     </div>
                     <span
                       className={cn(
@@ -254,22 +286,29 @@ export function ApprentissageDashboard() {
                     </span>
                   </div>
 
-                  <p className="ap-dash-step-desc">{moduleMessages.description}</p>
+                  <p className="ap-dash-step-desc">{track.description}</p>
 
                   <div className="ap-dash-step-meta">
                     <span className="ap-dash-step-meta-item">
-                      <BookOpen className="size-3.5" aria-hidden />
-                      {formatApprentissageMessage(m.dashboard.chaptersCount, {
-                        count: mod.chapterSlugs.length,
-                      })}
+                      <ClipboardList className="size-3.5" aria-hidden />
+                      {track.slug === "panneaux"
+                        ? formatApprentissageMessage(m.tracks.categoriesCount, {
+                            count: track.itemCount,
+                          })
+                        : formatApprentissageMessage(m.tracks.typesCount, {
+                            count: track.itemCount,
+                          })}
                     </span>
                     {!locked ? (
                       <span className="ap-dash-step-meta-item">
-                        <ClipboardList className="size-3.5" aria-hidden />
-                        {formatApprentissageMessage(m.dashboard.chaptersRead, {
-                          done: chaptersDone,
-                          total: mod.chapterSlugs.length,
-                        })}
+                        {track.slug === "panneaux"
+                          ? formatApprentissageMessage(m.tracks.signsStudied, {
+                              done: studiedCount,
+                            })
+                          : formatApprentissageMessage(m.tracks.typesStudied, {
+                              done: studiedCount,
+                              total: track.itemCount,
+                            })}
                       </span>
                     ) : null}
                     <span className="ap-dash-step-meta-pct">{percent}%</span>
@@ -290,10 +329,7 @@ export function ApprentissageDashboard() {
                       })}
                     </p>
                   ) : (
-                    <Link
-                      href={getModuleHref(mod.slug)}
-                      className="ap-dash-step-cta"
-                    >
+                    <Link href={track.href} className="ap-dash-step-cta">
                       {ctaLabel}
                       <ArrowRight className="size-4" />
                     </Link>
@@ -310,5 +346,18 @@ export function ApprentissageDashboard() {
         <p className="ap-dash-modes-desc">{m.dashboard.quizInfoText}</p>
       </section>
     </div>
+  )
+}
+
+function trackInProgress(slug: TrackSlug, progress: ApprentissageProgress) {
+  if (slug === "panneaux") {
+    return (
+      progress.panneaux.signsStudied.length > 0 ||
+      progress.panneaux.quizBestScore !== null
+    )
+  }
+  return (
+    progress.intersections.typesStudied.length > 0 ||
+    progress.intersections.quizBestScore !== null
   )
 }
