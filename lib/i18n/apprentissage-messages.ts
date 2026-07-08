@@ -9,8 +9,8 @@ export type ApprentissageMessages = typeof apprentissageFr
 
 const catalogs: Record<VitrineLocale, ApprentissageMessages> = {
   fr: apprentissageFr,
-  kab: apprentissageKab as ApprentissageMessages,
-  ar: apprentissageAr as ApprentissageMessages,
+  kab: (apprentissageKab as unknown) as ApprentissageMessages,
+  ar: (apprentissageAr as unknown) as ApprentissageMessages,
 }
 
 function isEmptyString(value: unknown): value is "" {
