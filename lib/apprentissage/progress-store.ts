@@ -47,6 +47,21 @@ export function markSignStudied(
   }
 }
 
+export function markSignUnstudied(
+  progress: ApprentissageProgress,
+  signKey: string,
+): ApprentissageProgress {
+  if (!progress.panneaux.signsStudied.includes(signKey)) return progress
+  return {
+    ...progress,
+    panneaux: {
+      ...progress.panneaux,
+      signsStudied: progress.panneaux.signsStudied.filter((key) => key !== signKey),
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
 export function markCategoryCompleted(
   progress: ApprentissageProgress,
   categorySlug: string,
@@ -63,6 +78,23 @@ export function markCategoryCompleted(
   }
 }
 
+export function unmarkCategoryCompleted(
+  progress: ApprentissageProgress,
+  categorySlug: string,
+): ApprentissageProgress {
+  if (!progress.panneaux.categoriesCompleted.includes(categorySlug)) return progress
+  return {
+    ...progress,
+    panneaux: {
+      ...progress.panneaux,
+      categoriesCompleted: progress.panneaux.categoriesCompleted.filter(
+        (key) => key !== categorySlug,
+      ),
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
 export function markIntersectionStudied(
   progress: ApprentissageProgress,
   typeSlug: string,
@@ -73,6 +105,23 @@ export function markIntersectionStudied(
     intersections: {
       ...progress.intersections,
       typesStudied: [...progress.intersections.typesStudied, typeSlug],
+    },
+    updatedAt: new Date().toISOString(),
+  }
+}
+
+export function markIntersectionUnstudied(
+  progress: ApprentissageProgress,
+  typeSlug: string,
+): ApprentissageProgress {
+  if (!progress.intersections.typesStudied.includes(typeSlug)) return progress
+  return {
+    ...progress,
+    intersections: {
+      ...progress.intersections,
+      typesStudied: progress.intersections.typesStudied.filter(
+        (slug) => slug !== typeSlug,
+      ),
     },
     updatedAt: new Date().toISOString(),
   }

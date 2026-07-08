@@ -241,6 +241,10 @@
       "submit": "Envoyer ma demande",
       "submitting": "Envoi en cours…"
     },
+    "consent": {
+      "label": "J'accepte que mes données personnelles soient traitées en ligne par l'auto-école choisie et par Autovia, conformément à la",
+      "privacyLink": "politique de confidentialité"
+    },
     "loadingSchools": "Chargement des auto-écoles…",
     "loadingCategories": "Chargement des catégories…",
     "noSchools": "Aucune auto-école disponible pour l'inscription en ligne pour le moment.",
@@ -259,6 +263,7 @@
     "errorGeneric": "Une erreur est survenue. Vérifiez les champs ou réessayez plus tard.",
     "errors": {
       "photoRequired": "La photo d'identité est requise.",
+      "consentRequired": "Vous devez accepter le traitement de vos données pour envoyer la demande.",
       "photoUpload": "La demande est enregistrée mais la photo n'a pas pu être envoyée. Contactez l'auto-école.",
       "arabicNameRequired": "Le nom et le prénom en arabe sont requis."
     }

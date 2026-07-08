@@ -2,10 +2,19 @@ import type { ApprentissageProgress, TrackProgress, TrackSlug } from "./tracks/t
 import { QUIZ_PASS_THRESHOLD_PERCENT } from "./tracks/types"
 import {
   countPanneauxSigns,
+  familyHasFlatSigns,
   getAllPanneauSigns,
+  getCategorySignCount,
+  getFamilySignCount,
+  getFamilySigns,
+  getPanneauCategory,
+  getPanneauFamily,
+  getPanneauSection,
+  categoryHasSections,
   INTERSECTIONS,
   PANNEAUX,
 } from "./tracks/content"
+import { signKey, sectionProgressKey } from "./tracks/types"
 
 export { QUIZ_PASS_THRESHOLD_PERCENT }
 
@@ -41,16 +50,76 @@ export function getPanneauxProgressPercent(progress: ApprentissageProgress): num
   return Math.round((progress.panneaux.signsStudied.length / total) * 100)
 }
 
+export function getPanneauxFamilyPercent(
+  familySlug: string,
+  progress: ApprentissageProgress,
+): number {
+  const family = getPanneauFamily(familySlug)
+  if (!family) return 0
+
+  if (familyHasFlatSigns(family)) {
+    const total = getFamilySignCount(family)
+    if (total === 0) return 0
+    const studied = getFamilySigns(family).filter((s) =>
+      progress.panneaux.signsStudied.includes(signKey(family.slug, s.id)),
+    ).length
+    return Math.round((studied / total) * 100)
+  }
+
+  const categories = family.categories ?? []
+  if (categories.length === 0) return 0
+
+  const sum = categories.reduce(
+    (acc, cat) => acc + getPanneauxCategoryPercent(cat.slug, progress),
+    0,
+  )
+  return Math.round(sum / categories.length)
+}
+
 export function getPanneauxCategoryPercent(
   categorySlug: string,
   progress: ApprentissageProgress,
 ): number {
-  const cat = PANNEAUX.categories.find((c) => c.slug === categorySlug)
-  if (!cat || cat.signs.length === 0) return 0
-  const studied = cat.signs.filter((s) =>
-    progress.panneaux.signsStudied.includes(`${categorySlug}:${s.id}`),
+  const cat = getPanneauCategory(categorySlug)
+  if (!cat) return 0
+
+  const total = getCategorySignCount(cat)
+  if (total === 0) return 0
+
+  if (categoryHasSections(cat)) {
+    const studied = cat.sections!.reduce((count, section) => {
+      return (
+        count +
+        section.signs.filter((s) =>
+          progress.panneaux.signsStudied.includes(
+            signKey(categorySlug, s.id, section.slug),
+          ),
+        ).length
+      )
+    }, 0)
+    return Math.round((studied / total) * 100)
+  }
+
+  const studied = (cat.signs ?? []).filter((s) =>
+    progress.panneaux.signsStudied.includes(signKey(categorySlug, s.id)),
   ).length
-  return Math.round((studied / cat.signs.length) * 100)
+  return Math.round((studied / total) * 100)
+}
+
+export function getPanneauxSectionPercent(
+  categorySlug: string,
+  sectionSlug: string,
+  progress: ApprentissageProgress,
+): number {
+  const section = getPanneauSection(categorySlug, sectionSlug)
+  if (!section || section.signs.length === 0) return 0
+
+  const studied = section.signs.filter((s) =>
+    progress.panneaux.signsStudied.includes(
+      signKey(categorySlug, s.id, sectionSlug),
+    ),
+  ).length
+  return Math.round((studied / section.signs.length) * 100)
 }
 
 export function getIntersectionsProgressPercent(

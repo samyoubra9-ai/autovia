@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Check,
   ClipboardList,
+  Compass,
   Lock,
   Play,
 } from "lucide-react"
@@ -24,6 +25,8 @@ import {
   TRACKS_TOTAL,
   tracksCompletedCount,
 } from "@/lib/apprentissage/access"
+import { getInitiationLabel, INITIATION } from "@/lib/apprentissage/initiation"
+import { getInitiationHref } from "@/lib/apprentissage/initiation-routes"
 import { PANNEAUX, INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
 import {
   getIntersectionsHref,
@@ -68,7 +71,7 @@ const TRACKS: Array<{
     description: PANNEAUX.description,
     href: getPanneauxHref(),
     itemsLabel: "categories",
-    itemCount: PANNEAUX.categories.length,
+    itemCount: PANNEAUX.families.length,
   },
   {
     slug: "intersections",
@@ -181,6 +184,45 @@ export function ApprentissageDashboard() {
         </header>
 
         <ol className="ap-dash-steps">
+          <li
+            className="ap-dash-step ap-dash-step--initiation ap-dash-step--line"
+            style={
+              {
+                "--ap-mod-accent": "#059669",
+                "--ap-mod-soft": "#ecfdf5",
+              } as React.CSSProperties
+            }
+          >
+            <div className="ap-dash-step-track" aria-hidden>
+              <span className="ap-dash-step-node ap-dash-step-node--active">
+                <Compass className="size-4" />
+              </span>
+            </div>
+            <div className="ap-dash-step-card">
+              <div className="ap-dash-step-card-head">
+                <div className="ap-dash-step-icon">
+                  <Compass className="size-5" aria-hidden />
+                </div>
+                <div>
+                  <p className="ap-dash-step-kicker">{m.initiation.badge}</p>
+                  <h3>{m.initiation.dashboardTitle}</h3>
+                </div>
+                <Button asChild size="sm" variant="outline" className="ml-auto">
+                  <Link href={getInitiationHref()}>
+                    {m.dashboard.startModule}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              </div>
+              <p className="ap-dash-step-desc">
+                {m.initiation.dashboardDescription}
+              </p>
+              <p className="ap-dash-step-desc ap-dash-step-desc--muted">
+                {getInitiationLabel(INITIATION.title, locale)}
+              </p>
+            </div>
+          </li>
+
           {TRACKS.map((track, index) => {
             const ui = TRACK_UI[track.slug]
             const Icon = ui.icon
@@ -292,7 +334,7 @@ export function ApprentissageDashboard() {
                     <span className="ap-dash-step-meta-item">
                       <ClipboardList className="size-3.5" aria-hidden />
                       {track.slug === "panneaux"
-                        ? formatApprentissageMessage(m.tracks.categoriesCount, {
+                        ? formatApprentissageMessage(m.tracks.familiesCount, {
                             count: track.itemCount,
                           })
                         : formatApprentissageMessage(m.tracks.typesCount, {

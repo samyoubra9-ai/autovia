@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 
 import { InscriptionPermisFields } from "@/app/components/inscription/InscriptionPermisFields"
@@ -140,6 +141,7 @@ export function InscriptionForm() {
   const [schoolCategories, setSchoolCategories] = useState<PublicCategoriePermis[]>([])
   const [categoriesLoading, setCategoriesLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [consentAccepted, setConsentAccepted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<SuccessState | null>(null)
 
@@ -279,6 +281,10 @@ export function InscriptionForm() {
       setError(m.inscription.errors.photoRequired)
       return
     }
+    if (!consentAccepted) {
+      setError(m.inscription.errors.consentRequired)
+      return
+    }
 
     const situationProfessionnelle =
       form.situationProfessionnelle === "autre"
@@ -293,6 +299,7 @@ export function InscriptionForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          dataConsentAccepted: true,
           nin: form.nin.replace(/\D/g, ""),
           situationProfessionnelle,
           statutFormation: "code",
@@ -717,6 +724,23 @@ export function InscriptionForm() {
         </p>
       ) : null}
 
+      {step === STEP_COUNT - 1 ? (
+        <label className="ds-inscription-consent">
+          <input
+            type="checkbox"
+            checked={consentAccepted}
+            onChange={(e) => setConsentAccepted(e.target.checked)}
+          />
+          <span>
+            {m.inscription.consent.label}{" "}
+            <Link href="/legal/confidentialite" className="ds-inscription-consent__link">
+              {m.inscription.consent.privacyLink}
+            </Link>
+            .
+          </span>
+        </label>
+      ) : null}
+
       <div className="ds-inscription-actions">
         {step > 0 ? (
           <button type="button" className="ds-btn ds-btn-secondary" onClick={goBack}>
@@ -735,7 +759,11 @@ export function InscriptionForm() {
             {m.inscription.actions.next}
           </button>
         ) : (
-          <button type="submit" className="ds-btn ds-btn-primary" disabled={submitting}>
+          <button
+            type="submit"
+            className="ds-btn ds-btn-primary"
+            disabled={submitting || !consentAccepted}
+          >
             {submitting ? m.inscription.actions.submitting : m.inscription.actions.submit}
           </button>
         )}

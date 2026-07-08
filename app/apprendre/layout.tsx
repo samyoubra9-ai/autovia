@@ -6,6 +6,7 @@ import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
 import "../app-theme.css"
 import "../apprentissage.css"
+import "../apprentissage-initiation.css"
 
 export default async function ApprendreLayout({
   children,

@@ -1,176 +1,550 @@
 {
   "slug": "panneaux",
   "title": "Panneaux de signalisation",
-  "description": "Apprenez à reconnaître les panneaux par famille : danger, interdiction, obligation, indication et priorité. Terminez par un quiz avec panneaux aléatoires.",
+  "description": "Signalisation verticale, horizontale, lumineuse et signaux des agents de l'ordre. Parcourez chaque famille, puis testez-vous avec le quiz.",
   "quiz": {
     "passPercent": 80,
     "questionsPerRound": 10
   },
-  "categories": [
+  "families": [
     {
-      "slug": "danger",
-      "title": "Panneaux de danger",
-      "description": "Forme triangulaire à bordure rouge. Ils annoncent un danger à l'approche.",
-      "signs": [
+      "slug": "vertical",
+      "title": "Signalisation verticale",
+      "description": "Panneaux fixés sur poteau ou portique : danger, interdiction, obligation, balisage, indication et priorité.",
+      "categories": [
         {
-          "id": "A1a",
-          "name": "dos d'ane",
-          "meaning": "Annonce un dos d'ane pour ralentir",
-          "image": "/panneaux/danger/dosdane.svg"
+          "slug": "danger",
+          "title": "Panneaux de danger",
+          "description": "Forme triangulaire à bordure rouge. Ils annoncent un danger à l'approche.",
+          "sections": [
+            {
+              "slug": "permanent",
+              "title": "Danger permanent",
+              "description": "Panneaux de danger fixes, installés de façon durable le long de la route.",
+              "signs": [
+                {
+                  "id": "A1a",
+                  "name": "ralentisseur (dos d'ane)",
+                  "meaning": "ralentisseur (dos d'ane)",
+                  "image": "/panneaux/danger/dosdane.svg"
+                },
+                {
+                  "id": "A1b",
+                  "name": "Danger Enfants",
+                  "meaning": "Endroit frequente par des enfants",
+                  "image": "/panneaux/danger/enfant.svg"
+                },
+                {
+                  "id": "A1c",
+                  "name": "Route principale coupe par une route secondaire",
+                  "meaning": "",
+                  "image": "/panneaux/danger/routeprincipale.svg"
+                },
+                {
+                  "id": "A2a",
+                  "name": "Passage pieton",
+                  "meaning": "danger passage pieton",
+                  "image": "/panneaux/danger/passagepieton.svg"
+                },
+                {
+                  "id": "A3",
+                  "name": "Danger particulier",
+                  "meaning": "danger particulier",
+                  "image": "/panneaux/danger/dangerparticulier.svg"
+                },
+                {
+                  "id": "A13a",
+                  "name": "intersection",
+                  "meaning": "intersection ",
+                  "image": "/panneaux/danger/intersection.svg"
+                },
+                {
+                  "id": "A13a",
+                  "name": "chaussee retrecie par la droite",
+                  "meaning": "chaussee retrecie par la droite ",
+                  "image": "/panneaux/danger/chausseretreciedroite.webp"
+                },
+                {
+                  "id": "A13a",
+                  "name": "danger double virage premier a droite",
+                  "meaning": "double virage premier a droite",
+                  "image": "/panneaux/danger/doubleviragedroite.webp"
+                },
+                {
+                  "id": "A13a",
+                  "name": "anonnce d'un giratoire",
+                  "meaning": "annonce d'un giratoire",
+                  "image": "/panneaux/danger/giratoire.webp"
+                },
+                {
+                  "id": "C3",
+                  "name": "circulation a double sens",
+                  "meaning": "circulation a double sens",
+                  "image": "/panneaux/danger/doublesens.svg"
+                },
+                {
+                  "id": "C3",
+                  "name": "pont mobile",
+                  "meaning": "pont mobile",
+                  "image": "/panneaux/danger/pontmobile.svg"
+                },
+                {
+                  "id": "C3",
+                  "name": "traversee d'une air de danger aerien",
+                  "meaning": "traversee d'une air de danger aerien",
+                  "image": "/panneaux/danger/airddanger.webp"
+                }
+              ]
+            },
+            {
+              "slug": "temporaire",
+              "title": "Danger temporaire",
+              "description": "Panneaux de danger temporaires : travaux, événements ou situations passagères.",
+              "signs": [
+                {
+                  "id": "AK1",
+                  "name": "danger temporaire",
+                  "meaning": "danger temporaire",
+                  "image": "/panneaux/danger/temporaire/dangertemp.webp"
+                },
+                {
+                  "id": "AK2",
+                  "name": "chaussee glissante",
+                  "meaning": "chaussee glissante",
+                  "image": "/panneaux/danger/temporaire/chausseglissant.webp"
+                },
+                {
+                  "id": "AK3",
+                  "name": "bouchon temporaire",
+                  "meaning": "bouchon temporaire",
+                  "image": "/panneaux/danger/temporaire/bouchontemp.webp"
+                },
+                {
+                  "id": "AK4",
+                  "name": "travaux temporaire",
+                  "meaning": "travaux temporaire",
+                  "image": "/panneaux/danger/temporaire/traveautemp.webp"
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "A1b",
-          "name": "Virage à gauche",
-          "meaning": "Annonce un virage dangereux vers la gauche.",
-          "image": "/panneaux/A1b.svg"
+          "slug": "interdiction",
+          "title": "Interdiction",
+          "description": "Panneaux circulaires à bordure rouge et panneaux de fin barrés : apprenez à les distinguer.",
+          "sections": [
+            {
+              "slug": "debut",
+              "title": "Début",
+              "description": "Panneaux d'interdiction : ils interdisent une manœuvre ou une circulation.",
+              "signs": [
+                {
+                "id": "B1",
+                "name": "stationnement / arret interdit",
+                "meaning": "stationnement / arret interdit",
+                "image": "/panneaux/interdiction/debut/interditdestationner.svg"
+                },
+                {
+                  "id": "B14",
+                  "name": "stationnement interdit",
+                  "meaning": "stationnement interdit",
+                  "image": "/panneaux/interdiction/debut/stationnementin.webp"
+                },
+                {
+                  "id": "B0",
+                  "name": "interdit de tourner a gauche",
+                  "meaning": "interdiction de tourner a gauche",
+                  "image": "/panneaux/interdiction/debut/interditagauche.svg"
+                },
+                
+                {
+                  "id": "B3",
+                  "name": "accees interdit au pieton",
+                  "meaning": "accees interdit au pieton",
+                  "image": "/panneaux/interdiction/debut/pieton.webp"
+                },
+                {
+                  "id": "B9a",
+                  "name": "sens interdit",
+                  "meaning": "sens interdit",
+                  "image": "/panneaux/interdiction/debut/sensinterdit.webp"
+                },
+                {
+                  "id": "B14",
+                  "name": "Limitation de vitesse",
+                  "meaning": "intedit de depaaserle km/h indiquée sur le panneau.",
+                  "image": "/panneaux/interdiction/debut/limitation.webp"
+                },
+                {
+                  "id": "B14",
+                  "name": "accès interdit au vehicules transportant des produits polluants",
+                  "meaning": "accès interdit au vehicules transportant des produits polluants",
+                  "image": "/panneaux/interdiction/debut/polluant.webp"
+                },
+                {
+                  "id": "B14",
+                  "name": "curculation interdite dans les deux sens",
+                  "meaning": "circulation interdite dans les deux sens",
+                  "image": "/panneaux/interdiction/debut/circulationinterdite.svg"
+                },
+                {
+                  "id": "B14",
+                  "name": "interdiction de faire demi tour",
+                  "meaning": "interdiction de faire demi tour",
+                  "image": "/panneaux/interdiction/debut/demitour.webp"
+                },
+                {
+                  "id": "B14",
+                  "name": "acces interdit aux vehicule de transport en commun des personnes",
+                  "meaning": "acces interdit aux vehicule de transport en commun des personnes",
+                  "image": "/panneaux/interdiction/debut/interdittransport.svg"
+                },
+                {
+                  "id": "B14",
+                  "name": "acces interdit aux cycles",
+                  "meaning": "acces interdit aux cycles",
+                  "image": "/panneaux/interdiction/debut/cycle.svg"
+                }
+                
+              ]
+            },
+            {
+              "slug": "fin",
+              "title": "Fin",
+              "description": "Panneaux de fin d'interdiction : ils annoncent la fin d'une interdiction signalée en amont.",
+              "signs": [
+                {
+                  "id": "B0-fin",
+                  "name": "fin de limiation de vitesse",
+                  "meaning": "fin de limiation de vitesse",
+                  "image": "/panneaux/interdiction/fin/finlimitation.svg"
+                },
+                {
+                  "id": "B1-fin",
+                  "name": "fin d'interdiction d'utiliser l'avertisseur sonore",
+                  "meaning": "fin d'interdiction d'utiliser l'avertisseur sonore",
+                  "image": "/panneaux/interdiction/fin/finsonore.webp"
+                },
+                {
+                  "id": "B3-fin",
+                  "name": "fin de toute prescription precedente interdite ",
+                  "meaning": "fin de toute prescription precedente interdite",
+                  "image": "/panneaux/interdiction/fin/findetout.webp"
+                },
+                {
+                  "id": "B9a-fin",
+                  "name": "sortie d'une zone d'une zone a stationnement interdit",
+                  "meaning": "sortie d'une zone d'une zone a stationnement interdit",
+                  "image": "/panneaux/interdiction/fin/sortiestat.webp"
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "A1c",
-          "name": "Virage successif (premier à droite)",
-          "meaning": "Annonce une série de virages dont le premier est à droite.",
-          "image": "/panneaux/A1c.svg"
+          "slug": "obligation",
+          "title": "Obligation",
+          "description": "Panneaux circulaires à fond bleu et panneaux de fin barrés : apprenez à les distinguer.",
+          "sections": [
+            {
+              "slug": "debut",
+              "title": "Début",
+              "description": "Panneaux d'obligation : ils imposent une direction ou une manœuvre.",
+              "signs": [
+                {
+                  "id": "C1",
+                  "name": "sens obligatoire a droite",
+                  "meaning": "Obligation de tourner a droite.",
+                  "image": "/panneaux/obligation/debut/obligeadroite.webp"
+                },
+                {
+                  "id": "C2",
+                  "name": "piste ou bande obligatoire pour cycles",
+                  "meaning": "piste ou bande obligatoire pour cycles",
+                  "image": "/panneaux/obligation/debut/pistecycles.svg"
+                },
+                {
+                  "id": "C3",
+                  "name": "chemin obligatoire pour pietons",
+                  "meaning": "chemin obligatoire pour pietons",
+                  "image": "/panneaux/obligation/debut/cheminpieton.svg"
+                },
+                {
+                  "id": "C3",
+                  "name": "voie réservée aux vehicules transport en commun",
+                  "meaning": "voie réservée aux vehicules transport en commun",
+                  "image": "/panneaux/obligation/debut/reservetransport.webp"
+                }
+              ]
+            },
+            {
+              "slug": "fin",
+              "title": "Fin",
+              "description": "Panneaux de fin d'obligation : ils annoncent la fin d'une obligation signalée en amont.",
+              "signs": [
+                {
+                  "id": "C1-fin",
+                  "name": "fin de chemin obligatoire pour pietons",
+                  "meaning": "fin de chemin obligatoire pour pietons",
+                  "image": "/panneaux/obligation/fin/finpietons.webp"
+                },
+                {
+                  "id": "C2-fin",
+                  "name": "fin de chemin obligatoire pour cycles",
+                  "meaning": "fin de chemin obligatoire pour cycle",
+                  "image": "/panneaux/obligation/fin/fincycles.svg"
+                },
+                {
+                  "id": "C3-fin",
+                  "name": "",
+                  "meaning": "",
+                  "image": "/panneaux/obligation/fin/cheminpieton.svg"
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "A2a",
-          "name": "Cassis ou dos d'âne",
-          "meaning": "Annonce une bosse ou une déformation de la chaussée.",
-          "image": "/panneaux/A2a.svg"
+          "slug": "balisage",
+          "title": "Section balisage",
+          "description": "Balises, mûrs de guidage et bornes : équipements qui matérialisent la chaussée ou signalent un obstacle.",
+          "signs": [
+            {
+              "id": "J1",
+              "name": "balise de musoir",
+              "meaning": "Balise de musoir",
+              "image": "/panneaux/balisage/musoir.webp"
+            },
+            {
+              "id": "J2",
+              "name": "balise de virage",
+              "meaning": "balise de virage",
+              "image": "/panneaux/balisage/balisevirage.svg"
+            },
+            {
+              "id": "J2",
+              "name": "vent lateral fort",
+              "meaning": "vent lateral fort",
+              "image": "/panneaux/balisage/vent.svg"
+            },
+            {
+              "id": "J2",
+              "name": "",
+              "meaning": "",
+              "image": "/panneaux/balisage/gauche.svg"
+            },
+            {
+              "id": "J2",
+              "name": "",
+              "meaning": "",
+              "image": "/panneaux/balisage/sudest.svg"
+            }
+          ]
         },
         {
-          "id": "A3",
-          "name": "Passage à niveau avec barrières",
-          "meaning": "Annonce un passage à niveau muni de barrières ou demi-barrières.",
-          "image": "/panneaux/A3.svg"
-        },
-        {
-          "id": "A13a",
-          "name": "Passage piétons",
-          "meaning": "Annonce un passage pour piétons. Prudence et réduction de vitesse.",
-          "image": "/panneaux/A13a.svg"
+          "slug": "indication",
+          "title": "Panneaux d'indication",
+          "description": "Forme carrée ou rectangulaire à fond bleu ou blanc. Ils informent ou guident.",
+          "signs": [
+            {
+              "id": "D1",
+              "name": "station taxis",
+              "meaning": "indication d'une station de taxis",
+              "image": "/panneaux/indication/taxis.webp"
+            },
+            {
+              "id": "D4",
+              "name": "ralentisseur (dos d'ane)",
+              "meaning": "signalisation de position d'un ralentisseur (dos d'ane)",
+              "image": "/panneaux/indication/ralentisseur.svg"
+            },
+            {
+              "id": "D7",
+              "name": "indication voie detresse a droite",
+              "meaning": "Indique la sortie d'une autoroute ou voie rapide.",
+              "image": "/panneaux/indication/detresse.webp"
+            },
+            {
+              "id": "D42",
+              "name": "entree autoroute",
+              "meaning": "Indication d'une entree a l'autoroute",
+              "image": "/panneaux/indication/autoroute.svg"
+            },
+            {
+              "id": "D42",
+              "name": "poste de secours",
+              "meaning": "poiste de secours",
+              "image": "/panneaux/indication/postedesecours.webp"
+            }
+          ]
         }
       ]
     },
     {
-      "slug": "interdiction",
-      "title": "Panneaux d'interdiction",
-      "description": "Forme circulaire à fond blanc et bordure rouge. Ils interdisent une manœuvre ou une circulation.",
+      "slug": "horizontal",
+      "title": "Signalisation horizontale",
+      "description": "Marquages peints sur la chaussée : lignes, passages piétons, flèches et zones spéciales.",
       "signs": [
         {
-          "id": "B0",
-          "name": "Accès interdit",
-          "meaning": "Interdiction d'entrer dans la voie ou la zone.",
-          "image": "/panneaux/B0.svg"
+          "id": "L1",
+          "name": "Ligne continue",
+          "meaning": "Interdiction de franchir ou de chevaucher la ligne (sauf manœuvre d'urgence).",
+          "image": "/panneaux/horizontal/ligne-continue.webp"
         },
         {
-          "id": "B1",
-          "name": "Sens interdit",
-          "meaning": "Interdiction de circuler dans le sens indiqué par le panneau.",
-          "image": "/panneaux/B1.svg"
+          "id": "L2",
+          "name": "Ligne delimitation de la chaussee et des voies de circulation",
+          "meaning": "Ligne delimitation de la chaussee et des voies de circulation",
+          "image": "/panneaux/horizontal/delimitation.webp"
         },
         {
-          "id": "B3",
-          "name": "Interdiction de dépasser",
-          "meaning": "Interdiction de dépasser tous les véhicules à moteur autres que les deux-roues.",
-          "image": "/panneaux/B3.svg"
+          "id": "L3",
+          "name": "Ligne delimitation de la chaussee et des voies reservees",
+          "meaning": "Ligne delimitation de la chaussee et des voies reservees",
+          "image": "/panneaux/horizontal/delimitation2.webp"
         },
         {
-          "id": "B9a",
-          "name": "Interdiction de stationner",
-          "meaning": "Stationnement interdit le long de la chaussée.",
-          "image": "/panneaux/B9a.svg"
+          "id": "T1",
+          "name": "Ligne d'avertissement",
+          "meaning": "Ligne d'avertissement",
+          "image": "/panneaux/horizontal/avertissement.webp"
         },
         {
-          "id": "B14",
-          "name": "Limitation de vitesse",
-          "meaning": "Vitesse maximale autorisée (km/h) indiquée sur le panneau.",
-          "image": "/panneaux/B14.svg"
+          "id": "T2",
+          "name": "ligne de separation",
+          "meaning": "ligne de separation",
+          "image": "/panneaux/horizontal/separation.webp"
+        },
+        {
+          "id": "M1",
+          "name": "ligne continue et ligne discontinue",
+          "meaning": "ligne continue et ligne discontinue",
+          "image": "/panneaux/horizontal/continueetdiscontinue.webp"
+        },
+        {
+          "id": "L4",
+          "name": "Ligne discontinue",
+          "meaning": "Franchissement et chevauchement autorisés si la manœuvre peut être effectuée sans danger.",
+          "image": "/panneaux/horizontal/ligne-discontinue.webp"
+        },
+        {
+          "id": "T3",
+          "name": "Passage piéton",
+          "meaning": "Zone réservée au franchissement des piétons. Le conducteur doit céder le passage.",
+          "image": "/panneaux/horizontal/passage-pieton.webp"
+        },
+        {
+          "id": "F-H1",
+          "name": "Flèche tout droit",
+          "meaning": "Obligation ou indication de poursuivre tout droit dans la voie concernée.",
+          "image": "/panneaux/horizontal/fleche-tout-droit.webp"
+        },
+        {
+          "id": "F-H2",
+          "name": "Flèche tourner à droite",
+          "meaning": "Obligation ou indication de tourner à droite dans la voie concernée.",
+          "image": "/panneaux/horizontal/fleche-droite.webp"
+        },
+        {
+          "id": "M2",
+          "name": "Zone hachurée",
+          "meaning": "Zone interdite au stationnement et à la circulation des véhicules.",
+          "image": "/panneaux/horizontal/zone-hachuree.webp"
         }
       ]
     },
     {
-      "slug": "obligation",
-      "title": "Panneaux d'obligation",
-      "description": "Forme circulaire à fond bleu. Ils imposent une direction ou une manœuvre.",
+      "slug": "lumineuse",
+      "title": "Signalisation lumineuse",
+      "description": "Feux tricolores, feux clignotants et autres dispositifs lumineux qui régulent la circulation.",
       "signs": [
         {
-          "id": "C1",
-          "name": "Direction obligatoire tout droit",
-          "meaning": "Obligation de continuer tout droit.",
-          "image": "/panneaux/C1.svg"
+          "id": "F1",
+          "name": "lum1",
+          "meaning": "lum1",
+          "image": "/panneaux/lumineuse/lum1.webp"
         },
         {
-          "id": "C2",
-          "name": "Contournement obligatoire",
-          "meaning": "Obligation de contourner l'obstacle par la droite ou la gauche (selon la flèche).",
-          "image": "/panneaux/C2.svg"
+          "id": "F2",
+          "name": "lum2",
+          "meaning": "lum2",
+          "image": "/panneaux/lumineuse/lum2.webp"
         },
         {
-          "id": "C3",
-          "name": "Voie réservée aux cycles",
-          "meaning": "Piste ou voie obligatoire pour les cycles.",
-          "image": "/panneaux/C3.svg"
+          "id": "F3",
+          "name": "lum3",
+          "meaning": "lum3",
+          "image": "/panneaux/lumineuse/lum3.webp"
+        },
+        {
+          "id": "F4",
+          "name": "lum4",
+          "meaning": "lum4",
+          "image": "/panneaux/lumineuse/lum4.webp"
+        },
+        {
+          "id": "F5",
+          "name": "lum5",
+          "meaning": "lum5",
+          "image": "/panneaux/lumineuse/lum5.webp"
         }
+   
+        
       ]
     },
     {
-      "slug": "indication",
-      "title": "Panneaux d'indication",
-      "description": "Forme carrée ou rectangulaire à fond bleu ou blanc. Ils informent ou guident.",
+      "slug": "agent-ordre",
+      "title": "Signaux d'agent de l'ordre",
+      "description": "Gestes et positions des agents de la circulation : police, gendarmerie et autres agents habilités.",
       "signs": [
         {
-          "id": "D1",
-          "name": "Voie sans issue",
-          "meaning": "La voie ne conduit pas à une autre route. Possibilité de sortir en marche avant.",
-          "image": "/panneaux/D1.svg"
+          "id": "AO1",
+          "name": "arret sur vehicule repere",
+          "meaning": "arret sur vehicule repere",
+          "image": "/panneaux/agent-ordre/agent1.webp"
         },
         {
-          "id": "D4",
-          "name": "Parking",
-          "meaning": "Emplacement aménagé pour le stationnement.",
-          "image": "/panneaux/D4.svg"
+          "id": "AO2",
+          "name": "Arret",
+          "meaning": "Arret",
+          "image": "/panneaux/agent-ordre/agent2.webp"
         },
         {
-          "id": "D7",
-          "name": "Sortie d'autoroute",
-          "meaning": "Indique la sortie d'une autoroute ou voie rapide.",
-          "image": "/panneaux/D7.svg"
+          "id": "AO3",
+          "name": "Arret",
+          "meaning": "Arret",
+          "image": "/panneaux/agent-ordre/agent3.webp"
         },
         {
-          "id": "D42",
-          "name": "Hôpital",
-          "meaning": "Indique la direction d'un établissement hospitalier.",
-          "image": "/panneaux/D42.svg"
-        }
-      ]
-    },
-    {
-      "slug": "priorite",
-      "title": "Panneaux de priorité",
-      "description": "Règles de priorité aux intersections : stop, cédez le passage, route prioritaire.",
-      "signs": [
-        {
-          "id": "AB1",
-          "name": "Stop",
-          "meaning": "Arrêt obligatoire à la ligne. Cédez le passage avant de repartir.",
-          "image": "/panneaux/AB1.svg"
+          "id": "AO4",
+          "name": "Ralentir",
+          "meaning": "Ralentir",
+          "image": "/panneaux/agent-ordre/agent4.webp"
         },
         {
-          "id": "AB2",
-          "name": "Cédez le passage",
-          "meaning": "Cédez le passage aux véhicules sur la route prioritaire.",
-          "image": "/panneaux/AB2.svg"
+          "id": "AO5",
+          "name": "Passer",
+          "meaning": "Passer",
+          "image": "/panneaux/agent-ordre/agent5.webp"
         },
         {
-          "id": "AB3a",
-          "name": "Route à caractère prioritaire",
-          "meaning": "Vous circulez sur une route prioritaire jusqu'au panneau de fin.",
-          "image": "/panneaux/AB3a.svg"
+          "id": "AO6",
+          "name": "Ralentir",
+          "meaning": "Ralentir",
+          "image": "/panneaux/agent-ordre/agent6.webp"
         },
         {
-          "id": "AB4",
-          "name": "Fin de route prioritaire",
-          "meaning": "Fin de la priorité. Les règles de priorité à droite s'appliquent sauf signalisation.",
-          "image": "/panneaux/AB4.svg"
+          "id": "AO7",
+          "name": "Serrer a droite",
+          "meaning": "Serrer a droite",
+          "image": "/panneaux/agent-ordre/agent7.webp"
+        },
+        {
+          "id": "AO8",
+          "name": "Arret",
+          "meaning": "Arret",
+          "image": "/panneaux/agent-ordre/agent8.webp"
         }
       ]
     }

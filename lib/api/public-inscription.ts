@@ -34,6 +34,13 @@ export async function createPublicPreInscription(
     throw new ApiError(400, "Requête invalide.")
   }
 
+  if (!raw.dataConsentAccepted) {
+    throw new ApiError(
+      400,
+      "Vous devez accepter le traitement de vos données personnelles.",
+    )
+  }
+
   const autoEcoleId = String(raw.autoEcoleId ?? "").trim()
   if (!autoEcoleId) {
     throw new ApiError(400, "Choisissez une auto-école.")

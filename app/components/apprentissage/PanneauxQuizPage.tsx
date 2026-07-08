@@ -16,14 +16,19 @@ import {
   PANNEAUX,
 } from "@/lib/apprentissage/tracks/content"
 import { getPanneauxHref } from "@/lib/apprentissage/tracks/routes"
+import { cn } from "@/lib/utils"
 
 import { TrackQuiz } from "./TrackQuiz"
 import { useApprentissageProgress } from "./ApprentissageProgressProvider"
+import { useQuizImmersive } from "./QuizImmersiveContext"
+
+const GAME_TIME_SEC = 10
 
 export function PanneauxQuizPage() {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
   const { progress, hydrated, savePanneauxQuiz } = useApprentissageProgress()
+  const { immersive } = useQuizImmersive()
   const [seed] = useState(() => Date.now())
 
   const questions = useMemo(() => {
@@ -37,35 +42,45 @@ export function PanneauxQuizPage() {
   const best = hydrated ? progress.panneaux.quizBestScore : null
 
   return (
-    <div className="ap-page ap-quiz-page">
-      <div className="ap-breadcrumb">
-        <Button asChild variant="ghost" size="sm" className="gap-1.5 px-0">
-          <Link href={getPanneauxHref()}>
-            <ArrowLeft className="size-4" />
-            {m.tracks.backToPanneaux}
-          </Link>
-        </Button>
-      </div>
+    <div className={cn("ap-page ap-quiz-page", immersive && "ap-quiz-page--immersive")}>
+      <div
+        className={cn(
+          "ap-quiz-page-chrome",
+          immersive && "ap-quiz-page-chrome--hidden",
+        )}
+        aria-hidden={immersive}
+      >
+        <div className="ap-breadcrumb">
+          <Button asChild variant="ghost" size="sm" className="gap-1.5 px-0">
+            <Link href={getPanneauxHref()}>
+              <ArrowLeft className="size-4" />
+              {m.tracks.backToPanneaux}
+            </Link>
+          </Button>
+        </div>
 
-      <header className="ap-page-head">
-        <h1>
-          {formatApprentissageMessage(m.quiz.title, {
-            module: PANNEAUX.title,
-          })}
-        </h1>
-        <p>{m.tracks.panneauxQuizIntro}</p>
-        {best !== null ? (
-          <p className="ap-quiz-meta">
-            {formatApprentissageMessage(m.quiz.bestScore, { score: best })}
-          </p>
-        ) : null}
-      </header>
+        <header className="ap-page-head">
+          <h1>
+            {formatApprentissageMessage(m.quiz.title, {
+              module: PANNEAUX.title,
+            })}
+          </h1>
+          <p>{m.tracks.panneauxQuizIntro}</p>
+          {best !== null ? (
+            <p className="ap-quiz-meta">
+              {formatApprentissageMessage(m.quiz.bestScore, { score: best })}
+            </p>
+          ) : null}
+        </header>
+      </div>
 
       <TrackQuiz
         questions={questions}
         passPercent={PANNEAUX.quiz.passPercent}
         backHref={getPanneauxHref()}
         continueHref="/apprendre/intersections"
+        gameMode
+        timePerQuestionSec={GAME_TIME_SEC}
         onComplete={(score) =>
           savePanneauxQuiz(score, PANNEAUX.quiz.passPercent)
         }

@@ -1,0 +1,131 @@
+{
+  "slug": "initiation",
+  "title": {
+    "fr": "Initiation au code de la route",
+    "ar": "مدخل إلى قانون المرور",
+    "kab": ""
+  },
+  "description": {
+    "fr": "Vue d'ensemble interactive : règlementation et signalisation. Cliquez sur les branches pour explorer le programme.",
+    "ar": "نظرة عامة تفاعلية على التشريع والإشارات. انقر على الفروع للاستكشاف.",
+    "kab": ""
+  },
+  "root": {
+    "slug": "code-route",
+    "variant": "root",
+    "title": {
+      "fr": "Code de la route",
+      "ar": "قانون المرور",
+      "kab": ""
+    },
+    "children": [
+      {
+        "slug": "reglementation",
+        "variant": "reglement",
+        "title": {
+          "fr": "La règlementation",
+          "ar": "التشريع",
+          "kab": ""
+        },
+        "children": [
+          {
+            "slug": "arrete",
+            "variant": "reglement",
+            "title": {
+              "fr": "Arrêté interministériel",
+              "ar": "القرارات الوزارية",
+              "kab": ""
+            }
+          },
+          {
+            "slug": "regles",
+            "variant": "reglement",
+            "title": {
+              "fr": "Les règles",
+              "ar": "القواعد",
+              "kab": ""
+            }
+          },
+          {
+            "slug": "loi",
+            "variant": "reglement",
+            "title": {
+              "fr": "Loi",
+              "ar": "القانون",
+              "kab": ""
+            }
+          },
+          {
+            "slug": "article",
+            "variant": "reglement",
+            "title": {
+              "fr": "Article",
+              "ar": "المادة",
+              "kab": ""
+            }
+          },
+          {
+            "slug": "decret",
+            "variant": "reglement",
+            "title": {
+              "fr": "Décret exécutif",
+              "ar": "المرسوم التنفيذي",
+              "kab": ""
+            }
+          }
+        ]
+      },
+      {
+        "slug": "signalisation",
+        "variant": "signalisation",
+        "title": {
+          "fr": "La signalisation routière",
+          "ar": "إشارات المرور",
+          "kab": ""
+        },
+        "children": [
+          {
+            "slug": "vertical",
+            "variant": "signalisation",
+            "title": {
+              "fr": "Signalisation verticale",
+              "ar": "إشارات عمودية",
+              "kab": ""
+            },
+            "href": "/apprendre/panneaux/vertical"
+          },
+          {
+            "slug": "horizontal",
+            "variant": "signalisation",
+            "title": {
+              "fr": "Signalisation horizontale",
+              "ar": "أفقية",
+              "kab": ""
+            },
+            "href": "/apprendre/panneaux/horizontal"
+          },
+          {
+            "slug": "lumineuse",
+            "variant": "signalisation",
+            "title": {
+              "fr": "Signalisation lumineuse",
+              "ar": "إشارات ضوئية",
+              "kab": ""
+            },
+            "href": "/apprendre/panneaux/lumineuse"
+          },
+          {
+            "slug": "agent-ordre",
+            "variant": "signalisation",
+            "title": {
+              "fr": "Signaux d'agent de l'ordre",
+              "ar": "إشارات شرطي المرور",
+              "kab": ""
+            },
+            "href": "/apprendre/panneaux/agent-ordre"
+          }
+        ]
+      }
+    ]
+  }
+}

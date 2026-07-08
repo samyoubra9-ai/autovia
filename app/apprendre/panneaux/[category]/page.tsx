@@ -1,9 +1,15 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
-import { PanneauCategoryView } from "@/app/components/apprentissage/PanneauxViews"
-import { getPanneauCategory, isPanneauCategory, PANNEAUX } from "@/lib/apprentissage/tracks/content"
+import { PanneauFamilyView } from "@/app/components/apprentissage/PanneauxViews"
+import {
+  getPanneauFamily,
+  isPanneauCategory,
+  isPanneauFamilySlug,
+  PANNEAUX,
+} from "@/lib/apprentissage/tracks/content"
+import { getPanneauCategoryHref } from "@/lib/apprentissage/tracks/routes"
 import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
@@ -12,26 +18,37 @@ type PageProps = {
 }
 
 export function generateStaticParams() {
-  return PANNEAUX.categories.map((cat) => ({ category: cat.slug }))
+  return PANNEAUX.families.map((f) => ({ category: f.slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params
-  if (!isPanneauCategory(category)) return {}
+  if (!isPanneauFamilySlug(category)) return {}
 
-  const cat = getPanneauCategory(category)!
+  const family = getPanneauFamily(category)!
   const locale = getVitrineLocaleFromCookie(await cookies())
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `${cat.title} — ${m.meta.title}`,
-    description: cat.description,
+    title: `${family.title} — ${m.meta.title}`,
+    description: family.description,
   }
 }
 
-export default async function PanneauCategoryPage({ params }: PageProps) {
+export default async function PanneauFamilyOrLegacyPage({ params }: PageProps) {
   const { category } = await params
-  if (!isPanneauCategory(category)) notFound()
 
-  return <PanneauCategoryView categorySlug={category} />
+  if (isPanneauFamilySlug(category)) {
+    return <PanneauFamilyView familySlug={category} />
+  }
+
+  if (isPanneauCategory(category)) {
+    const familySlug =
+      PANNEAUX.families.find((f) =>
+        f.categories?.some((c) => c.slug === category),
+      )?.slug ?? "vertical"
+    redirect(getPanneauCategoryHref(familySlug, category))
+  }
+
+  notFound()
 }

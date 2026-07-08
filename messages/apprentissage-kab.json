@@ -91,5 +91,25 @@
     "bestScore": "",
     "noQuestions": "",
     "backToModule": ""
+  },
+  "tracks": {
+    "panneaux": { "badge": "" },
+    "intersections": { "badge": "" }
+  },
+  "initiation": {
+    "badge": "",
+    "hint": "",
+    "expandBranch": "",
+    "exploreModule": "",
+    "continueToPanneaux": "",
+    "sidebarTitle": "",
+    "dashboardTitle": "",
+    "dashboardDescription": "",
+    "legendTitle": "",
+    "legendRoot": "",
+    "legendReglement": "",
+    "legendSignalisation": "",
+    "comingSoon": "",
+    "sectionsCount": ""
   }
 }

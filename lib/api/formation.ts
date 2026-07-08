@@ -191,9 +191,7 @@ export function eleveMatchesListeExamenNature(
   }
   if (nature === "code") return eleve.statutFormation === "code"
   if (nature === "creneau") return eleve.statutFormation === "creneau"
-  return (
-    eleve.statutFormation === "circulation" || eleve.statutFormation === "valide"
-  )
+  return eleve.statutFormation === "circulation"
 }
 
 /** Statut formation après validation d'une étape. */

@@ -8,8 +8,25 @@ export function getPanneauxHref() {
   return "/apprendre/panneaux"
 }
 
-export function getPanneauCategoryHref(categorySlug: string) {
+export function getPanneauFamilyHref(familySlug: string) {
+  return `/apprendre/panneaux/${familySlug}`
+}
+
+export function getPanneauCategoryHref(familySlug: string, categorySlug: string) {
+  return `/apprendre/panneaux/${familySlug}/${categorySlug}`
+}
+
+/** @deprecated Anciennes URLs — préférer getPanneauCategoryHref(family, category) */
+export function getPanneauCategoryHrefLegacy(categorySlug: string) {
   return `/apprendre/panneaux/${categorySlug}`
+}
+
+export function getPanneauSectionHref(
+  familySlug: string,
+  categorySlug: string,
+  sectionSlug: string,
+) {
+  return `/apprendre/panneaux/${familySlug}/${categorySlug}/${sectionSlug}`
 }
 
 export function getPanneauxQuizHref() {

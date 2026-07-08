@@ -1,82 +1,172 @@
 {
   "slug": "intersections",
   "title": "Intersections et priorités",
-  "description": "Comprenez les différents types d'intersections et les règles de priorité. Validez vos acquis avec un quiz.",
+  "description": "Apprenez les panneaux de priorité en situation réelle, puis les différents types d'intersections.",
   "quiz": {
     "passPercent": 80,
-    "questionsPerRound": 8
+    "questionsPerRound": 7
   },
+  "groups": [
+    {
+      "slug": "priorite",
+      "title": "Panneaux de priorité",
+      "description": "Chaque fiche associe le panneau, une situation à l'intersection et la règle à appliquer."
+    },
+    {
+      "slug": "intersections",
+      "title": "Types d'intersections",
+      "description": "Rond-point : insertion, circulation et sortie."
+    }
+  ],
   "types": [
     {
+      "slug": "stop",
+      "group": "priorite",
+      "title": "Stop",
+      "summary": "Arrêt obligatoire à la ligne, puis cédez le passage.",
+      "body": "<p>Au panneau <strong>STOP</strong>, l'arrêt est obligatoire à la ligne d'arrêt ou au bord de la chaussée.</p><p>Repartez uniquement lorsque la voie est libre et que vous ne gênez aucun usager prioritaire.</p>",
+      "sign": {
+        "name": "Stop",
+        "image": "/intersections/priorite/stop.svg"
+      },
+      "scenario": {
+        "image": "/intersections/scenarios/stop.webp",
+        "caption": "Arrêt complet à la ligne, contrôle des deux côtés, puis insertion.",
+        "passingOrder": [
+          [
+            { "color": "blue", "label": "Véhicule bleu" },
+            { "color": "green", "label": "Véhicule vert" }
+          ],
+          [{ "color": "red", "label": "Véhicule rouge" }]
+        ]
+      },
+      "rules": [
+        "Arrêt complet obligatoire",
+        "Céder le passage avant de repartir",
+        "Ne pas bloquer l'intersection"
+      ]
+    },
+    {
+      "slug": "cedez-passage",
+      "group": "priorite",
+      "title": "Cédez le passage",
+      "summary": "Ralentir et laisser passer les véhicules sur la route prioritaire.",
+      "body": "<p>Le triangle pointe vers le haut : vous êtes sur une voie secondaire. Vous devez <strong>céder le passage</strong> aux véhicules circulant sur la route prioritaire.</p><p>L'arrêt complet n'est pas toujours obligatoire si la voie est libre, mais la prudence impose souvent de marquer un bref arrêt.</p>",
+      "sign": {
+        "name": "Cédez le passage",
+        "image": "/intersections/priorite/cederlepassage.webp"
+      },
+      "scenario": {
+        "image": "/intersections/scenarios/cedezlepassage.webp",
+        "caption": "Le bleu et le jaune passent en premier en même temps, puis le rouge.",
+        "passingOrder": [
+          [
+            { "color": "blue", "label": "Véhicule bleu" },
+            { "color": "yellow", "label": "Véhicule jaune" }
+          ],
+          [{ "color": "red", "label": "Véhicule rouge" }]
+        ]
+      },
+      "rules": [
+        "Céder la priorité aux véhicules sur la route principale",
+        "Ralentir à l'approche",
+        "S'arrêter si la visibilité est réduite"
+      ]
+    },
+    {
+      "slug": "route-prioritaire",
+      "group": "priorite",
+      "title": "Route à caractère prioritaire",
+      "summary": "Vous circulez sur une route prioritaire.",
+      "body": "<p>Le losange jaune sur fond blanc indique une <strong>route à caractère prioritaire</strong>. Les véhicules sur les routes secondaires doivent vous céder le passage.</p><p>Restez vigilant : un autre conducteur peut ne pas respecter la priorité.</p>",
+      "sign": {
+        "name": "Route à caractère prioritaire",
+        "image": "/panneaux/priorite/characterper.webp"
+      },
+      "scenario": {
+        "image": "/intersections/scenarios/caracterepriorite.webp",
+        "caption": "Vous êtes sur la route prioritaire : les véhicules sur les voies secondaires cèdent le passage.",
+        "passingOrder": [
+          [
+            { "color": "red", "label": "Véhicule rouge" },
+            { "color": "yellow", "label": "Véhicule jaune" }
+          ],
+          [{ "color": "white", "label": "Véhicule blanc" }]
+        ]
+      },
+      "rules": [
+        "Priorité sur les routes secondaires",
+        "Rester prudent malgré la priorité",
+        "La fin est signalée par le panneau de fin"
+      ]
+    },
+    {
+      "slug": "fin-route-prioritaire",
+      "group": "priorite",
+      "title": "Fin de route prioritaire",
+      "summary": "Fin de la priorité sur cette route.",
+      "body": "<p>Ce panneau barré annonce la <strong>fin de la route prioritaire</strong>. Les règles de priorité à droite reprennent souvent le dessus à la prochaine intersection non signalée.</p>",
+      "sign": {
+        "name": "Fin de route prioritaire",
+        "image": "/panneaux/priorite/fincaract.webp"
+      },
+      "scenario": {
+        "image": "/intersections/scenarios/fincarac.webp",
+        "caption": "Après ce panneau, appliquez les règles de priorité a droite.",
+        "passingOrder": [
+          { "color": "blue", "label": "Véhicule venant de haut" },
+          { "color": "green", "label": "Véhicule venant de la droite" },
+          { "color": "red", "label": "Véhicule venant de bas" }
+        ]
+      },
+      "rules": [
+        "Fin de la priorité sur cette route",
+        "Priorité à droite à l'intersection suivante si rien n'est signalé",
+        "Adapter sa vitesse"
+      ]
+    },
+    {
       "slug": "priorite-droite",
+      "group": "priorite",
       "title": "Priorité à droite",
       "summary": "Règle par défaut lorsqu'il n'y a pas de signalisation.",
-      "body": "<p>Sauf signalisation contraire, la <strong>priorité à droite</strong> s'applique : vous devez céder le passage aux véhicules venant de votre droite.</p><p>Ralentissez à l'approche d'une intersection non signalée et vérifiez les véhicules à droite.</p>",
-      "image": null,
+      "body": "<p>Sans panneau ni feu, la <strong>priorité à droite</strong> s'applique : vous cédez le passage au véhicule qui arrive par votre droite.</p><p>Ralentissez, regardez à droite, puis avancez seulement si la voie est libre.</p>",
+      "sign": null,
+      "scenario": {
+        "image": "/intersections/scenarios/prioriteadroite.webp",
+        "caption": "Le véhicule B arrive par la droite de A : B passe en premier.",
+        "passingOrder": [
+          { "color": "white", "label": "Véhicule blanc" },
+          { "color": "orange", "label": "Véhicule orange" }
+        ]
+      },
       "rules": [
         "Céder le passage à droite",
         "Ralentir à l'approche",
         "Ne pas présumer que l'autre va s'arrêter"
       ]
     },
-    {
-      "slug": "stop-cedez",
-      "title": "Stop et cédez le passage",
-      "summary": "Arrêt obligatoire ou cédez le passage selon le panneau.",
-      "body": "<p>Au <strong>STOP</strong>, l'arrêt est obligatoire à la ligne. Au <strong>cédez le passage</strong>, ralentissez et cédez sans arrêt complet si la voie est libre.</p>",
-      "image": null,
-      "rules": [
-        "STOP : arrêt complet obligatoire",
-        "Cédez le passage : priorité aux autres usagers",
-        "Ne jamais bloquer l'intersection"
-      ]
-    },
-    {
-      "slug": "route-prioritaire",
-      "title": "Route prioritaire",
-      "summary": "Vous avez la priorité sur les voies qui croisent la vôtre.",
-      "body": "<p>Le panneau losange jaune indique une <strong>route prioritaire</strong>. Les véhicules sur les routes secondaires doivent vous céder le passage.</p><p>Restez vigilant : un autre conducteur peut ne pas respecter la priorité.</p>",
-      "image": null,
-      "rules": [
-        "Priorité sur les routes secondaires",
-        "Fin de priorité au panneau AB4",
-        "Vigilance malgré la priorité"
-      ]
-    },
+  
+   
     {
       "slug": "rond-point",
+      "group": "intersections",
       "title": "Rond-point",
       "summary": "Insertion, circulation et sortie dans un giratoire.",
       "body": "<p>Avant d'entrer dans un rond-point, <strong>cédez le passage</strong> aux véhicules déjà engagés dans l'anneau (sauf signalisation différente).</p><p>Indiquez votre sortie avec le clignotant droit avant de quitter l'anneau.</p>",
-      "image": null,
+      "sign": null,
+      "scenario": {
+        "image": "/intersections/scenarios/rond-point.svg",
+        "caption": "Cédez le passage à l'entrée, circulez dans l'anneau, clignotant droit à la sortie.",
+        "passingOrder": [
+          { "color": "green", "label": "Véhicule déjà dans le rond-point" },
+          { "color": "orange", "label": "Véhicule qui s'insère" }
+        ]
+      },
       "rules": [
         "Céder le passage à l'entrée",
         "Clignotant droit avant la sortie",
         "Ne pas s'arrêter dans l'anneau sans raison"
-      ]
-    },
-    {
-      "slug": "carrefour-feux",
-      "title": "Carrefour à feux",
-      "summary": "Priorité selon les feux tricolores et les flèches.",
-      "body": "<p>Au feu <strong>rouge</strong>, arrêt obligatoire. Au <strong>orange</strong>, arrêt sauf danger si déjà engagé. Au <strong>vert</strong>, repartez en vérifiant les piétons et cyclistes.</p><p>Les flèches autorisent une direction même si le feu principal est rouge (selon le cas).</p>",
-      "image": null,
-      "rules": [
-        "Rouge : arrêt complet",
-        "Vert : repartir avec prudence",
-        "Respecter les flèches directionnelles"
-      ]
-    },
-    {
-      "slug": "giratoire-plurivoies",
-      "title": "Carrefour giratoire à plusieurs voies",
-      "summary": "Placement et changement de voie dans un giratoire complexe.",
-      "body": "<p>Choisissez la <strong>bonne voie</strong> avant d'entrer selon votre sortie. Les voies intérieures servent souvent aux sorties tardives.</p><p>Ne changez pas de voie brusquement dans l'anneau.</p>",
-      "image": null,
-      "rules": [
-        "Se placer à l'avance selon la sortie",
-        "Clignotant pour changer de voie",
-        "Attention aux angles morts"
       ]
     }
   ],
@@ -123,18 +213,7 @@
         { "id": "c", "label": "Une voie sans issue" }
       ],
       "correctOptionId": "b",
-      "explanation": "C'est le panneau de route à caractère prioritaire (AB3a)."
-    },
-    {
-      "id": "int-05",
-      "prompt": "Au feu rouge, vous devez :",
-      "options": [
-        { "id": "a", "label": "Vous arrêter avant la ligne" },
-        { "id": "b", "label": "Passer si la voie est libre" },
-        { "id": "c", "label": "Ralentir sans vous arrêter" }
-      ],
-      "correctOptionId": "a",
-      "explanation": "Le feu rouge impose un arrêt complet."
+      "explanation": "C'est le panneau de route à caractère prioritaire."
     },
     {
       "id": "int-06",
@@ -160,7 +239,7 @@
     },
     {
       "id": "int-08",
-      "prompt": "À la fin d'une route prioritaire (panneau AB4), quelle règle reprend souvent le dessus ?",
+      "prompt": "À la fin d'une route prioritaire, quelle règle reprend souvent le dessus ?",
       "options": [
         { "id": "a", "label": "Priorité à droite" },
         { "id": "b", "label": "Priorité aux camions" },

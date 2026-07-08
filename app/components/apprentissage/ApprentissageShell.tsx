@@ -8,30 +8,38 @@ import { useEffect, useMemo, useState, type ReactNode } from "react"
 
 import { LocaleSwitcher } from "@/app/components/vitrine/LocaleSwitcher"
 import { useVitrineLocale } from "@/app/components/vitrine/VitrineLocaleProvider"
+import { getInitiationLabel, INITIATION } from "@/lib/apprentissage/initiation"
 import { getGlobalCompletionPercent } from "@/lib/apprentissage/access"
 import {
+  categoryHasSections,
   getPanneauCategory,
+  getPanneauFamily,
+  getPanneauSection,
   getIntersectionType,
   isPanneauCategory,
+  isPanneauFamilySlug,
   isIntersectionType,
   isTrackSlug,
   PANNEAUX,
   INTERSECTIONS,
 } from "@/lib/apprentissage/tracks/content"
+import {
+  getPanneauCategoryHref,
+  getPanneauFamilyHref,
+} from "@/lib/apprentissage/tracks/routes"
 import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
 import { cn } from "@/lib/utils"
 
-import { useCookieConsent } from "@/app/components/vitrine/CookieConsentProvider"
-
 import { ApprentissageProgressProvider, useApprentissageProgress } from "./ApprentissageProgressProvider"
 import { ApprentissageSidebar } from "./ApprentissageSidebar"
+import { QuizImmersiveProvider, useQuizImmersive } from "./QuizImmersiveContext"
 
 function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
-  const { progress, hydrated, learningEnabled } = useApprentissageProgress()
-  const { reopenBanner } = useCookieConsent()
+  const { progress, hydrated } = useApprentissageProgress()
+  const { immersive: quizImmersive } = useQuizImmersive()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const globalPercent = hydrated ? getGlobalCompletionPercent(progress) : 0
@@ -45,10 +53,33 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
     if (parts[0] !== "apprendre") return crumbs
 
     const track = parts[1]
-    if (track === "panneaux") {
+    if (track === "initiation") {
+      crumbs.push({
+        label: getInitiationLabel(INITIATION.title, locale),
+      })
+    } else if (track === "panneaux") {
       crumbs.push({ label: PANNEAUX.title, href: "/apprendre/panneaux" })
       if (parts[2] === "quiz") {
         crumbs.push({ label: m.shell.quizLabel })
+      } else if (parts[2] && isPanneauFamilySlug(parts[2])) {
+        const family = getPanneauFamily(parts[2])!
+        crumbs.push({
+          label: family.title,
+          href: getPanneauFamilyHref(family.slug),
+        })
+        if (parts[3] && isPanneauCategory(parts[3])) {
+          const panneauCategory = getPanneauCategory(parts[3])!
+          crumbs.push({
+            label: panneauCategory.title,
+            href: getPanneauCategoryHref(family.slug, panneauCategory.slug),
+          })
+          if (parts[4] && categoryHasSections(panneauCategory)) {
+            const section = getPanneauSection(parts[3], parts[4])
+            if (section) {
+              crumbs.push({ label: section.title })
+            }
+          }
+        }
       } else if (parts[2] && isPanneauCategory(parts[2])) {
         crumbs.push({ label: getPanneauCategory(parts[2])!.title })
       }
@@ -69,7 +100,7 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
     }
 
     return crumbs
-  }, [pathname, m])
+  }, [pathname, m, locale])
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : ""
@@ -82,8 +113,17 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
     setMobileOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (quizImmersive) setMobileOpen(false)
+  }, [quizImmersive])
+
   return (
-    <div className="app-ui ap-shell min-h-svh">
+    <div
+      className={cn(
+        "app-ui ap-shell min-h-svh",
+        quizImmersive && "ap-shell--quiz-immersive",
+      )}
+    >
       <header className="ap-topbar">
         <div className="ap-topbar-inner">
           <div className="ap-topbar-left">
@@ -180,24 +220,10 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {learningEnabled ? (
-        <div className="ap-storage-hint">
-          <Smartphone className="size-3.5 shrink-0" aria-hidden />
-          <span>{m.shell.storageHint}</span>
-        </div>
-      ) : (
-        <div className="ap-storage-hint ap-storage-hint--disabled">
-          <Smartphone className="size-3.5 shrink-0" aria-hidden />
-          <span>{m.shell.storageDisabled}</span>
-          <button
-            type="button"
-            className="ap-storage-hint__btn"
-            onClick={reopenBanner}
-          >
-            {m.shell.enableStorage}
-          </button>
-        </div>
-      )}
+      <div className="ap-storage-hint">
+        <Smartphone className="size-3.5 shrink-0" aria-hidden />
+        <span>{m.shell.storageHint}</span>
+      </div>
     </div>
   )
 }
@@ -205,7 +231,9 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
 export function ApprentissageShell({ children }: { children: ReactNode }) {
   return (
     <ApprentissageProgressProvider>
-      <ApprentissageLayoutInner>{children}</ApprentissageLayoutInner>
+      <QuizImmersiveProvider>
+        <ApprentissageLayoutInner>{children}</ApprentissageLayoutInner>
+      </QuizImmersiveProvider>
     </ApprentissageProgressProvider>
   )
 }

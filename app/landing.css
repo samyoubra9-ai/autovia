@@ -1956,6 +1956,28 @@ html:has(.ds-landing-page) body {
   font-size: 0.9rem;
 }
 
+.ds-landing-page .ds-inscription-consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ds-text-muted);
+  cursor: pointer;
+}
+
+.ds-landing-page .ds-inscription-consent input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.ds-landing-page .ds-inscription-consent__link {
+  color: var(--ds-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .ds-landing-page .ds-inscription-muted {
   margin: 0;
   color: var(--ds-text-muted);
