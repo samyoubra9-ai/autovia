@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/server"
 
 import "../auth/auth.css"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Configuration administrateur",
   robots: { index: false, follow: false },
