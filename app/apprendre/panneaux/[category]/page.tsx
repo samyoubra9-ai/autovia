@@ -10,6 +10,7 @@ import {
   PANNEAUX,
 } from "@/lib/apprentissage/tracks/content"
 import { getPanneauCategoryHref } from "@/lib/apprentissage/tracks/routes"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
@@ -30,8 +31,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `${family.title} — ${m.meta.title}`,
-    description: family.description,
+    title: `${tTrack(family.title, locale)} — ${m.meta.title}`,
+    description: tTrack(family.description, locale),
   }
 }
 

@@ -15,6 +15,7 @@ import {
   buildSignQuizQuestions,
   PANNEAUX,
 } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getPanneauxHref } from "@/lib/apprentissage/tracks/routes"
 import { cn } from "@/lib/utils"
 
@@ -34,10 +35,10 @@ export function PanneauxQuizPage() {
   const questions = useMemo(() => {
     if (!hydrated) return []
     const pool = getStudiedSignsPool(progress)
-    return buildSignQuizQuestions(pool, PANNEAUX.quiz.questionsPerRound)
+    return buildSignQuizQuestions(pool, PANNEAUX.quiz.questionsPerRound, locale)
     // seed forces new shuffle when remounting
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, progress, seed])
+  }, [hydrated, progress, seed, locale])
 
   const best = hydrated ? progress.panneaux.quizBestScore : null
 
@@ -62,7 +63,7 @@ export function PanneauxQuizPage() {
         <header className="ap-page-head">
           <h1>
             {formatApprentissageMessage(m.quiz.title, {
-              module: PANNEAUX.title,
+              module: tTrack(PANNEAUX.title, locale),
             })}
           </h1>
           <p>{m.tracks.panneauxQuizIntro}</p>

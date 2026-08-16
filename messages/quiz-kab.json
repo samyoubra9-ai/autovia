@@ -4,63 +4,36 @@
       "questions": [
         {
           "id": "fond-01",
-          "prompt": "",
+          "prompt": "Tafewwit s ukrurej d yiri azeggaɣ temmal s umata :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Aggaz" },
+            { "id": "b", "label": "Amihi" },
+            { "id": "c", "label": "Timara" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Akrurej s yiri azeggaɣ d tafewwit n umihi. Temmal-d amihi ticki teqreb-d."
         },
         {
           "id": "fond-02",
-          "prompt": "",
+          "prompt": "Izirig yezdi ɣef wakal yemmal-d :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Aɛeddi yettusireg" },
+            { "id": "b", "label": "Aɛeddi d ukerreẓ ttwaqqazen" },
+            { "id": "c", "label": "Eǧǧ abrid i yimḍakalen kan" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Izirig yezdi ur ilaq ara ad yettwakreẓ neɣ ad yettwaseqdec i uɛeddi."
         },
         {
           "id": "fond-03",
-          "prompt": "",
+          "prompt": "Ticki tili tafat tazeggaɣt, asenked ilaq :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Ad isenɣes tazzla sakin ad iɛeddi ma yella abrid d ilelli" },
+            { "id": "b", "label": "Ad iḥbes uqbel n yizirig n uḥbas neɣ n tfat" },
+            { "id": "c", "label": "Ad iɛerḍ s uɣellab iwakken ad d-yelɣu" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Tafat tazeggaɣt tessuter aḥbas ummid uqbel ad tɛeddiḍ ticki tewweḍ tazegzawt."
         }
       ]
     },
@@ -68,63 +41,36 @@
       "questions": [
         {
           "id": "circ-01",
-          "prompt": "",
+          "prompt": "Deg unmeɣri war asɣel, alugen amezwaru d :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Tazwart s zelmeḍ" },
+            { "id": "b", "label": "Tazwart s yeffus" },
+            { "id": "c", "label": "Tazwart i win yessarayen" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Ma ulac tafewwit neɣ tafat, eǧǧ abrid i win d-yusan s yeffus-ik."
         },
         {
           "id": "circ-02",
-          "prompt": "",
+          "prompt": "Deg tuzzya, s umata :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Tikeṛṛusin yellan deg tuzzya ɣur-sent tazwart" },
+            { "id": "b", "label": "Tid ikecmen ɣur-sent dima tazwart" },
+            { "id": "c", "label": "Nettḥebbis deg tlemmast n tuzzya" }
           ],
           "correctOptionId": "a",
-          "explanation": ""
+          "explanation": "Imawsanen yellan yakan deg tuzzya ɣur-sen tazwart, arma yella usɣel nniḍen."
         },
         {
           "id": "circ-03",
-          "prompt": "",
+          "prompt": "Aɛeddi yettwaqqaz :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Ɣef yizirig yezdi" },
+            { "id": "b", "label": "Ɣef tarrayt s sin n yiɣallen" },
+            { "id": "c", "label": "Zdat n ukamyun aẓayan" }
           ],
           "correctOptionId": "a",
-          "explanation": ""
+          "explanation": "Izirig yezdi yeqqaz ad tɛeddiḍ ɣef tlemmast iwakken ad tɛeddiḍ takeṛṛust."
         }
       ]
     },
@@ -132,63 +78,36 @@
       "questions": [
         {
           "id": "cond-01",
-          "prompt": "",
+          "prompt": "Ameccaq n tɣellist yessirig azal-is :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Ad tesseɣweseḍ asɣiwes" },
+            { "id": "b", "label": "Ad tjerred ma tḥebbes takeṛṛust yellan zdat-ik" },
+            { "id": "c", "label": "Ad tɛeddiḍ s sshala" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Yettɛiṭṭel akud d umkan iwakken ad tḥebseḍ war amtawa."
         },
         {
           "id": "cond-02",
-          "prompt": "",
+          "prompt": "Ticki tmuɣli d tameẓẓyant (ageffur, tagut), ilaq :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Ad tremdeḍ tifawin sakin ad tesɛeddiḍ tazzla" },
+            { "id": "b", "label": "Ad teṭṭfeḍ tazzla tameqqrant yettusirgen" },
+            { "id": "c", "label": "Ad tsenseḍ tifawin iwakken ur d-tessewḍeḍ ara" }
           ],
           "correctOptionId": "a",
-          "explanation": ""
+          "explanation": "Ad k-walin sakin ad tsenɣeseḍ tazzla yesseɣla tɣellist ticki tarrayt ur tettban ara akken ilaq."
         },
         {
           "id": "cond-03",
-          "prompt": "",
+          "prompt": "Asenked usɣiwes yezdi ɣef :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Asnerni n tazzla s tezmert deg yal tuffɣa" },
+            { "id": "b", "label": "Azwir d usenked ḥnin" },
+            { "id": "c", "label": "Ad teǧǧeḍ amsedday ad yeddu deg umkan ilelli ɣef waṭas n wakud" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Azwir isenqes iḥebsiyen iserrḥanen yerna isenqes asɣiwes."
         }
       ]
     },
@@ -196,63 +115,36 @@
       "questions": [
         {
           "id": "sit-01",
-          "prompt": "",
+          "prompt": "Ɣef tarrayt tameqqrant, iwakken ad tkecmeḍ ɣer ubrid arurad :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Kcem s usɛeddi n tazzla-k ɣer usikel" },
+            { "id": "b", "label": "Ḥbes ɣef tebdut n usnerni n tazzla" },
+            { "id": "c", "label": "Ɛeddi dima d amezwaru" }
           ],
           "correctOptionId": "a",
-          "explanation": ""
+          "explanation": "Tebdut n usnerni n tazzla tettwaseqdec iwakken ad tkecmeḍ s twala d usɛeddi n tazzla."
         },
         {
           "id": "sit-02",
-          "prompt": "",
+          "prompt": "Zdat n umḍakul ɣef ubrid yettwaḥerzen :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Snerni tazzla iwakken ad tɛeddiḍ zdat-es" },
+            { "id": "b", "label": "Eǧǧ abrid sakin ḥbes ma yella d ayen ilaqen" },
+            { "id": "c", "label": "Ɛreḍ s uɣellab iwakken ad t-id-telɣuḍ" }
           ],
           "correctOptionId": "b",
-          "explanation": ""
+          "explanation": "Imḍakalen yekcemen ɣef ubrid yettwaḥerzen ɣur-sen tazwart."
         },
         {
           "id": "sit-03",
-          "prompt": "",
+          "prompt": "Ma yella amihi, tikli ilaq ad tebdu s :",
           "options": [
-            {
-              "id": "a",
-              "label": ""
-            },
-            {
-              "id": "b",
-              "label": ""
-            },
-            {
-              "id": "c",
-              "label": ""
-            }
+            { "id": "a", "label": "Ḥrez — Lɣu — Ɛiwen" },
+            { "id": "b", "label": "Senkez imejruḥen imir kan" },
+            { "id": "c", "label": "Ffeɣ seg umkan s tɣawla" }
           ],
           "correctOptionId": "a",
-          "explanation": ""
+          "explanation": "PAS : ḥrez tamnaḍt, lɣu i tallelt, sakin ɛiwen war ma tessekcameḍ iman-ik ɣer umihi."
         }
       ]
     }

@@ -23,6 +23,7 @@ import {
   PANNEAUX,
   INTERSECTIONS,
 } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import {
   getPanneauCategoryHref,
   getPanneauFamilyHref,
@@ -58,44 +59,54 @@ function ApprentissageLayoutInner({ children }: { children: ReactNode }) {
         label: getInitiationLabel(INITIATION.title, locale),
       })
     } else if (track === "panneaux") {
-      crumbs.push({ label: PANNEAUX.title, href: "/apprendre/panneaux" })
+      crumbs.push({
+        label: tTrack(PANNEAUX.title, locale),
+        href: "/apprendre/panneaux",
+      })
       if (parts[2] === "quiz") {
         crumbs.push({ label: m.shell.quizLabel })
       } else if (parts[2] && isPanneauFamilySlug(parts[2])) {
         const family = getPanneauFamily(parts[2])!
         crumbs.push({
-          label: family.title,
+          label: tTrack(family.title, locale),
           href: getPanneauFamilyHref(family.slug),
         })
         if (parts[3] && isPanneauCategory(parts[3])) {
           const panneauCategory = getPanneauCategory(parts[3])!
           crumbs.push({
-            label: panneauCategory.title,
+            label: tTrack(panneauCategory.title, locale),
             href: getPanneauCategoryHref(family.slug, panneauCategory.slug),
           })
           if (parts[4] && categoryHasSections(panneauCategory)) {
             const section = getPanneauSection(parts[3], parts[4])
             if (section) {
-              crumbs.push({ label: section.title })
+              crumbs.push({ label: tTrack(section.title, locale) })
             }
           }
         }
       } else if (parts[2] && isPanneauCategory(parts[2])) {
-        crumbs.push({ label: getPanneauCategory(parts[2])!.title })
+        crumbs.push({
+          label: tTrack(getPanneauCategory(parts[2])!.title, locale),
+        })
       }
     } else if (track === "intersections") {
       crumbs.push({
-        label: INTERSECTIONS.title,
+        label: tTrack(INTERSECTIONS.title, locale),
         href: "/apprendre/intersections",
       })
       if (parts[2] === "quiz") {
         crumbs.push({ label: m.shell.quizLabel })
       } else if (parts[2] && isIntersectionType(parts[2])) {
-        crumbs.push({ label: getIntersectionType(parts[2])!.title })
+        crumbs.push({
+          label: tTrack(getIntersectionType(parts[2])!.title, locale),
+        })
       }
     } else if (track && isTrackSlug(track)) {
       crumbs.push({
-        label: track === "panneaux" ? PANNEAUX.title : INTERSECTIONS.title,
+        label: tTrack(
+          track === "panneaux" ? PANNEAUX.title : INTERSECTIONS.title,
+          locale,
+        ),
       })
     }
 

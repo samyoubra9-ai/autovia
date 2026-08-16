@@ -36,6 +36,7 @@ import {
   getPanneauxQuizHref,
 } from "@/lib/apprentissage/tracks/routes"
 import { getNextPanneauStep } from "@/lib/apprentissage/tracks/navigation"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { sectionProgressKey, signKey } from "@/lib/apprentissage/tracks/types"
 import { cn } from "@/lib/utils"
 
@@ -45,6 +46,7 @@ import { useApprentissageProgress } from "./ApprentissageProgressProvider"
 export function PanneauxOverview() {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated } = useApprentissageProgress()
   const percent = hydrated ? getPanneauxProgressPercent(progress) : 0
   const quizPassed = hydrated ? progress.panneaux.quizPassed : false
@@ -54,8 +56,8 @@ export function PanneauxOverview() {
     <div className="ap-page">
       <header className="ap-page-head">
         <Badge>{m.tracks.panneaux.badge}</Badge>
-        <h1>{PANNEAUX.title}</h1>
-        <p>{PANNEAUX.description}</p>
+        <h1>{t(PANNEAUX.title)}</h1>
+        <p>{t(PANNEAUX.description)}</p>
         <div className="ap-page-head-meta">
           <span>{percent}% {m.tracks.studied}</span>
           {best !== null ? (
@@ -97,9 +99,9 @@ export function PanneauxOverview() {
                 }
               >
                 <div className="ap-category-card-head">
-                  <h3>{family.title}</h3>
+                  <h3>{t(family.title)}</h3>
                 </div>
-                <p>{family.description}</p>
+                <p>{t(family.description)}</p>
                 <div className="ap-category-card-foot">
                   {!familyHasFlatSigns(family) ? (
                     <span>
@@ -163,6 +165,8 @@ type PanneauFlatFamilyViewProps = {
 }
 
 function PanneauFlatFamilyView({ family, m }: PanneauFlatFamilyViewProps) {
+  const { locale } = useVitrineLocale()
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated, studySign, unstudySign } = useApprentissageProgress()
   const signs = getFamilySigns(family)
   const isHorizontal = family.slug === "horizontal"
@@ -199,9 +203,9 @@ function PanneauFlatFamilyView({ family, m }: PanneauFlatFamilyViewProps) {
           } as React.CSSProperties
         }
       >
-        <Badge>{family.title}</Badge>
-        <h1>{family.title}</h1>
-        <p>{family.description}</p>
+        <Badge>{t(family.title)}</Badge>
+        <h1>{t(family.title)}</h1>
+        <p>{t(family.description)}</p>
         <div className="ap-page-head-meta">
           <span>{familyPercent}% {m.tracks.studied}</span>
           <span>
@@ -227,8 +231,8 @@ function PanneauFlatFamilyView({ family, m }: PanneauFlatFamilyViewProps) {
                   signKey(categorySlug, sign.id),
                 )
               : false
-            const displayName = sign.name.trim()
-            const displayMeaning = sign.meaning.trim()
+            const displayName = t(sign.name.trim())
+            const displayMeaning = t(sign.meaning.trim())
 
             return (
               <article
@@ -300,6 +304,7 @@ function PanneauFlatFamilyView({ family, m }: PanneauFlatFamilyViewProps) {
 export function PanneauFamilyView({ familySlug }: PanneauFamilyViewProps) {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated } = useApprentissageProgress()
   const family = getPanneauFamily(familySlug)
 
@@ -334,9 +339,9 @@ export function PanneauFamilyView({ familySlug }: PanneauFamilyViewProps) {
           } as React.CSSProperties
         }
       >
-        <Badge>{family.title}</Badge>
-        <h1>{family.title}</h1>
-        <p>{family.description}</p>
+        <Badge>{t(family.title)}</Badge>
+        <h1>{t(family.title)}</h1>
+        <p>{t(family.description)}</p>
       </header>
 
       <section className="ap-track-section">
@@ -370,12 +375,12 @@ export function PanneauFamilyView({ familySlug }: PanneauFamilyViewProps) {
                 }
               >
                 <div className="ap-category-card-head">
-                  <h3>{cat.title}</h3>
+                  <h3>{t(cat.title)}</h3>
                   {done ? (
                     <Check className="size-4 text-emerald-600" aria-hidden />
                   ) : null}
                 </div>
-                <p>{cat.description}</p>
+                <p>{t(cat.description)}</p>
                 <div className="ap-category-card-foot">
                   <span>
                     {formatApprentissageMessage(m.tracks.signsCount, {
@@ -410,6 +415,7 @@ export function PanneauCategoryHubView({
 }: PanneauCategoryHubViewProps) {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated } = useApprentissageProgress()
   const family = getPanneauFamily(familySlug)
   const cat = getPanneauCategoryInFamily(familySlug, categorySlug)
@@ -427,7 +433,7 @@ export function PanneauCategoryHubView({
         <Button asChild variant="ghost" size="sm" className="gap-1.5 px-0">
           <Link href={getPanneauFamilyHref(family.slug)}>
             <ArrowLeft className="size-4" />
-            {family.title}
+            {t(family.title)}
           </Link>
         </Button>
       </div>
@@ -441,9 +447,9 @@ export function PanneauCategoryHubView({
           } as React.CSSProperties
         }
       >
-        <Badge>{cat.title}</Badge>
-        <h1>{cat.title}</h1>
-        <p>{cat.description}</p>
+        <Badge>{t(cat.title)}</Badge>
+        <h1>{t(cat.title)}</h1>
+        <p>{t(cat.description)}</p>
       </header>
 
       <section className="ap-track-section">
@@ -476,12 +482,12 @@ export function PanneauCategoryHubView({
                 }
               >
                 <div className="ap-category-card-head">
-                  <h3>{section.title}</h3>
+                  <h3>{t(section.title)}</h3>
                   {done ? (
                     <Check className="size-4 text-emerald-600" aria-hidden />
                   ) : null}
                 </div>
-                <p>{section.description}</p>
+                <p>{t(section.description)}</p>
                 <div className="ap-category-card-foot">
                   <span>
                     {formatApprentissageMessage(m.tracks.signsCount, {
@@ -533,7 +539,7 @@ function PanneauStepFooter({
         <Link href={next.href}>
           <span className="ap-page-footer-next-text">
             <span className="ap-page-footer-next-kicker">{m.tracks.nextStep}</span>
-            <span className="ap-page-footer-next-label">{next.label}</span>
+            <span className="ap-page-footer-next-label">{tTrack(next.label, locale)}</span>
           </span>
           <ArrowRight className="size-4 shrink-0" aria-hidden />
         </Link>
@@ -670,6 +676,7 @@ function PanneauSignsView({
 }: PanneauSignsViewProps) {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated, studySign, unstudySign } = useApprentissageProgress()
 
   const colors = CATEGORY_COLORS[categorySlug] ?? {
@@ -683,7 +690,7 @@ function PanneauSignsView({
         <Button asChild variant="ghost" size="sm" className="gap-1.5 px-0">
           <Link href={backHref}>
             <ArrowLeft className="size-4" />
-            {backLabel}
+            {t(backLabel)}
           </Link>
         </Button>
       </div>
@@ -697,9 +704,9 @@ function PanneauSignsView({
           } as React.CSSProperties
         }
       >
-        <Badge>{categoryTitle}</Badge>
-        <h1>{categoryTitle}</h1>
-        <p>{categoryDescription}</p>
+        <Badge>{t(categoryTitle)}</Badge>
+        <h1>{t(categoryTitle)}</h1>
+        <p>{t(categoryDescription)}</p>
       </header>
 
       <div className="ap-sign-grid">
@@ -708,8 +715,8 @@ function PanneauSignsView({
           const studied = hydrated
             ? progress.panneaux.signsStudied.includes(key)
             : false
-          const displayName = sign.name.trim()
-          const displayMeaning = sign.meaning.trim()
+          const displayName = t(sign.name.trim())
+          const displayMeaning = t(sign.meaning.trim())
 
           return (
             <article

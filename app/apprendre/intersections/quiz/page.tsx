@@ -3,7 +3,11 @@ import { cookies } from "next/headers"
 
 import { IntersectionsQuizPage } from "@/app/components/apprentissage/IntersectionsQuizPage"
 import { INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
-import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
+import {
+  formatApprentissageMessage,
+  getApprentissageMessages,
+} from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -11,7 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `Quiz — ${INTERSECTIONS.title}`,
+    title: formatApprentissageMessage(m.quiz.title, {
+      module: tTrack(INTERSECTIONS.title, locale),
+    }),
     description: m.tracks.intersectionsQuizIntro,
   }
 }

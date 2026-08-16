@@ -28,6 +28,7 @@ import {
 import { getInitiationLabel, INITIATION } from "@/lib/apprentissage/initiation"
 import { getInitiationHref } from "@/lib/apprentissage/initiation-routes"
 import { PANNEAUX, INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import {
   getIntersectionsHref,
   getPanneauxHref,
@@ -100,7 +101,9 @@ export function ApprentissageDashboard() {
   })
 
   const nextHref = nextTrack?.href ?? "/apprendre"
-  const nextLabel = nextTrack?.title ?? m.dashboard.allComplete
+  const nextLabel = nextTrack
+    ? tTrack(nextTrack.title, locale)
+    : m.dashboard.allComplete
 
   const heroCta =
     tracksDone === TRACKS_TOTAL
@@ -308,7 +311,7 @@ export function ApprentissageDashboard() {
                           step: index + 1,
                         })}
                       </span>
-                      <h3>{track.title}</h3>
+                      <h3>{tTrack(track.title, locale)}</h3>
                     </div>
                     <span
                       className={cn(
@@ -328,7 +331,7 @@ export function ApprentissageDashboard() {
                     </span>
                   </div>
 
-                  <p className="ap-dash-step-desc">{track.description}</p>
+                  <p className="ap-dash-step-desc">{tTrack(track.description, locale)}</p>
 
                   <div className="ap-dash-step-meta">
                     <span className="ap-dash-step-meta-item">

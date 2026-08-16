@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 
 import { PanneauxOverview } from "@/app/components/apprentissage/PanneauxViews"
 import { PANNEAUX } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
@@ -11,8 +12,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `${PANNEAUX.title} — ${m.meta.title}`,
-    description: PANNEAUX.description,
+    title: `${tTrack(PANNEAUX.title, locale)} — ${m.meta.title}`,
+    description: tTrack(PANNEAUX.description, locale),
   }
 }
 

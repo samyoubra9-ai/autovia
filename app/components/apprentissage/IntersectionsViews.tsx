@@ -29,6 +29,10 @@ import {
   getIntersectionType,
   INTERSECTIONS,
 } from "@/lib/apprentissage/tracks/content"
+import {
+  localizeIntersectionType,
+  tTrack,
+} from "@/lib/apprentissage/tracks/localize"
 import { getIntersectionTypesByGroup, getNextIntersectionStep } from "@/lib/apprentissage/tracks/intersections-navigation"
 import {
   getIntersectionTypeHref,
@@ -103,8 +107,12 @@ function IntersectionVehicleChip({
 }: {
   vehicle: IntersectionScenarioVehicle
 }) {
+  const { locale } = useVitrineLocale()
   const palette = INTERSECTION_VEHICLE_COLORS[vehicle.color]
-  const label = getIntersectionVehicleLabel(vehicle.color, vehicle.label)
+  const label = tTrack(
+    getIntersectionVehicleLabel(vehicle.color, vehicle.label),
+    locale,
+  )
 
   return (
     <span className="ap-intersection-passing-vehicle">
@@ -180,6 +188,8 @@ function IntersectionTypeList({
   studiedSlugs,
   startIndex = 0,
 }: IntersectionTypeListProps) {
+  const { locale } = useVitrineLocale()
+  const t = (text: string) => tTrack(text, locale)
   return (
     <ol className="ap-type-list">
       {types.map((type, index) => {
@@ -196,8 +206,8 @@ function IntersectionTypeList({
                   {String(startIndex + index + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3>{type.title}</h3>
-                  <p>{type.summary}</p>
+                  <h3>{t(type.title)}</h3>
+                  <p>{t(type.summary)}</p>
                 </div>
                 {studied ? (
                   <Check className="size-4 shrink-0 text-emerald-600" />
@@ -211,8 +221,8 @@ function IntersectionTypeList({
                   {String(startIndex + index + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3>{type.title}</h3>
-                  <p>{type.summary}</p>
+                  <h3>{t(type.title)}</h3>
+                  <p>{t(type.summary)}</p>
                 </div>
               </div>
             )}
@@ -226,6 +236,7 @@ function IntersectionTypeList({
 export function IntersectionsOverview() {
   const { locale } = useVitrineLocale()
   const m = getApprentissageMessages(locale)
+  const t = (text: string) => tTrack(text, locale)
   const { progress, hydrated } = useApprentissageProgress()
   const unlocked = hydrated ? isIntersectionsUnlocked(progress) : true
   const percent = hydrated ? getIntersectionsProgressPercent(progress) : 0
@@ -239,8 +250,8 @@ export function IntersectionsOverview() {
     <div className="ap-page">
       <header className="ap-page-head">
         <Badge>{m.tracks.intersections.badge}</Badge>
-        <h1>{INTERSECTIONS.title}</h1>
-        <p>{INTERSECTIONS.description}</p>
+        <h1>{t(INTERSECTIONS.title)}</h1>
+        <p>{t(INTERSECTIONS.description)}</p>
         <div className="ap-page-head-meta">
           <span>
             {percent}% {m.tracks.studied}
@@ -264,8 +275,8 @@ export function IntersectionsOverview() {
 
         return (
           <section key={group.slug} className="ap-track-section">
-            <h2>{group.title}</h2>
-            <p className="ap-track-section-desc">{group.description}</p>
+            <h2>{t(group.title)}</h2>
+            <p className="ap-track-section-desc">{t(group.description)}</p>
             <IntersectionTypeList
               types={types}
               unlocked={unlocked}
@@ -320,7 +331,7 @@ function IntersectionStepFooter({ typeSlug }: IntersectionStepFooterProps) {
         <Link href={next.href}>
           <span className="ap-page-footer-next-text">
             <span className="ap-page-footer-next-kicker">{m.tracks.nextStep}</span>
-            <span className="ap-page-footer-next-label">{next.label}</span>
+            <span className="ap-page-footer-next-label">{tTrack(next.label, locale)}</span>
           </span>
           <ArrowRight className="size-4 shrink-0" aria-hidden />
         </Link>
@@ -342,14 +353,15 @@ export function IntersectionTypeView({ typeSlug }: IntersectionTypeViewProps) {
   const { progress, hydrated, studyIntersection, unstudyIntersection } =
     useApprentissageProgress()
   const type = getIntersectionType(typeSlug)
+  const localized = type ? localizeIntersectionType(type, locale) : null
 
-  if (!type) return null
+  if (!type || !localized) return null
 
   const studied = hydrated
     ? progress.intersections.typesStudied.includes(type.slug)
     : false
-  const hasSign = Boolean(type.sign?.image)
-  const hasScenario = Boolean(type.scenario?.image)
+  const hasSign = Boolean(localized.sign?.image)
+  const hasScenario = Boolean(localized.scenario?.image)
 
   return (
     <div className="ap-page">
@@ -364,8 +376,8 @@ export function IntersectionTypeView({ typeSlug }: IntersectionTypeViewProps) {
 
       <header className="ap-page-head">
         <Badge>{m.tracks.intersections.badge}</Badge>
-        <h1>{type.title}</h1>
-        <p>{type.summary}</p>
+        <h1>{localized.title}</h1>
+        <p>{localized.summary}</p>
         {studied ? (
           <p className="ap-studied-badge">
             <Check className="size-3.5" />
@@ -381,11 +393,11 @@ export function IntersectionTypeView({ typeSlug }: IntersectionTypeViewProps) {
               <figcaption>{m.tracks.prioritySignTitle}</figcaption>
               <div className="ap-intersection-sign-frame">
                 <IntersectionMediaImage
-                  src={type.sign!.image}
-                  alt={type.sign!.name}
+                  src={localized.sign!.image}
+                  alt={localized.sign!.name}
                 />
               </div>
-              <p className="ap-intersection-sign-name">{type.sign!.name}</p>
+              <p className="ap-intersection-sign-name">{localized.sign!.name}</p>
             </figure>
           ) : null}
           {hasScenario ? (
@@ -393,18 +405,18 @@ export function IntersectionTypeView({ typeSlug }: IntersectionTypeViewProps) {
               <figcaption>{m.tracks.scenarioTitle}</figcaption>
               <div className="ap-intersection-scenario-frame">
                 <IntersectionMediaImage
-                  src={type.scenario!.image}
-                  alt={type.scenario!.caption}
+                  src={localized.scenario!.image}
+                  alt={localized.scenario!.caption}
                   variant="scenario"
                 />
               </div>
               <p className="ap-intersection-scenario-caption">
-                {type.scenario!.caption}
+                {localized.scenario!.caption}
               </p>
-              {type.scenario!.passingOrder &&
-              type.scenario!.passingOrder.length > 0 ? (
+              {localized.scenario!.passingOrder &&
+              localized.scenario!.passingOrder.length > 0 ? (
                 <IntersectionPassingOrder
-                  passingOrder={type.scenario!.passingOrder}
+                  passingOrder={localized.scenario!.passingOrder}
                   m={m}
                 />
               ) : null}
@@ -415,14 +427,14 @@ export function IntersectionTypeView({ typeSlug }: IntersectionTypeViewProps) {
 
       <div
         className="ap-lesson-body"
-        dangerouslySetInnerHTML={{ __html: type.body }}
+        dangerouslySetInnerHTML={{ __html: localized.body }}
       />
 
-      {type.rules.length > 0 ? (
+      {localized.rules.length > 0 ? (
         <section className="ap-rules-box">
           <h2>{m.tracks.rulesTitle}</h2>
           <ul>
-            {type.rules.map((rule) => (
+            {localized.rules.map((rule) => (
               <li key={rule}>{rule}</li>
             ))}
           </ul>

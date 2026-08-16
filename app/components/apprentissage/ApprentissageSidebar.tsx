@@ -32,6 +32,7 @@ import {
   PANNEAUX,
   INTERSECTIONS,
 } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getIntersectionTypesByGroup } from "@/lib/apprentissage/tracks/intersections-navigation"
 import {
   getIntersectionTypeHref,
@@ -213,7 +214,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                   )}
                 </span>
                 <span className="ap-nav-module-text">
-                  <span className="ap-nav-module-title">{PANNEAUX.title}</span>
+                  <span className="ap-nav-module-title">{tTrack(PANNEAUX.title, locale)}</span>
                   <span className="ap-nav-module-sub">
                     {m.tracks.panneaux.badge}
                   </span>
@@ -260,7 +261,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                         )}
                         onClick={onNavigate}
                       >
-                        {family.title}
+                        {tTrack(family.title, locale)}
                       </Link>
                       {!flatSigns ? (
                       <button
@@ -336,7 +337,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                                   onClick={onNavigate}
                                 >
                                   <span className="ap-nav-chapter-label">
-                                    {cat.title}
+                                    {tTrack(cat.title, locale)}
                                   </span>
                                   <span className="ap-nav-module-pct">
                                     {percent}%
@@ -413,7 +414,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                                         onClick={onNavigate}
                                       >
                                         <span className="ap-nav-chapter-label">
-                                          {section.title}
+                                          {tTrack(section.title, locale)}
                                         </span>
                                         <span className="ap-nav-module-pct">
                                           {sectionPercent}%
@@ -446,7 +447,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                               onClick={onNavigate}
                             >
                               <span className="ap-nav-chapter-label">
-                                {cat.title}
+                                {tTrack(cat.title, locale)}
                               </span>
                               <span className="ap-nav-module-pct">{percent}%</span>
                               {done ? (
@@ -507,7 +508,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                   </span>
                   <span className="ap-nav-module-text">
                     <span className="ap-nav-module-title">
-                      {INTERSECTIONS.title}
+                      {tTrack(INTERSECTIONS.title, locale)}
                     </span>
                     <span className="ap-nav-module-sub">
                       {formatApprentissageMessage(m.dashboard.lockedModule, {
@@ -543,7 +544,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                     </span>
                     <span className="ap-nav-module-text">
                       <span className="ap-nav-module-title">
-                        {INTERSECTIONS.title}
+                        {tTrack(INTERSECTIONS.title, locale)}
                       </span>
                       <span className="ap-nav-module-sub">
                         {m.tracks.intersections.badge}
@@ -576,7 +577,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                   <ul className="ap-nav-chapters">
                     {getIntersectionGroups().map((group) => (
                       <li key={group.slug} className="ap-nav-section">
-                        <div className="ap-nav-section-label">{group.title}</div>
+                        <div className="ap-nav-section-label">{tTrack(group.title, locale)}</div>
                         <ul className="ap-nav-section-lessons">
                           {getIntersectionTypesByGroup(group.slug).map((type) => {
                             const href = getIntersectionTypeHref(type.slug)
@@ -599,7 +600,7 @@ export function ApprentissageSidebar({ onNavigate }: { onNavigate?: () => void }
                                   onClick={onNavigate}
                                 >
                                   <span className="ap-nav-chapter-label">
-                                    {type.title}
+                                    {tTrack(type.title, locale)}
                                   </span>
                                   {studied ? (
                                     <Check

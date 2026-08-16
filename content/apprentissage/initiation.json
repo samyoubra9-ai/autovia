@@ -3,12 +3,12 @@
   "title": {
     "fr": "Initiation au code de la route",
     "ar": "مدخل إلى قانون المرور",
-    "kab": ""
+    "kab": "Asnulfu ɣer uselkim n tarrayt"
   },
   "description": {
     "fr": "Vue d'ensemble interactive : règlementation et signalisation. Cliquez sur les branches pour explorer le programme.",
     "ar": "نظرة عامة تفاعلية على التشريع والإشارات. انقر على الفروع للاستكشاف.",
-    "kab": ""
+    "kab": "Tamuɣli tamatut yettmeslayen : tanedlist d usɣel. Sit ɣef yiɣeẓran iwakken ad tesnirmeḍ ahil."
   },
   "root": {
     "slug": "code-route",
@@ -16,7 +16,7 @@
     "title": {
       "fr": "Code de la route",
       "ar": "قانون المرور",
-      "kab": ""
+      "kab": "Aselkim n tarrayt"
     },
     "children": [
       {
@@ -25,7 +25,7 @@
         "title": {
           "fr": "La règlementation",
           "ar": "التشريع",
-          "kab": ""
+          "kab": "Tanedlist"
         },
         "children": [
           {
@@ -34,7 +34,7 @@
             "title": {
               "fr": "Arrêté interministériel",
               "ar": "القرارات الوزارية",
-              "kab": ""
+              "kab": "Asɣan n yiminisen"
             }
           },
           {
@@ -43,7 +43,7 @@
             "title": {
               "fr": "Les règles",
               "ar": "القواعد",
-              "kab": ""
+              "kab": "Ilugan"
             }
           },
           {
@@ -52,7 +52,7 @@
             "title": {
               "fr": "Loi",
               "ar": "القانون",
-              "kab": ""
+              "kab": "Aṣerf"
             }
           },
           {
@@ -61,7 +61,7 @@
             "title": {
               "fr": "Article",
               "ar": "المادة",
-              "kab": ""
+              "kab": "Amagrad"
             }
           },
           {
@@ -70,7 +70,7 @@
             "title": {
               "fr": "Décret exécutif",
               "ar": "المرسوم التنفيذي",
-              "kab": ""
+              "kab": "Aselkem n unebdu"
             }
           }
         ]
@@ -81,7 +81,7 @@
         "title": {
           "fr": "La signalisation routière",
           "ar": "إشارات المرور",
-          "kab": ""
+          "kab": "Asɣel n tarrayt"
         },
         "children": [
           {
@@ -90,7 +90,7 @@
             "title": {
               "fr": "Signalisation verticale",
               "ar": "إشارات عمودية",
-              "kab": ""
+              "kab": "Asɣel ubdid"
             },
             "href": "/apprendre/panneaux/vertical"
           },
@@ -100,7 +100,7 @@
             "title": {
               "fr": "Signalisation horizontale",
               "ar": "أفقية",
-              "kab": ""
+              "kab": "Asɣel aɣezfan"
             },
             "href": "/apprendre/panneaux/horizontal"
           },
@@ -110,7 +110,7 @@
             "title": {
               "fr": "Signalisation lumineuse",
               "ar": "إشارات ضوئية",
-              "kab": ""
+              "kab": "Asɣel s tfawin"
             },
             "href": "/apprendre/panneaux/lumineuse"
           },
@@ -120,7 +120,7 @@
             "title": {
               "fr": "Signaux d'agent de l'ordre",
               "ar": "إشارات شرطي المرور",
-              "kab": ""
+              "kab": "Isɣunen n umegaz n umḍiq"
             },
             "href": "/apprendre/panneaux/agent-ordre"
           }

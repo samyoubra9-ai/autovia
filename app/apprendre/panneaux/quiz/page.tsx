@@ -3,7 +3,11 @@ import { cookies } from "next/headers"
 
 import { PanneauxQuizPage } from "@/app/components/apprentissage/PanneauxQuizPage"
 import { PANNEAUX } from "@/lib/apprentissage/tracks/content"
-import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
+import {
+  formatApprentissageMessage,
+  getApprentissageMessages,
+} from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -11,7 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `Quiz — ${PANNEAUX.title}`,
+    title: formatApprentissageMessage(m.quiz.title, {
+      module: tTrack(PANNEAUX.title, locale),
+    }),
     description: m.tracks.panneauxQuizIntro,
   }
 }

@@ -12,7 +12,7 @@
   "nav": {
     "ariaMain": "",
     "logoAria": "",
-    "learn": "",
+    "learn": "Aselmed",
     "regulationWatch": "",
     "candidateDossier": "",
     "products": "",
@@ -453,19 +453,19 @@
     "zoomHint": "Semɣer"
   },
   "apprendre": {
-    "title": "",
-    "description": "",
-    "backLabel": "",
-    "brandSubtitle": "",
-    "intro": "",
-    "comingSoonTitle": "",
-    "comingSoonText": "",
-    "comingSoonHint": "",
-    "backHome": ""
+    "title": "Lemmed aselkim n tarrayt",
+    "description": "Abrid n uselmed : asɣel, tizwura, asenked d tɣellist.",
+    "backLabel": "Uɣal",
+    "brandSubtitle": "Aselkim n tarrayt",
+    "intro": "Bdu s usnulfu, sakin lemmed tifewwiyin d tineqqiḍin.",
+    "comingSoonTitle": "Ad d-yas",
+    "comingSoonText": "Agbur-agi n uselmed ad d-yernu ɣer zdat.",
+    "comingSoonHint": "Fren aḥric-nniḍen iwakken ad tkemmleḍ.",
+    "backHome": "Asebter amezwaru"
   },
   "locale": {
-    "switchToFr": "",
-    "switchToKab": "",
-    "switchToAr": ""
+    "switchToFr": "Beddel ɣer tefṛansist",
+    "switchToKab": "Beddel ɣer teqbaylit",
+    "switchToAr": "Beddel ɣer taɛrabt"
   }
 }

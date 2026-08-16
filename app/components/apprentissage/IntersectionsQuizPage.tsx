@@ -11,6 +11,7 @@ import {
 } from "@/lib/i18n/apprentissage-messages"
 import { isIntersectionsUnlocked } from "@/lib/apprentissage/access"
 import { INTERSECTIONS } from "@/lib/apprentissage/tracks/content"
+import { localizeQuizQuestion, tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getIntersectionsHref } from "@/lib/apprentissage/tracks/routes"
 
 import { TrackQuiz } from "./TrackQuiz"
@@ -24,16 +25,15 @@ export function IntersectionsQuizPage() {
   const unlocked = hydrated ? isIntersectionsUnlocked(progress) : true
   const best = hydrated ? progress.intersections.quizBestScore : null
 
-  const questions = INTERSECTIONS.quizQuestions.slice(
-    0,
-    INTERSECTIONS.quiz.questionsPerRound,
-  )
+  const questions = INTERSECTIONS.quizQuestions
+    .slice(0, INTERSECTIONS.quiz.questionsPerRound)
+    .map((question) => localizeQuizQuestion(question, locale))
 
   if (!unlocked) {
     return (
       <div className="ap-page ap-page--centered">
         <Lock className="size-10 text-muted-foreground" />
-        <h1>{INTERSECTIONS.title}</h1>
+        <h1>{tTrack(INTERSECTIONS.title, locale)}</h1>
         <p className="text-muted-foreground">{m.tracks.intersectionsLocked}</p>
         <Button asChild variant="outline">
           <Link href="/apprendre">{m.shell.backHome}</Link>
@@ -56,7 +56,7 @@ export function IntersectionsQuizPage() {
       <header className="ap-page-head">
         <h1>
           {formatApprentissageMessage(m.quiz.title, {
-            module: INTERSECTIONS.title,
+            module: tTrack(INTERSECTIONS.title, locale),
           })}
         </h1>
         <p>{m.tracks.intersectionsQuizIntro}</p>

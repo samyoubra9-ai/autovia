@@ -8,6 +8,7 @@ import {
   INTERSECTIONS,
   isIntersectionType,
 } from "@/lib/apprentissage/tracks/content"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
 import { getApprentissageMessages } from "@/lib/i18n/apprentissage-messages"
 import { getVitrineLocaleFromCookie } from "@/lib/i18n/vitrine-locale"
 
@@ -28,8 +29,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const m = getApprentissageMessages(locale)
 
   return {
-    title: `${item.title} — ${m.meta.title}`,
-    description: item.summary,
+    title: `${tTrack(item.title, locale)} — ${m.meta.title}`,
+    description: tTrack(item.summary, locale),
   }
 }
 

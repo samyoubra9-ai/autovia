@@ -15,6 +15,8 @@ import type {
 } from "./types"
 import { signKey } from "./types"
 import { pickDistinctWrongLabels } from "@/lib/apprentissage/quiz"
+import { tTrack } from "@/lib/apprentissage/tracks/localize"
+import type { VitrineLocale } from "@/lib/i18n/vitrine-locale"
 
 export const PANNEAUX = panneauxData as PanneauxTrack
 export const INTERSECTIONS = intersectionsData as IntersectionsTrack
@@ -218,6 +220,7 @@ function shuffle<T>(arr: T[]): T[] {
 export function buildSignQuizQuestions(
   pool: Array<PanneauSign & { categorySlug: string; key: string }>,
   count: number,
+  locale: VitrineLocale = "fr",
 ): SignQuizQuestion[] {
   const withNames = pool.filter((s) => s.name.trim().length > 0)
   if (withNames.length < 4) return []
@@ -236,17 +239,22 @@ export function buildSignQuizQuestions(
 
   return picked.map((sign) => {
     const correctName = sign.name.trim()
-    const wrongLabels = pickDistinctWrongLabels(correctName, allNames, 3)
+    const localizedCorrect = tTrack(correctName, locale)
+    const wrongLabels = pickDistinctWrongLabels(correctName, allNames, 3).map(
+      (label) => tTrack(label, locale),
+    )
     const options = shuffle([
-      { id: "correct", label: correctName },
+      { id: "correct", label: localizedCorrect },
       ...wrongLabels.map((label, i) => ({ id: `w${i}`, label })),
     ])
 
     const meaning = sign.meaning.trim()
     const explanation =
       meaning.length > 0
-        ? meaning
-        : `Ce panneau s'appelle « ${correctName} ».`
+        ? tTrack(meaning, locale)
+        : locale === "kab"
+          ? `Tafewwit-agi qqaren-as « ${localizedCorrect} ».`
+          : `Ce panneau s'appelle « ${correctName} ».`
 
     return {
       id: `sign-${sign.key}`,
@@ -254,7 +262,7 @@ export function buildSignQuizQuestions(
       categorySlug: sign.categorySlug,
       signId: sign.id,
       image: sign.image,
-      prompt: "Quel est le nom de ce panneau ?",
+      prompt: tTrack("Quel est le nom de ce panneau ?", locale),
       options,
       correctOptionId: "correct",
       explanation,
