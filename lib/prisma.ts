@@ -5,77 +5,66 @@ import { Pool } from "pg"
 /** Client racine ou client de transaction (`$transaction`). */
 export type PrismaDb = PrismaClient | Prisma.TransactionClient
 
-function resolveConnectionString(): string {
-  const raw = process.env.DATABASE_URL?.trim()
-  if (!raw) {
+function sanitizeConnectionString(raw: string): string {
+  let s = raw.trim().replace(/[\r\n]/g, "")
+  s = s.replace(/^DATABASE_URL\s*=\s*/i, "")
+  s = s.replace(/^['"]+|['"]+$/g, "").trim()
+  if (!/[?&]sslmode=/i.test(s) && /^(postgres(ql)?:\/\/)/i.test(s)) {
+    s += (s.includes("?") ? "&" : "?") + "sslmode=require"
+  }
+  return s
+}
+
+function createPrismaClient(): PrismaClient {
+  const raw = process.env.DATABASE_URL
+  if (!raw?.trim()) {
     throw new Error("DATABASE_URL doit être défini (Vercel → Environment Variables).")
   }
 
-  const unquoted = raw.replace(/^['"]+|['"]+$/g, "").trim()
+  const connectionString = sanitizeConnectionString(raw)
 
-  let parsed: URL
   try {
-    parsed = new URL(unquoted)
+    const host = new URL(connectionString).hostname
+    console.info("[prisma] host=", host)
   } catch {
-    throw new Error(
-      "DATABASE_URL invalide. Collez l’URI Transaction pooler Supabase (port 6543), sans guillemets.",
-    )
+    console.info("[prisma] DATABASE_URL fournie (format non URI standard, pg l’accepte tel quel)")
   }
 
-  const host = parsed.hostname
-  const onVercel = Boolean(process.env.VERCEL)
-  const badHost =
-    !host ||
-    host === "base" ||
-    (onVercel && (host === "localhost" || host === "127.0.0.1" || host === "db"))
-  if (badHost) {
-    throw new Error(
-      `DATABASE_URL a pour hôte « ${host || "(vide)"} ». Sur Vercel, collez l’URI Transaction pooler Supabase (port 6543), sans guillemets : postgresql://postgres.<PROJECT>:…@aws-0-….pooler.supabase.com:6543/postgres?pgbouncer=true`,
-    )
-  }
-
-  if (!parsed.searchParams.has("sslmode")) {
-    parsed.searchParams.set("sslmode", "require")
-  }
-
-  return parsed.toString()
+  const pool = new Pool({
+    connectionString,
+    max: process.env.VERCEL ? 1 : 10,
+    idleTimeoutMillis: 20_000,
+    connectionTimeoutMillis: 15_000,
+    ssl: { rejectUnauthorized: false },
+  })
+  return new PrismaClient({ adapter: new PrismaPg(pool) })
 }
-
-const connectionString = resolveConnectionString()
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
-  pool: Pool | undefined
 }
 
-function createPrismaClient() {
-  if (!globalForPrisma.pool) {
-    try {
-      const host = new URL(connectionString).hostname
-      console.info("[prisma] host=", host)
-    } catch {
-      /* ignore */
-    }
-    globalForPrisma.pool = new Pool({
-      connectionString,
-      max: process.env.VERCEL ? 1 : 10,
-      idleTimeoutMillis: 20_000,
-      connectionTimeoutMillis: 15_000,
-      ssl: { rejectUnauthorized: false },
-    })
+function getPrisma(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient()
   }
-  const adapter = new PrismaPg(globalForPrisma.pool)
-  return new PrismaClient({ adapter })
+  return globalForPrisma.prisma
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+/**
+ * Proxy : n’ouvre pas Postgres au `import` (le build Vercel « « Collecting page data »).
+ * La connexion se fait au premier appel API.
+ */
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = getPrisma()
+    const value = Reflect.get(client, prop, receiver)
+    return typeof value === "function" ? value.bind(client) : value
+  },
+})
 
 /** Transactions interactives — défaut Prisma 5 s, trop court avec Supabase + listes nombreuses. */
 export const PRISMA_TRANSACTION_OPTS = {
   maxWait: 15_000,
   timeout: 30_000,
 } as const
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma
-}
