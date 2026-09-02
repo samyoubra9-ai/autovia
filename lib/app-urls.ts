@@ -109,6 +109,15 @@ export function getAllowedOrigins(): string[] {
   const urls = getAppUrls()
   const extra = parseExtraOrigins(process.env.CORS_EXTRA_ORIGINS)
   const base = [urls.app, urls.backdash, urls.candidat, urls.platformAdmin, ...extra]
+  // Vite en local même si NEXT_PUBLIC_* pointe vers la prod.
+  if (process.env.NODE_ENV !== "production") {
+    base.push(
+      DEV_DEFAULTS.app,
+      DEV_DEFAULTS.backdash,
+      DEV_DEFAULTS.candidat,
+      DEV_DEFAULTS.platformAdmin,
+    )
+  }
   return [...new Set(base.flatMap((o) => originAliases(o)))]
 }
 
@@ -120,6 +129,14 @@ function parseExtraOrigins(raw: string | undefined): string[] {
     .filter(Boolean)
 }
 
+function isLoopbackHostname(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]"
+  )
+}
+
 /** Wi‑Fi local (192.168.x.x) : actif en dev sauf ALLOW_DEV_LAN_ORIGINS=false. */
 export function isDevLanOriginAllowed(): boolean {
   if (process.env.ALLOW_DEV_LAN_ORIGINS === "false") return false
@@ -128,12 +145,15 @@ export function isDevLanOriginAllowed(): boolean {
 }
 
 export function isDevLanOrigin(origin: string): boolean {
-  if (!isDevLanOriginAllowed()) return false
   try {
     const { hostname, protocol } = new URL(origin)
     if (protocol !== "http:" && protocol !== "https:") return false
+    // Loopback : toujours OK hors prod (Vite local), même si ALLOW_DEV_LAN_ORIGINS=false.
+    if (isLoopbackHostname(hostname)) {
+      return process.env.NODE_ENV !== "production"
+    }
+    if (!isDevLanOriginAllowed()) return false
     return (
-      hostname === "localhost" ||
       /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
       /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
       /^172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}$/.test(hostname)
