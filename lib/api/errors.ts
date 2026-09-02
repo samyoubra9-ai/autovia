@@ -20,6 +20,14 @@ const PROD_SCHEMA_ERROR =
 function prismaUserMessage(error: unknown): string | null {
   if (!error || typeof error !== "object") return null
   const msg = String((error as Error).message ?? "")
+  const code =
+    error instanceof Prisma.PrismaClientKnownRequestError ? error.code : undefined
+
+  if (code === "P1001" || msg.includes("Can't reach database server")) {
+    return isDev
+      ? "Impossible de joindre Postgres. Vérifiez DATABASE_URL (pooler Supabase :6543, pas l’hôte « base »)."
+      : "Base de données injoignable. Vérifiez DATABASE_URL sur Vercel (Transaction pooler Supabase, port 6543)."
+  }
 
   if (msg.includes("Unknown field") && msg.includes("SeanceExamen")) {
     return isDev

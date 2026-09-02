@@ -7,7 +7,13 @@ function candidatOrigin(): string {
 }
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@sparticuz/chromium-min", "puppeteer-core"],
+  serverExternalPackages: [
+    "@sparticuz/chromium-min",
+    "puppeteer-core",
+    "pg",
+    "@prisma/adapter-pg",
+    "@prisma/client",
+  ],
   outputFileTracingIncludes: {
     "/api/v1/listes-examen/[id]/pdf/route": [
       "./node_modules/@sparticuz/chromium-min/**",
