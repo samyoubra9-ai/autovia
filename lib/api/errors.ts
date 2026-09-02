@@ -29,6 +29,16 @@ function prismaUserMessage(error: unknown): string | null {
       : "Base de données injoignable. Vérifiez DATABASE_URL sur Vercel (Transaction pooler Supabase, port 6543)."
   }
 
+  if (
+    code === "P1011" ||
+    msg.includes("TLS connection") ||
+    msg.includes("self-signed certificate")
+  ) {
+    return isDev
+      ? "Erreur TLS Postgres (self-signed). sslmode=require est trop strict sur Vercel ; utiliser rejectUnauthorized: false."
+      : "Connexion base refusée (certificat TLS). Redéployez l’API."
+  }
+
   if (msg.includes("Unknown field") && msg.includes("SeanceExamen")) {
     return isDev
       ? "Le serveur API doit être redémarré après la mise à jour : arrêtez Next.js, exécutez « npx prisma generate », puis « npm run dev »."

@@ -9,9 +9,9 @@ function sanitizeConnectionString(raw: string): string {
   let s = raw.trim().replace(/[\r\n]/g, "")
   s = s.replace(/^DATABASE_URL\s*=\s*/i, "")
   s = s.replace(/^['"]+|['"]+$/g, "").trim()
-  if (!/[?&]sslmode=/i.test(s) && /^(postgres(ql)?:\/\/)/i.test(s)) {
-    s += (s.includes("?") ? "&" : "?") + "sslmode=require"
-  }
+  // sslmode=require → Node 18+ vérifie la CA → P1011 self-signed sur le pooler Supabase.
+  s = s.replace(/[?&]sslmode=[^&]*/gi, "")
+  s = s.replace(/\?&/g, "?").replace(/&&/g, "&").replace(/[?&]$/, "")
   return s
 }
 
